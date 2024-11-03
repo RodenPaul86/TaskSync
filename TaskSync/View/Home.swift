@@ -34,7 +34,7 @@ struct Home: View {
                                         .frame(width: 8, height: 8)
                                         .opacity(taskModel.isToday(date: day) ? 1 : 0)
                                 }
-                                .foregroundStyle(taskModel.isToday(date: day) ? .primary : .tertiary)
+                                .foregroundStyle(taskModel.isToday(date: day) ? .primary : .secondary)
                                 .foregroundStyle(taskModel.isToday(date: day) ? .white : .black)
                                 // MARK: Capsule Shape
                                 .frame(width: 45, height: 90)
@@ -44,7 +44,6 @@ struct Home: View {
                                             Capsule()
                                                 .fill(.black)
                                                 .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
-                                            
                                         }
                                     }
                                 )
@@ -59,10 +58,42 @@ struct Home: View {
                         }
                         .padding(.horizontal)
                     }
+                    
+                    TasksView()
+                    
                 } header: {
                     HeaderView()
                 }
             }
+        }
+    }
+    
+    // MARK: Tasks View
+    func TasksView() -> some View {
+        LazyVStack(spacing: 18) {
+            if let tasks = taskModel.filteredTasks {
+                if tasks.isEmpty {
+                    Text("No tasks found!!!")
+                        .font(.system(size: 16))
+                        .fontWeight(.light)
+                        .offset(y: 100)
+                } else {
+                    ForEach(tasks) { task in
+                        
+                    }
+                }
+            } else {
+                // MARK: Progress View
+                ProgressView()
+                    .offset(y: 100)
+            }
+        }
+    }
+    
+    // MARK: Task Card View
+    func TaskCardView(task: Task) -> some View {
+        HStack {
+            //Task(task.taskTitle)
         }
     }
     

@@ -14,9 +14,33 @@ class TaskViewModel: ObservableObject {
     // MARK: Current day
     @Published var currentDay: Date = Date()
     
+    // MARK: Filtering Today Tasks
+    @Published var filteredTasks: [Task]?
+    
     // MARK: Intializing
     init() {
         fetchCurrentWeek()
+        filterTodayTasks()
+    }
+    
+    // MARK: Filter Today Tasks
+    func filterTodayTasks() {
+        DispatchQueue.global(qos: .userInteractive).async {
+            let calendar = Calendar.current
+            
+            /*
+            let filtered = self.storedTasks.filter {
+                return calendar.isDate($0.taskDate, inSameDayAs: Date())
+            }
+             */
+            
+            DispatchQueue.main.async {
+                withAnimation {
+                    //self.filteredTasks = filtered
+                }
+            }
+            
+        }
     }
     
     func fetchCurrentWeek() {
@@ -47,8 +71,5 @@ class TaskViewModel: ObservableObject {
         let calendar = Calendar.current
         return calendar.isDate(currentDay, inSameDayAs: date)
     }
-    
-    
-    
 }
 
