@@ -8,6 +8,11 @@
 import SwiftUI
 
 class TaskViewModel: ObservableObject {
+    
+    @Published var storedTasks: [testTaskData] = [
+        testTaskData(taskTitle: "Meeting", taskDescription: "Discuss team task for the day", taskDate: .init(timeIntervalSince1970: 1730975087))
+    ]
+    
     // MARK: Current Week Days
     @Published var currentWeek: [Date] = []
     
@@ -15,7 +20,7 @@ class TaskViewModel: ObservableObject {
     @Published var currentDay: Date = Date()
     
     // MARK: Filtering Today Tasks
-    @Published var filteredTasks: [Task]?
+    @Published var filteredTasks: [testTaskData]?
     
     // MARK: Intializing
     init() {
@@ -28,18 +33,15 @@ class TaskViewModel: ObservableObject {
         DispatchQueue.global(qos: .userInteractive).async {
             let calendar = Calendar.current
             
-            /*
             let filtered = self.storedTasks.filter {
-                return calendar.isDate($0.taskDate, inSameDayAs: Date())
+                return calendar.isDate($0.taskDate, inSameDayAs: self.currentDay)
             }
-             */
             
             DispatchQueue.main.async {
                 withAnimation {
-                    //self.filteredTasks = filtered
+                    self.filteredTasks = filtered
                 }
             }
-            
         }
     }
     
@@ -70,6 +72,14 @@ class TaskViewModel: ObservableObject {
     func isToday(date: Date) -> Bool {
         let calendar = Calendar.current
         return calendar.isDate(currentDay, inSameDayAs: date)
+    }
+    
+    // MARK: Checking if the currentHour is task Hour
+    func isCurrentHour(date: Date)->Bool {
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: date)
+        let currentHour = calendar.component(.hour, from: Date())
+        return hour == currentHour
     }
 }
 
