@@ -92,7 +92,7 @@ struct Home: View {
         .padding()
         .padding(.top)
         // MARK: Updating Task
-        .onChange(of: taskModel.currentDay) { newValue in
+        .onChange(of: taskModel.currentDay) {
             taskModel.filterTodayTasks()
         }
     }
