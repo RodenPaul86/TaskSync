@@ -36,6 +36,9 @@ class TaskViewModel: ObservableObject {
             let filtered = self.storedTasks.filter {
                 return calendar.isDate($0.taskDate, inSameDayAs: self.currentDay)
             }
+                .sorted { task1, task2 in
+                    return task2.taskDate < task1.taskDate
+                }
             
             DispatchQueue.main.async {
                 withAnimation {

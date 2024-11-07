@@ -164,6 +164,7 @@ struct Home: View {
             }
             .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate) ? .white : .black)
             .padding(taskModel.isCurrentHour(date: task.taskDate) ? 15 : 0)
+            .padding(.bottom, taskModel.isCurrentHour(date: task.taskDate) ? 0 : 10)
             .hLeading()
             .background(
                 Color(.black)
