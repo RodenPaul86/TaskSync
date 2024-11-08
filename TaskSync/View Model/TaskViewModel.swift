@@ -9,10 +9,6 @@ import SwiftUI
 
 class TaskViewModel: ObservableObject {
     
-    @Published var storedTasks: [testTaskData] = [
-        testTaskData(taskTitle: "Meeting", taskDescription: "Discuss team task for the day", taskDate: .init(timeIntervalSince1970: 1730975087))
-    ]
-    
     // MARK: Current Week Days
     @Published var currentWeek: [Date] = []
     
@@ -20,32 +16,11 @@ class TaskViewModel: ObservableObject {
     @Published var currentDay: Date = Date()
     
     // MARK: Filtering Today Tasks
-    @Published var filteredTasks: [testTaskData]?
+    @Published var filteredTasks: [Task]?
     
     // MARK: Intializing
     init() {
         fetchCurrentWeek()
-        filterTodayTasks()
-    }
-    
-    // MARK: Filter Today Tasks
-    func filterTodayTasks() {
-        DispatchQueue.global(qos: .userInteractive).async {
-            let calendar = Calendar.current
-            
-            let filtered = self.storedTasks.filter {
-                return calendar.isDate($0.taskDate, inSameDayAs: self.currentDay)
-            }
-                .sorted { task1, task2 in
-                    return task2.taskDate < task1.taskDate
-                }
-            
-            DispatchQueue.main.async {
-                withAnimation {
-                    self.filteredTasks = filtered
-                }
-            }
-        }
     }
     
     func fetchCurrentWeek() {

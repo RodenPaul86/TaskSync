@@ -67,49 +67,49 @@ struct Home: View {
             }
         }
         .ignoresSafeArea(.container, edges: .top)
+        
+        // MARK: Add Button
+        .overlay {
+            Button(action: {
+                
+            }, label: {
+                Image(systemName: "plus")
+                    .foregroundStyle(.white)
+                    .padding()
+                    .background(Color.black, in: Circle())
+            })
+            .padding()
+        }
     }
     
     // MARK: Tasks View
     func TasksView() -> some View {
-        LazyVStack(spacing: 25) {
-            if let tasks = taskModel.filteredTasks {
-                if tasks.isEmpty {
-                    Text("No tasks found!!!")
-                        .font(.system(size: 16))
-                        .fontWeight(.light)
-                        .offset(y: 100)
-                } else {
-                    ForEach(tasks) { task in
-                        TaskCardView(task: task)
-                    }
-                }
-            } else {
-                // MARK: Progress View
-                ProgressView()
-                    .offset(y: 100)
+        LazyVStack(spacing: 20) {
+            // Converting object as our TaskModel
+            DynamicFilteredView(dateToFilter: taskModel.currentDay) { (object: Task) in
+                TaskCardView(task: object)
             }
         }
         .padding()
         .padding(.top)
-        // MARK: Updating Task
-        .onChange(of: taskModel.currentDay) {
-            taskModel.filterTodayTasks()
-        }
     }
     
     // MARK: Task Card View
-    func TaskCardView(task: testTaskData) -> some View {
+    func TaskCardView(task: Task) -> some View {
+        
+        //
+        
         HStack(alignment: .top, spacing: 30) {
             VStack(spacing: 10) {
                 Circle()
-                    .fill(taskModel.isCurrentHour(date: task.taskDate) ? .black : .clear)
+                    .fill(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .black : .clear)
                     .frame(width: 15, height: 15)
                     .background(
                         Circle()
                             .stroke(.black, lineWidth: 3)
                             .padding(-3)
                     )
-                    .scaleEffect(taskModel.isCurrentHour(date: task.taskDate) ? 0.8 : 1)
+                    .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
                 
                 Rectangle()
                     .fill(.black)
@@ -119,19 +119,19 @@ struct Home: View {
             VStack {
                 HStack(alignment: .top, spacing: 10) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(task.taskTitle)
+                        Text(task.taskTitle ?? "")
                             .font(.title2.bold())
                         
-                        Text(task.taskDescription)
+                        Text(task.taskDescription ?? "")
                             .font(.callout)
                             .foregroundStyle(.secondary)
                     }
                     .hLeading()
                     
-                    Text(task.taskDate.formatted(date: .omitted, time: .shortened))
+                    Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "")
                 }
                 
-                if taskModel.isCurrentHour(date: task.taskDate) {
+                if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
                     // MARK: Team Members
                     HStack(spacing: 0) {
                         HStack(spacing: -10) {
@@ -162,14 +162,14 @@ struct Home: View {
                     .padding(.top)
                 }
             }
-            .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate) ? .white : .black)
-            .padding(taskModel.isCurrentHour(date: task.taskDate) ? 15 : 0)
-            .padding(.bottom, taskModel.isCurrentHour(date: task.taskDate) ? 0 : 10)
+            .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .white : .black)
+            .padding(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 15 : 0)
+            .padding(.bottom, taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0 : 10)
             .hLeading()
             .background(
                 Color(.black)
                     .cornerRadius(25)
-                    .opacity(taskModel.isCurrentHour(date: task.taskDate) ? 1 : 0)
+                    .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
             )
         }
         .hLeading()
