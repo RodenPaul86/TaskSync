@@ -69,7 +69,7 @@ struct Home: View {
         .ignoresSafeArea(.container, edges: .top)
         
         // MARK: Add Button
-        .overlay {
+        .overlay(
             Button(action: {
                 
             }, label: {
@@ -79,7 +79,9 @@ struct Home: View {
                     .background(Color.black, in: Circle())
             })
             .padding()
-        }
+            
+            ,alignment: .bottomTrailing
+        )
     }
     
     // MARK: Tasks View
