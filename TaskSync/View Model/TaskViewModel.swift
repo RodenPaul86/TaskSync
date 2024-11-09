@@ -18,6 +18,12 @@ class TaskViewModel: ObservableObject {
     // MARK: Filtering Today Tasks
     @Published var filteredTasks: [Task]?
     
+    // MARK: New Task View
+    @Published var addNewTask: Bool = false
+    
+    // MARK: Edit Data
+    @Published var editTask: Task?
+    
     // MARK: Intializing
     init() {
         fetchCurrentWeek()
@@ -32,7 +38,7 @@ class TaskViewModel: ObservableObject {
             return
         }
         
-        (1...7).forEach { day in
+        (1...14).forEach { day in
             if let weekday = calendar.date(byAdding: .day, value: day, to: firstWeekDay) {
                 currentWeek.append(weekday)
             }
@@ -57,7 +63,8 @@ class TaskViewModel: ObservableObject {
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
         let currentHour = calendar.component(.hour, from: Date())
-        return hour == currentHour
+        let isToday = calendar.isDateInToday(date)
+        return (hour == currentHour && isToday)
     }
 }
 

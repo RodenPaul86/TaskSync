@@ -11,6 +11,12 @@ struct Home: View {
     @StateObject var taskModel: TaskViewModel = TaskViewModel()
     @Namespace var animation
     
+    // MARK: CoreData Context
+    @Environment(\.managedObjectContext) var context
+    
+    // MARK: Edit Button Context
+    @Environment(\.editMode) var editButton
+    
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             // MARK: Lazy Stack With Pinned Header
@@ -71,7 +77,7 @@ struct Home: View {
         // MARK: Add Button
         .overlay(
             Button(action: {
-                
+                taskModel.addNewTask.toggle()
             }, label: {
                 Image(systemName: "plus")
                     .foregroundStyle(.white)
@@ -82,6 +88,14 @@ struct Home: View {
             
             ,alignment: .bottomTrailing
         )
+        .sheet(isPresented: $taskModel.addNewTask) {
+            // Clearing Edit Data
+            taskModel.editTask = nil
+        } content: {
+            NewTask()
+                .interactiveDismissDisabled(true)  // Disabling Dismiss on Swipe
+                .environmentObject(taskModel)
+        }
     }
     
     // MARK: Tasks View
@@ -99,23 +113,53 @@ struct Home: View {
     // MARK: Task Card View
     func TaskCardView(task: Task) -> some View {
         
-        //
-        
-        HStack(alignment: .top, spacing: 30) {
-            VStack(spacing: 10) {
-                Circle()
-                    .fill(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .black : .clear)
-                    .frame(width: 15, height: 15)
-                    .background(
-                        Circle()
-                            .stroke(.black, lineWidth: 3)
-                            .padding(-3)
-                    )
-                    .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
-                
-                Rectangle()
-                    .fill(.black)
-                    .frame(width: 3)
+        // MARK: Since CoreData values will give optinal data
+        HStack(alignment: editButton?.wrappedValue == .active ? .center : .top, spacing: 30) {
+            
+            // If edit mode enabled then showing delete button
+            if editButton?.wrappedValue == .active {
+                // Edit Button for current and future tasks
+                VStack(spacing: 10) {
+                    
+                    if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
+                        Button {
+                            taskModel.editTask = task
+                            taskModel.addNewTask.toggle()
+                        } label: {
+                            Image(systemName: "pencil.circle.fill")
+                                .font(.title)
+                                .foregroundStyle(.black)
+                        }
+                    }
+                    
+                    Button {
+                        // MARK: Deleting Task
+                        context.delete(task)
+                        
+                        // Saving
+                        try? context.save()
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.title)
+                            .foregroundStyle(.red)
+                    }
+                }
+            } else {
+                VStack(spacing: 10) {
+                    Circle()
+                        .fill(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? (task.isCompleted ? .green : .black) : .clear)
+                        .frame(width: 15, height: 15)
+                        .background(
+                            Circle()
+                                .stroke(.black, lineWidth: 3)
+                                .padding(-3)
+                        )
+                        .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
+                    
+                    Rectangle()
+                        .fill(.black)
+                        .frame(width: 3)
+                }
             }
             
             VStack {
@@ -135,7 +179,8 @@ struct Home: View {
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
                     // MARK: Team Members
-                    HStack(spacing: 0) {
+                    HStack(spacing: 12) {
+                        /*
                         HStack(spacing: -10) {
                             ForEach(["User1", "User2", "User3"],id: \.self) { user in
                                 Image(user)
@@ -150,16 +195,28 @@ struct Home: View {
                             }
                         }
                         .hLeading()
+                         */
                         
                         // MARK: Check Button
-                        Button {
-                            
-                        } label: {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.black)
-                                .padding(10)
-                                .background(Color.white, in: RoundedRectangle(cornerRadius: 10))
+                        if !task.isCompleted {
+                            Button {
+                                // MARK: Updating Task
+                                task.isCompleted = true
+                                
+                                // Saving
+                                try? context.save()
+                            } label: {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(.black)
+                                    .padding(10)
+                                    .background(Color.white, in: RoundedRectangle(cornerRadius: 10))
+                            }
                         }
+                        
+                        Text(task.isCompleted ? "Marked as Completed" : "Mark Task as Completed")
+                            .font(.system(size: task.isCompleted ? 14 : 16, weight: .light))
+                            .foregroundStyle(task.isCompleted ? .gray : .white)
+                            .hLeading()
                     }
                     .padding(.top)
                 }
@@ -189,6 +246,10 @@ struct Home: View {
             }
             .hLeading()
             
+            // MARK: Edit Button
+            EditButton()
+            
+            /*
             Button {
                 
             } label: {
@@ -198,6 +259,7 @@ struct Home: View {
                     .frame(width: 45, height: 45)
                     .clipShape(Circle())
             }
+             */
         }
         .padding()
         .padding(.top,getSafeArea().top)
