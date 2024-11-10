@@ -38,7 +38,7 @@ class TaskViewModel: ObservableObject {
             return
         }
         
-        (1...14).forEach { day in
+        (0...14).forEach { day in
             if let weekday = calendar.date(byAdding: .day, value: day, to: firstWeekDay) {
                 currentWeek.append(weekday)
             }

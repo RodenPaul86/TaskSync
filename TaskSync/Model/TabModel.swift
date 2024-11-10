@@ -1,5 +1,5 @@
 //
-//  Tab.swift
+//  TabModel.swift
 //  TaskSync
 //
 //  Created by Paul  on 11/10/24.
