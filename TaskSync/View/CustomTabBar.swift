@@ -78,14 +78,23 @@ struct CustomTabBar: View {
             .zIndex(10)
             
             Button {
-                
+                if activeTab == .home {
+                    print("Plus Sign")
+                    
+                } else {
+                    print("Microphone Search")
+                }
             } label: {
-                Image(systemName: activeTab == .home ? "person.fill" : "slider.vertical.3")
-                    .font(.title3)
-                    .frame(width: 42, height: 42)
-                    .foregroundStyle(activeForeground)
-                    .background(activeBackground.gradient)
-                    .clipShape(.circle)
+                MorphingSymbolView(symbol: activeTab == .home ? "plus" : "mic.fill",
+                                   config: .init(font: .title3,
+                                                 frame: .init(width: 42, height: 42),
+                                                 radius: 2,
+                                                 foregroundColor: activeForeground,
+                                                 keyframeDuration: 0.3,
+                                                 symbolAnimation: .smooth(duration: 0.3, extraBounce: 0))
+                )
+                .background(activeBackground.gradient)
+                .clipShape(.circle)
             }
             .allowsHitTesting(status)
             .offset(x: status ? 0 : -20)

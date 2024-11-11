@@ -18,7 +18,7 @@ struct ContentView: View {
                 if #available(iOS 18.0, *) {
                     TabView(selection: $activeTab) {
                         Tab.init(value: .home) {
-                            Text("Home")
+                            Home()
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
@@ -39,7 +39,7 @@ struct ContentView: View {
                     }
                 } else {
                     TabView(selection: $activeTab) {
-                        Text("Home")
+                        Home()
                             .tag(TabModel.home)
                             .background {
                                 if !isTabBarHidden {
