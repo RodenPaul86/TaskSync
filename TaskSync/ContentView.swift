@@ -79,7 +79,6 @@ struct HideTabBar: UIViewRepresentable {
         
         DispatchQueue.main.async {
             if let tabController = view.tabController {
-                UITabBar.appearance().isHidden = false
                 tabController.tabBar.isHidden = true
                 result()
             }
