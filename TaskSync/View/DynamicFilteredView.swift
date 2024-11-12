@@ -28,7 +28,7 @@ struct DynamicFilteredView<Content: View,T>: View where T: NSManagedObject {
         let predicate = NSPredicate(format: "\(filterkey) >= %@ AND \(filterkey) =< %@", argumentArray: [today,tommorow])
         
         // Intializing Request With NSPredicate and adding sort
-        _request = FetchRequest(entity: T.entity(), sortDescriptors: [.init(keyPath: \Task.taskDate, ascending: false)], predicate: predicate)
+        _request = FetchRequest(entity: T.entity(), sortDescriptors: [.init(keyPath: \Task.taskDate, ascending: true)], predicate: predicate)
         self.content = content
     }
     

@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct CustomTabBar: View {
+    @StateObject var taskModel: TaskViewModel = TaskViewModel()
+    
     var activeForeground: Color = .white
-    var activeBackground: Color = .blue
+    var activeBackground: Color = .black
     @Binding var activeTab: TabModel
     
     // For Matched Geometry Effect
@@ -19,7 +21,7 @@ struct CustomTabBar: View {
     @State private var tabLocation: CGRect = .zero
     
     var body: some View {
-        let status = activeTab == .home || activeTab == .search
+        let status = activeTab == .home || activeTab == .search || activeTab == .settings
         
         HStack(spacing: !status ? 0 : 12) {
             HStack(spacing: 0) {
@@ -77,15 +79,16 @@ struct CustomTabBar: View {
             )
             .zIndex(10)
             
+            // MARK: Add new task button
             Button {
                 if activeTab == .home {
                     print("Plus Sign")
-                    
+                    taskModel.addNewTask.toggle()
                 } else {
                     print("Microphone Search")
                 }
             } label: {
-                MorphingSymbolView(symbol: activeTab == .home ? "plus" : "mic.fill",
+                MorphingSymbolView(symbol: activeTab == .home ? "plus" : activeTab == .search ? "mic.fill" : "person",
                                    config: .init(font: .title3,
                                                  frame: .init(width: 42, height: 42),
                                                  radius: 2,
@@ -99,6 +102,14 @@ struct CustomTabBar: View {
             .allowsHitTesting(status)
             .offset(x: status ? 0 : -20)
             .padding(.leading, status ? 0 : -42)
+            .sheet(isPresented: $taskModel.addNewTask) {
+                // Clearing Edit Data
+                taskModel.editTask = nil
+            } content: {
+                NewTask()
+                    .interactiveDismissDisabled(true)  // Disabling Dismiss on Swipe
+                    .environmentObject(taskModel)
+            }
         }
         .padding(.bottom, 5)
         .animation(.smooth(duration: 0.3, extraBounce: 0), value: activeTab)

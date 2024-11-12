@@ -73,29 +73,7 @@ struct Home: View {
             }
         }
         .ignoresSafeArea(.container, edges: .top)
-        
-        // MARK: Add Button
-        .overlay(
-            Button(action: {
-                taskModel.addNewTask.toggle()
-            }, label: {
-                Image(systemName: "plus")
-                    .foregroundStyle(.white)
-                    .padding()
-                    .background(Color.black, in: Circle())
-            })
-            .padding()
-            
-            ,alignment: .bottomTrailing
-        )
-        .sheet(isPresented: $taskModel.addNewTask) {
-            // Clearing Edit Data
-            taskModel.editTask = nil
-        } content: {
-            NewTask()
-                .interactiveDismissDisabled(true)  // Disabling Dismiss on Swipe
-                .environmentObject(taskModel)
-        }
+        .safeAreaPadding(.bottom, 60)
     }
     
     // MARK: Tasks View
