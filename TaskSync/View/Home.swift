@@ -100,6 +100,7 @@ struct Home: View {
             
             // If edit mode enabled then showing delete button
             if editButton?.wrappedValue == .active {
+                
                 // Edit Button for current and future tasks
                 VStack(spacing: 10) {
                     
@@ -201,7 +202,6 @@ struct Home: View {
                             .hLeading()
                     }
                     .padding(.top)
-                    .hLeading()
                 }
             }
             .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .white : .black)

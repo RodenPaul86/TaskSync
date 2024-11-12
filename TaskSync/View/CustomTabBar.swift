@@ -84,11 +84,13 @@ struct CustomTabBar: View {
                 if activeTab == .home {
                     print("Plus Sign")
                     taskModel.addNewTask.toggle()
-                } else {
+                } else if activeTab == .search {
                     print("Microphone Search")
+                } else {
+                    print("Account Profile")
                 }
             } label: {
-                MorphingSymbolView(symbol: activeTab == .home ? "plus" : activeTab == .search ? "mic.fill" : "person",
+                MorphingSymbolView(symbol: activeTab == .home ? "plus" : activeTab == .search ? "mic.fill" : "person.fill",
                                    config: .init(font: .title3,
                                                  frame: .init(width: 42, height: 42),
                                                  radius: 2,
