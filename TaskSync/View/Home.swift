@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct Home: View {
     @StateObject var taskModel: TaskViewModel = TaskViewModel()
@@ -74,6 +75,9 @@ struct Home: View {
         }
         .ignoresSafeArea(.container, edges: .top)
         .safeAreaPadding(.bottom, 60)
+        .onAppear {
+            deleteOldTasks()
+        }
     }
     
     // MARK: Tasks View
@@ -187,16 +191,17 @@ struct Home: View {
                                 Image(systemName: "checkmark")
                                     .foregroundStyle(.black)
                                     .padding(10)
-                                    .background(Color.white, in: RoundedRectangle(cornerRadius: 10))
+                                    .background(Color.white, in: Circle())
                             }
                         }
                         
-                        Text(task.isCompleted ? "Marked as Completed" : "Mark Task as Completed")
+                        Text(task.isCompleted ? "Completed" : "")
                             .font(.system(size: task.isCompleted ? 14 : 16, weight: .light))
                             .foregroundStyle(task.isCompleted ? .gray : .white)
                             .hLeading()
                     }
                     .padding(.top)
+                    .hLeading()
                 }
             }
             .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .white : .black)
@@ -210,6 +215,24 @@ struct Home: View {
             )
         }
         .hLeading()
+    }
+    
+    // MARK: Delete old tasks function
+    private func deleteOldTasks() {
+        let currentDate = Date()
+        
+        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "taskDate < %@", currentDate as NSDate)
+        
+        do {
+            let oldTasks = try context.fetch(fetchRequest)
+            for task in oldTasks {
+                context.delete(task)
+            }
+            try context.save()
+        } catch {
+            print("Failed to delete old tasks: \(error.localizedDescription)")
+        }
     }
     
     // MARK: Header
