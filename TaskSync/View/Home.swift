@@ -12,18 +12,13 @@ struct Home: View {
     @StateObject var taskModel: TaskViewModel = TaskViewModel()
     @Namespace var animation
     
-    // MARK: CoreData Context
     @Environment(\.managedObjectContext) var context
-    
-    // MARK: Edit Button Context
     @Environment(\.editMode) var editButton
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            // MARK: Lazy Stack With Pinned Header
             LazyVStack(spacing: 15, pinnedViews: [.sectionHeaders]) {
                 Section {
-                    // MARK: Current Week View
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
                             ForEach(taskModel.currentWeek, id: \.self) { day in
@@ -43,7 +38,6 @@ struct Home: View {
                                 }
                                 .foregroundStyle(taskModel.isToday(date: day) ? .primary : .secondary)
                                 .foregroundStyle(taskModel.isToday(date: day) ? .white : .black)
-                                // MARK: Capsule Shape
                                 .frame(width: 45, height: 90)
                                 .background(
                                     ZStack {
@@ -56,8 +50,7 @@ struct Home: View {
                                 )
                                 .contentShape(Capsule())
                                 .onTapGesture {
-                                    // Updating current day
-                                    withAnimation {
+                                    withAnimation(.easeInOut) { // Simplified animation
                                         taskModel.currentDay = day
                                     }
                                 }
@@ -80,10 +73,8 @@ struct Home: View {
         }
     }
     
-    // MARK: Tasks View
     func TasksView() -> some View {
         LazyVStack(spacing: 20) {
-            // Converting object as our TaskModel
             DynamicFilteredView(dateToFilter: taskModel.currentDay) { (object: Task) in
                 TaskCardView(task: object)
             }
@@ -92,18 +83,10 @@ struct Home: View {
         .padding(.top)
     }
     
-    // MARK: Task Card View
     func TaskCardView(task: Task) -> some View {
-        
-        // MARK: Since CoreData values will give optinal data
         HStack(alignment: editButton?.wrappedValue == .active ? .center : .top, spacing: 30) {
-            
-            // If edit mode enabled then showing delete button
             if editButton?.wrappedValue == .active {
-                
-                // Edit Button for current and future tasks
                 VStack(spacing: 10) {
-                    
                     if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
                         Button {
                             taskModel.editTask = task
@@ -113,14 +96,19 @@ struct Home: View {
                                 .font(.title)
                                 .foregroundStyle(.black)
                         }
+                        .sheet(isPresented: $taskModel.addNewTask) {
+                            taskModel.editTask = nil
+                        } content: {
+                            NewTask()
+                                .environmentObject(taskModel)
+                        }
                     }
                     
                     Button {
-                        // MARK: Deleting Task
                         context.delete(task)
-                        
-                        // Saving
-                        try? context.save()
+                        DispatchQueue.main.async { // Wrapped context.save() to defer the update
+                            try? context.save()
+                        }
                     } label: {
                         Image(systemName: "minus.circle.fill")
                             .font(.title)
@@ -161,33 +149,13 @@ struct Home: View {
                 }
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
-                    // MARK: Team Members
                     HStack(spacing: 12) {
-                        /*
-                        HStack(spacing: -10) {
-                            ForEach(["User1", "User2", "User3"],id: \.self) { user in
-                                Image(user)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 45, height: 45)
-                                    .clipShape(Circle())
-                                    .background(
-                                        Circle()
-                                            .stroke(.white, lineWidth: 5)
-                                    )
-                            }
-                        }
-                        .hLeading()
-                         */
-                        
-                        // MARK: Check Button
                         if !task.isCompleted {
                             Button {
-                                // MARK: Updating Task
                                 task.isCompleted = true
-                                
-                                // Saving
-                                try? context.save()
+                                DispatchQueue.main.async {
+                                    try? context.save()
+                                }
                             } label: {
                                 Image(systemName: "checkmark")
                                     .foregroundStyle(.black)
@@ -200,6 +168,8 @@ struct Home: View {
                             .font(.system(size: task.isCompleted ? 14 : 16, weight: .light))
                             .foregroundStyle(task.isCompleted ? .gray : .white)
                             .hLeading()
+                        
+                        Spacer()
                     }
                     .padding(.top)
                 }
@@ -217,7 +187,6 @@ struct Home: View {
         .hLeading()
     }
     
-    // MARK: Delete old tasks function
     private func deleteOldTasks() {
         let currentDate = Date()
         
@@ -229,13 +198,12 @@ struct Home: View {
             for task in oldTasks {
                 context.delete(task)
             }
-            try context.save()
+            try? context.save()
         } catch {
             print("Failed to delete old tasks: \(error.localizedDescription)")
         }
     }
     
-    // MARK: Header
     func HeaderView() -> some View {
         HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 10) {
@@ -247,28 +215,14 @@ struct Home: View {
             }
             .hLeading()
             
-            // MARK: Edit Button
             EditButton()
-            
-            /*
-            Button {
-                
-            } label: {
-                Image(systemName: "person")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 45, height: 45)
-                    .clipShape(Circle())
-            }
-             */
         }
         .padding()
-        .padding(.top,getSafeArea().top)
+        .padding(.top, getSafeArea().top)
         .background(Color.white)
     }
 }
 
-// MARK: UI Design Helper Functions
 extension View {
     func hLeading() -> some View {
         self
@@ -285,8 +239,7 @@ extension View {
             .frame(maxWidth: .infinity, alignment: .center)
     }
     
-    // MARK: Safe Area
-    func getSafeArea()->UIEdgeInsets {
+    func getSafeArea() -> UIEdgeInsets {
         guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return .zero }
         
         guard let safeArea = screen.windows.first?.safeAreaInsets else {

@@ -12,6 +12,9 @@ struct ContentView: View {
     @State private var activeTab: TabModel = .home
     @State private var isTabBarHidden: Bool = false
     
+    @State private var isSearching: Bool = false
+    @State private var filteredTasks: [Task] = []
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             Group {
@@ -23,7 +26,7 @@ struct ContentView: View {
                         }
                         
                         Tab.init(value: .search) {
-                            Text("Search")
+                            SearchView(isSearching: $isSearching, filteredTasks: $filteredTasks)
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
