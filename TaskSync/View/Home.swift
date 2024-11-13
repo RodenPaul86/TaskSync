@@ -69,7 +69,7 @@ struct Home: View {
         .ignoresSafeArea(.container, edges: .top)
         .safeAreaPadding(.bottom, 60)
         .onAppear {
-            deleteOldTasks()
+            taskModel.autoDeleteOldTasks(context: context)
         }
     }
     
@@ -189,16 +189,17 @@ struct Home: View {
     
     private func deleteOldTasks() {
         let currentDate = Date()
+        let fiveDaysAgo = Calendar.current.date(byAdding: .day, value: -5, to: currentDate) ?? currentDate
         
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "taskDate < %@", currentDate as NSDate)
+        fetchRequest.predicate = NSPredicate(format: "taskDate < %@", fiveDaysAgo as NSDate)
         
         do {
             let oldTasks = try context.fetch(fetchRequest)
             for task in oldTasks {
                 context.delete(task)
             }
-            try? context.save()
+            try context.save()
         } catch {
             print("Failed to delete old tasks: \(error.localizedDescription)")
         }

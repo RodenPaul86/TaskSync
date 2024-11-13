@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 class TaskViewModel: ObservableObject {
     
@@ -68,3 +69,25 @@ class TaskViewModel: ObservableObject {
     }
 }
 
+extension TaskViewModel {
+    func autoDeleteOldTasks(context: NSManagedObjectContext) {
+        // Fetch all tasks
+        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
+        
+        do {
+            let tasks = try context.fetch(fetchRequest)
+            let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -6, to: Date()) ?? Date()
+            
+            for task in tasks {
+                if let taskDate = task.taskDate, taskDate < oneWeekAgo {
+                    context.delete(task)
+                }
+            }
+            
+            // Save the context after deleting tasks
+            try context.save()
+        } catch {
+            print("Error fetching or deleting tasks: \(error)")
+        }
+    }
+}
