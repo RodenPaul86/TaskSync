@@ -187,24 +187,6 @@ struct Home: View {
         .hLeading()
     }
     
-    private func deleteOldTasks() {
-        let currentDate = Date()
-        let fiveDaysAgo = Calendar.current.date(byAdding: .day, value: -5, to: currentDate) ?? currentDate
-        
-        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "taskDate < %@", fiveDaysAgo as NSDate)
-        
-        do {
-            let oldTasks = try context.fetch(fetchRequest)
-            for task in oldTasks {
-                context.delete(task)
-            }
-            try context.save()
-        } catch {
-            print("Failed to delete old tasks: \(error.localizedDescription)")
-        }
-    }
-    
     func HeaderView() -> some View {
         HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 10) {

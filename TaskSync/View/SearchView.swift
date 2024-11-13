@@ -17,6 +17,28 @@ struct SearchView: View {
     
     var body: some View {
         VStack {
+            Section {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 10) {
+                        ForEach(filteredTasks) { task in
+                            CustomTaskView(task: task, onDelete: {
+                                filterTasks() // Reload the task list and results count after deletion
+                            })
+                        }
+                    }
+                }
+                .safeAreaPadding(.bottom, 60)
+                .onAppear {
+                    filterTasks() // Initial load to show data if needed
+                }
+            } header: {
+                HeaderView()
+            }
+        }
+    }
+    
+    func HeaderView() -> some View {
+        VStack {
             // Search Bar
             HStack {
                 TextField("Search tasks...", text: $searchText)
@@ -48,13 +70,13 @@ struct SearchView: View {
                     .padding(.bottom, 5)
             }
         }
-        .onChange(of: searchText) { newValue in
-            isSearching = !newValue.isEmpty
+        .onChange(of: searchText) {
+            isSearching = !searchText.isEmpty
         }
     }
     
     // MARK: Filter Tasks
-    private func filterTasks() {
+    func filterTasks() {
         if searchText.isEmpty {
             filteredTasks = []
             isSearching = false
@@ -71,5 +93,101 @@ struct SearchView: View {
             print("Failed to fetch filtered tasks: \(error.localizedDescription)")
             filteredTasks = []
         }
+    }
+}
+
+struct CustomTaskView: View {
+    @Environment(\.managedObjectContext) var context
+    
+    @State private var showActionSheet: Bool = false
+    
+    var task: Task
+    var onDelete: (() -> Void)?
+    
+    var body: some View {
+        VStack {
+            HStack(alignment: .top, spacing: 10) {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text(task.taskTitle ?? "")
+                            .font(.title2.bold())
+                        
+                        Spacer()
+                        
+                        Text(task.taskDate?.formatted(date: .numeric, time: .shortened) ?? "")
+                    }
+                    
+                    Text(task.taskDescription ?? "")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+                .hLeading()
+            }
+            
+            HStack {
+                Spacer()
+                
+                Button {
+                    self.showActionSheet.toggle()
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .padding()
+                        .frame(width: 42, height: 42)
+                        .background(Color.white, in: Circle())
+                        .foregroundColor(.black)
+                }
+                .actionSheet(isPresented: $showActionSheet) {
+                    ActionSheet(
+                        title: Text(""),
+                        message: Text("This task will be deleted permanently. Do you want to proceed?"), buttons: [
+                            .destructive(Text("Delete")) {
+                                context.delete(task)
+                                DispatchQueue.main.async {
+                                    try? context.save()
+                                    
+                                    onDelete?()
+                                }
+                            },
+                            .cancel()
+                        ])
+                }
+            }
+            
+            /*
+            if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
+                HStack(spacing: 12) {
+                    if !task.isCompleted {
+                        Button {
+                            task.isCompleted = true
+                            DispatchQueue.main.async {
+                                try? context.save()
+                            }
+                        } label: {
+                            Image(systemName: "checkmark")
+                                .foregroundStyle(.black)
+                                .padding(10)
+                                .background(Color.white, in: Circle())
+                        }
+                    }
+                    
+                    Text(task.isCompleted ? "Completed" : "")
+                        .font(.system(size: task.isCompleted ? 14 : 16, weight: .light))
+                        .foregroundStyle(task.isCompleted ? .gray : .white)
+                        .hLeading()
+                    
+                    Spacer()
+                }
+                .padding(.top)
+            }
+             */
+        }
+        .foregroundStyle(.white)
+        .padding()
+        .hLeading()
+        .background(
+            Color(.black)
+                .cornerRadius(25)
+        )
+        .padding([.leading, .trailing])
     }
 }
