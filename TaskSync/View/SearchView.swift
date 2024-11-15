@@ -114,7 +114,12 @@ struct CustomTaskView: View {
                         
                         Spacer()
                         
-                        Text(task.taskDate?.formatted(date: .numeric, time: .shortened) ?? "")
+                        VStack(alignment: .trailing) {
+                            Text(task.taskDate?.formatted(date: .numeric, time: .omitted) ?? "")
+                            
+                            Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "")
+                        }
+                        .font(.callout)
                     }
                     
                     Text(task.taskDescription ?? "")

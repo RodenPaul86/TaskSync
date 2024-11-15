@@ -99,7 +99,7 @@ struct Home: View {
                         .sheet(isPresented: $taskModel.addNewTask) {
                             taskModel.editTask = nil
                         } content: {
-                            NewTask()
+                            NewTaskView()
                                 .environmentObject(taskModel)
                         }
                     }
