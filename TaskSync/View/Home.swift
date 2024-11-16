@@ -216,7 +216,13 @@ struct Home: View {
             // Side circle and vertical line
             VStack(spacing: 10) {
                 Circle()
-                    .fill(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? (task.isCompleted ? .green : .black) : .clear)
+                    .fill(
+                        taskModel.isCurrentHour(date: task.taskDate ?? Date()) ?
+                            (task.isCompleted ? .green : .black) :  // Current task: green if completed, red if not completed
+                        (task.taskDate ?? Date()).compare(Date()) == .orderedAscending ? // Past task (before now)
+                            (task.isCompleted ? .green : .red) : // Past tasks: green if completed, red if not completed
+                        .clear // Future tasks are clear
+                    )
                     .frame(width: 15, height: 15)
                     .background(
                         Circle()
@@ -243,6 +249,7 @@ struct Home: View {
                     .hLeading()
                     
                     Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "")
+                        .font(.callout)
                 }
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
