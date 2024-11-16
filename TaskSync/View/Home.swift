@@ -290,11 +290,14 @@ struct Home: View {
             )
             // Adding ContextMenu for Force Touch / Haptic Touch
             .contextMenu {
-                Button {
-                    taskModel.editTask = task
-                    taskModel.addNewTask.toggle()
-                } label: {
-                    Label("Edit", systemImage: "pencil")
+                if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
+                    
+                    Button {
+                        taskModel.editTask = task
+                        taskModel.addNewTask.toggle()
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
                 }
                 Button(role: .destructive) {
                     context.delete(task)
