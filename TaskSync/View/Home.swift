@@ -236,6 +236,7 @@ struct Home: View {
                     .frame(width: 3)
             }
             
+            // Task Card
             VStack {
                 HStack(alignment: .top, spacing: 10) {
                     VStack(alignment: .leading, spacing: 12) {
@@ -279,7 +280,7 @@ struct Home: View {
                 }
             }
             .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .white : .black)
-            .padding(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 15 : 0)
+            .padding(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 15 : 15)
             .padding(.bottom, taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0 : 10)
             .hLeading()
             .background(
@@ -293,7 +294,7 @@ struct Home: View {
                     taskModel.editTask = task
                     taskModel.addNewTask.toggle()
                 } label: {
-                    Label("Edit Task", systemImage: "pencil")
+                    Label("Edit", systemImage: "pencil")
                 }
                 Button(role: .destructive) {
                     context.delete(task)
@@ -301,7 +302,7 @@ struct Home: View {
                         try? context.save()
                     }
                 } label: {
-                    Label("Delete Task", systemImage: "trash")
+                    Label("Delete", systemImage: "trash")
                 }
             }
             .sheet(isPresented: $taskModel.addNewTask) {
@@ -318,15 +319,17 @@ struct Home: View {
     func HeaderView() -> some View {
         HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 10) {
+                // Display today's date
                 Text(Date().formatted(date: .abbreviated, time: .omitted))
                     .foregroundStyle(.gray)
                 
+                
+                
+                // Display "Today" title
                 Text("Today")
                     .font(.largeTitle.bold())
             }
             .hLeading()
-            
-            //EditButton()
         }
         .padding()
         .padding(.top, getSafeArea().top)

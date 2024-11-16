@@ -57,7 +57,7 @@ struct NewTaskView: View {
 
     private func saveButton() -> some View {
         Button(action: saveTask) {
-            Label(taskModel.editTask != nil ? "Update" : "Create", systemImage: "")
+            Text(taskModel.editTask != nil ? "Update" : "Create")
                 .font(.title2.bold())
                 .foregroundColor(taskTitle.isEmpty ? .gray : .white)
                 .padding()
@@ -96,10 +96,12 @@ struct NewTaskView: View {
     private func dismissButton() -> some View {
         Button(action: { dismiss() }) {
             Image(systemName: "xmark")
+                .frame(width: 10, height: 10)
                 .foregroundColor(.white)
                 .padding()
                 .background(Color.black.gradient)
                 .clipShape(Circle())
+                
         }
     }
 }
