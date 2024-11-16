@@ -13,7 +13,7 @@ struct Home: View {
     @Namespace var animation
     
     @Environment(\.managedObjectContext) var context
-    @Environment(\.editMode) var editButton
+    //@Environment(\.editMode) var editButton
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -84,6 +84,7 @@ struct Home: View {
     }
     
     func TaskCardView(task: Task) -> some View {
+        /*
         HStack(alignment: editButton?.wrappedValue == .active ? .center : .top, spacing: 30) {
             if editButton?.wrappedValue == .active {
                 VStack(spacing: 10) {
@@ -183,6 +184,126 @@ struct Home: View {
                     .cornerRadius(25)
                     .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
             )
+            // Adding ContextMenu for Force Touch / Haptic Touch
+            .contextMenu {
+                Button {
+                    taskModel.editTask = task
+                    taskModel.addNewTask.toggle()
+                } label: {
+                    Label("Edit Task", systemImage: "pencil")
+                }
+                Button(role: .destructive) {
+                    context.delete(task)
+                    DispatchQueue.main.async {
+                        try? context.save()
+                    }
+                } label: {
+                    Label("Delete Task", systemImage: "trash")
+                }
+            }
+            .sheet(isPresented: $taskModel.addNewTask) {
+                taskModel.editTask = nil
+            } content: {
+                NewTaskView()
+                    .environmentObject(taskModel)
+            }
+            
+        }
+        .hLeading()
+         */
+        
+        HStack(alignment: .top, spacing: 30) {
+            // Side circle and vertical line
+            VStack(spacing: 10) {
+                Circle()
+                    .fill(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? (task.isCompleted ? .green : .black) : .clear)
+                    .frame(width: 15, height: 15)
+                    .background(
+                        Circle()
+                            .stroke(.black, lineWidth: 3)
+                            .padding(-3)
+                    )
+                    .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
+                
+                Rectangle()
+                    .fill(.black)
+                    .frame(width: 3)
+            }
+            
+            VStack {
+                HStack(alignment: .top, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(task.taskTitle ?? "")
+                            .font(.title2.bold())
+                        
+                        Text(task.taskDescription ?? "")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+                    .hLeading()
+                    
+                    Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "")
+                }
+                
+                if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
+                    HStack(spacing: 12) {
+                        if !task.isCompleted {
+                            Button {
+                                task.isCompleted = true
+                                DispatchQueue.main.async {
+                                    try? context.save()
+                                }
+                            } label: {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(.black)
+                                    .padding(10)
+                                    .background(Color.white, in: Circle())
+                            }
+                        }
+                        
+                        Text(task.isCompleted ? "Completed" : "")
+                            .font(.system(size: task.isCompleted ? 14 : 16, weight: .light))
+                            .foregroundStyle(task.isCompleted ? .gray : .white)
+                            .hLeading()
+                        
+                        Spacer()
+                    }
+                    .padding(.top)
+                }
+            }
+            .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .white : .black)
+            .padding(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 15 : 0)
+            .padding(.bottom, taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0 : 10)
+            .hLeading()
+            .background(
+                Color(.black)
+                    .cornerRadius(25)
+                    .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
+            )
+            // Adding ContextMenu for Force Touch / Haptic Touch
+            .contextMenu {
+                Button {
+                    taskModel.editTask = task
+                    taskModel.addNewTask.toggle()
+                } label: {
+                    Label("Edit Task", systemImage: "pencil")
+                }
+                Button(role: .destructive) {
+                    context.delete(task)
+                    DispatchQueue.main.async {
+                        try? context.save()
+                    }
+                } label: {
+                    Label("Delete Task", systemImage: "trash")
+                }
+            }
+            .sheet(isPresented: $taskModel.addNewTask) {
+                taskModel.editTask = nil
+            } content: {
+                NewTaskView()
+                    .environmentObject(taskModel)
+            }
+            
         }
         .hLeading()
     }
@@ -198,7 +319,7 @@ struct Home: View {
             }
             .hLeading()
             
-            EditButton()
+            //EditButton()
         }
         .padding()
         .padding(.top, getSafeArea().top)
