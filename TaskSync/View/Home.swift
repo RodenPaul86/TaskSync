@@ -80,7 +80,6 @@ struct Home: View {
             }
         }
         .padding()
-        .padding(.top)
     }
     
     func TaskCardView(task: Task) -> some View {
@@ -320,19 +319,67 @@ struct Home: View {
     }
     
     func HeaderView() -> some View {
-        HStack(spacing: 10) {
-            VStack(alignment: .leading, spacing: 10) {
-                // Display today's date
-                Text(Date().formatted(date: .abbreviated, time: .omitted))
-                    .foregroundStyle(.gray)
-                
-                
-                
-                // Display "Today" title
-                Text("Today")
-                    .font(.largeTitle.bold())
+        VStack {
+            HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 10) {
+                    // Display today's date
+                    Text(Date().formatted(date: .abbreviated, time: .omitted))
+                        .foregroundStyle(.gray)
+                    
+                    // Display "Today" title
+                    Text("Today")
+                        .font(.largeTitle.bold())
+                }
+                .hLeading()
             }
-            .hLeading()
+            
+            // Horizontal Calendar
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(taskModel.currentWeek, id: \.self) { day in
+                        VStack(spacing: 10) {
+                            Text(taskModel.extractDate(date: day, format: "dd"))
+                                .font(.system(size: 14))
+                                .fontWeight(.semibold)
+                            
+                            Text(taskModel.extractDate(date: day, format: "EEE"))
+                                .font(.system(size: 14))
+                                .fontWeight(.semibold)
+                            
+                            Circle()
+                                .fill(.white)
+                                .frame(width: 8, height: 8)
+                                .opacity(taskModel.isToday(date: day) ? 1 : 0)
+                        }
+                        .foregroundStyle(taskModel.isToday(date: day) ? .primary : .secondary)
+                        .foregroundStyle(taskModel.isToday(date: day) ? .white : .black)
+                        .frame(width: 45, height: 90)
+                        .background(
+                            ZStack {
+                                if taskModel.isToday(date: day) {
+                                    Capsule()
+                                        .fill(Color.black.gradient)
+                                        .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
+                                }
+                            }
+                        )
+                        .contextMenu {
+                            Button {
+                                taskModel.shouldRefreshView.toggle()
+                            } label: {
+                                Label("Refresh", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
+                            }
+                        }
+                        
+                        .contentShape(Capsule())
+                        .onTapGesture {
+                            withAnimation(.easeInOut) { // Simplified animation
+                                taskModel.currentDay = day
+                            }
+                        }
+                    }
+                }
+            }
         }
         .padding()
         .padding(.top, getSafeArea().top)
