@@ -19,46 +19,6 @@ struct Home: View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 15, pinnedViews: [.sectionHeaders]) {
                 Section {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
-                            ForEach(taskModel.currentWeek, id: \.self) { day in
-                                VStack(spacing: 10) {
-                                    Text(taskModel.extractDate(date: day, format: "dd"))
-                                        .font(.system(size: 14))
-                                        .fontWeight(.semibold)
-                                    
-                                    Text(taskModel.extractDate(date: day, format: "EEE"))
-                                        .font(.system(size: 14))
-                                        .fontWeight(.semibold)
-                                    
-                                    Circle()
-                                        .fill(.white)
-                                        .frame(width: 8, height: 8)
-                                        .opacity(taskModel.isToday(date: day) ? 1 : 0)
-                                }
-                                .foregroundStyle(taskModel.isToday(date: day) ? .primary : .secondary)
-                                .foregroundStyle(taskModel.isToday(date: day) ? .white : .black)
-                                .frame(width: 45, height: 90)
-                                .background(
-                                    ZStack {
-                                        if taskModel.isToday(date: day) {
-                                            Capsule()
-                                                .fill(.black)
-                                                .matchedGeometryEffect(id: "CURRENTDAY", in: animation)
-                                        }
-                                    }
-                                )
-                                .contentShape(Capsule())
-                                .onTapGesture {
-                                    withAnimation(.easeInOut) { // Simplified animation
-                                        taskModel.currentDay = day
-                                    }
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    
                     TasksView()
                     
                 } header: {
@@ -75,7 +35,7 @@ struct Home: View {
     
     func TasksView() -> some View {
         LazyVStack(spacing: 20) {
-            DynamicFilteredView(dateToFilter: taskModel.currentDay) { (object: Task) in
+            DynamicFilteredView(dateToFilter: taskModel.currentDay, isCurrentDay: true) { (object: Task) in
                 TaskCardView(task: object)
             }
         }
@@ -248,12 +208,15 @@ struct Home: View {
                     }
                     .hLeading()
                     
+                    Image(systemName: "bell")
+                        .foregroundStyle(.white)
+                    
                     Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "")
                         .font(.callout)
                 }
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
-                    HStack(spacing: 12) {
+                    HStack {
                         if !task.isCompleted {
                             Button {
                                 task.isCompleted = true
@@ -273,7 +236,17 @@ struct Home: View {
                             .foregroundStyle(task.isCompleted ? .gray : .white)
                             .hLeading()
                         
-                        Spacer()
+                        Button(action: {
+                            task.pinned.toggle()
+                            DispatchQueue.main.async {
+                                try? context.save()
+                            }
+                        }) {
+                            Image(systemName: task.pinned ? "pin.fill" : "pin")
+                                .foregroundStyle(.black)
+                                .padding(10)
+                                .background(Color.white, in: Circle())
+                        }
                     }
                     .padding(.top)
                 }
@@ -286,7 +259,11 @@ struct Home: View {
                 Color(.black)
                     .cornerRadius(25)
                     .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.5), value: taskModel.currentDay) // Animate opacity changes
             )
+            .onAppear {
+                taskModel.currentDay = Date()
+            }
             // Adding ContextMenu for Force Touch / Haptic Touch
             .contextMenu {
                 if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
@@ -363,14 +340,6 @@ struct Home: View {
                                 }
                             }
                         )
-                        .contextMenu {
-                            Button {
-                                taskModel.shouldRefreshView.toggle()
-                            } label: {
-                                Label("Refresh", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
-                            }
-                        }
-                        
                         .contentShape(Capsule())
                         .onTapGesture {
                             withAnimation(.easeInOut) { // Simplified animation

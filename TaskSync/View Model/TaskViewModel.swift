@@ -25,9 +25,15 @@ class TaskViewModel: ObservableObject {
     // MARK: Edit Data
     @Published var editTask: Task?
     
+    private var timer: Timer?
+    
     // MARK: Intializing
     init() {
         fetchCurrentWeek()
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            self.currentDay = Date()  // Update the time every minute
+        }
     }
     
     func fetchCurrentWeek() {
@@ -63,12 +69,13 @@ class TaskViewModel: ObservableObject {
     func isCurrentHour(date: Date)->Bool {
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
-        let currentHour = calendar.component(.hour, from: Date())
+        let currentHour = calendar.component(.hour, from: currentDay)
         let isToday = calendar.isDateInToday(date)
         return (hour == currentHour && isToday)
     }
 }
 
+// MARK: Extension for auto-deletion
 extension TaskViewModel {
     func autoDeleteOldTasks(context: NSManagedObjectContext) {
         // Fetch all tasks
