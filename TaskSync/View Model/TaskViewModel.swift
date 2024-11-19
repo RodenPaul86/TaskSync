@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import Combine
 
 class TaskViewModel: ObservableObject {
     
@@ -25,15 +26,9 @@ class TaskViewModel: ObservableObject {
     // MARK: Edit Data
     @Published var editTask: Task?
     
-    private var timer: Timer?
-    
     // MARK: Intializing
     init() {
         fetchCurrentWeek()
-        
-        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
-            self.currentDay = Date()  // Update the time every minute
-        }
     }
     
     func fetchCurrentWeek() {
@@ -66,12 +61,11 @@ class TaskViewModel: ObservableObject {
     }
     
     // MARK: Checking if the currentHour is task Hour
-    func isCurrentHour(date: Date)->Bool {
+    func isCurrentHour(date: Date) -> Bool {
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
-        let currentHour = calendar.component(.hour, from: currentDay)
-        let isToday = calendar.isDateInToday(date)
-        return (hour == currentHour && isToday)
+        let currentHour = calendar.component(.hour, from: Date())
+        return hour == currentHour
     }
 }
 

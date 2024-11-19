@@ -35,7 +35,7 @@ struct Home: View {
     
     func TasksView() -> some View {
         LazyVStack(spacing: 20) {
-            DynamicFilteredView(dateToFilter: taskModel.currentDay, isCurrentDay: true) { (object: Task) in
+            DynamicFilteredView(dateToFilter: taskModel.currentDay) { (object: Task) in
                 TaskCardView(task: object)
             }
         }
@@ -43,144 +43,16 @@ struct Home: View {
     }
     
     func TaskCardView(task: Task) -> some View {
-        /*
-        HStack(alignment: editButton?.wrappedValue == .active ? .center : .top, spacing: 30) {
-            if editButton?.wrappedValue == .active {
-                VStack(spacing: 10) {
-                    if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
-                        Button {
-                            taskModel.editTask = task
-                            taskModel.addNewTask.toggle()
-                        } label: {
-                            Image(systemName: "pencil.circle.fill")
-                                .font(.title)
-                                .foregroundStyle(.black)
-                        }
-                        .sheet(isPresented: $taskModel.addNewTask) {
-                            taskModel.editTask = nil
-                        } content: {
-                            NewTaskView()
-                                .environmentObject(taskModel)
-                        }
-                    }
-                    
-                    Button {
-                        context.delete(task)
-                        DispatchQueue.main.async { // Wrapped context.save() to defer the update
-                            try? context.save()
-                        }
-                    } label: {
-                        Image(systemName: "minus.circle.fill")
-                            .font(.title)
-                            .foregroundStyle(.red)
-                    }
-                }
-            } else {
-                VStack(spacing: 10) {
-                    Circle()
-                        .fill(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? (task.isCompleted ? .green : .black) : .clear)
-                        .frame(width: 15, height: 15)
-                        .background(
-                            Circle()
-                                .stroke(.black, lineWidth: 3)
-                                .padding(-3)
-                        )
-                        .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
-                    
-                    Rectangle()
-                        .fill(.black)
-                        .frame(width: 3)
-                }
-            }
-            
-            VStack {
-                HStack(alignment: .top, spacing: 10) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text(task.taskTitle ?? "")
-                            .font(.title2.bold())
-                        
-                        Text(task.taskDescription ?? "")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                    }
-                    .hLeading()
-                    
-                    Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "")
-                }
-                
-                if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
-                    HStack(spacing: 12) {
-                        if !task.isCompleted {
-                            Button {
-                                task.isCompleted = true
-                                DispatchQueue.main.async {
-                                    try? context.save()
-                                }
-                            } label: {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(.black)
-                                    .padding(10)
-                                    .background(Color.white, in: Circle())
-                            }
-                        }
-                        
-                        Text(task.isCompleted ? "Completed" : "")
-                            .font(.system(size: task.isCompleted ? 14 : 16, weight: .light))
-                            .foregroundStyle(task.isCompleted ? .gray : .white)
-                            .hLeading()
-                        
-                        Spacer()
-                    }
-                    .padding(.top)
-                }
-            }
-            .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .white : .black)
-            .padding(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 15 : 0)
-            .padding(.bottom, taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0 : 10)
-            .hLeading()
-            .background(
-                Color(.black)
-                    .cornerRadius(25)
-                    .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
-            )
-            // Adding ContextMenu for Force Touch / Haptic Touch
-            .contextMenu {
-                Button {
-                    taskModel.editTask = task
-                    taskModel.addNewTask.toggle()
-                } label: {
-                    Label("Edit Task", systemImage: "pencil")
-                }
-                Button(role: .destructive) {
-                    context.delete(task)
-                    DispatchQueue.main.async {
-                        try? context.save()
-                    }
-                } label: {
-                    Label("Delete Task", systemImage: "trash")
-                }
-            }
-            .sheet(isPresented: $taskModel.addNewTask) {
-                taskModel.editTask = nil
-            } content: {
-                NewTaskView()
-                    .environmentObject(taskModel)
-            }
-            
-        }
-        .hLeading()
-         */
-        
         HStack(alignment: .top, spacing: 30) {
-            // Side circle and vertical line
+            // Side circle indecator and vertical line
             VStack(spacing: 10) {
                 Circle()
                     .fill(
                         taskModel.isCurrentHour(date: task.taskDate ?? Date()) ?
-                            (task.isCompleted ? .green : .black) :  // Current task: green if completed, red if not completed
+                        (task.isCompleted ? .green : .black) :  // Current task: green if completed, red if not completed
                         (task.taskDate ?? Date()).compare(Date()) == .orderedAscending ? // Past task (before now)
-                            (task.isCompleted ? .green : .red) : // Past tasks: green if completed, red if not completed
-                        .clear // Future tasks are clear
+                        (task.isCompleted ? .green : .red) : // Past tasks: green if completed, red if not completed
+                            .clear // Future tasks are clear
                     )
                     .frame(width: 15, height: 15)
                     .background(
@@ -216,7 +88,7 @@ struct Home: View {
                 }
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
-                    HStack {
+                    HStack(spacing: 12) {
                         if !task.isCompleted {
                             Button {
                                 task.isCompleted = true
@@ -236,17 +108,7 @@ struct Home: View {
                             .foregroundStyle(task.isCompleted ? .gray : .white)
                             .hLeading()
                         
-                        Button(action: {
-                            task.pinned.toggle()
-                            DispatchQueue.main.async {
-                                try? context.save()
-                            }
-                        }) {
-                            Image(systemName: task.pinned ? "pin.fill" : "pin")
-                                .foregroundStyle(.black)
-                                .padding(10)
-                                .background(Color.white, in: Circle())
-                        }
+                        Spacer()
                     }
                     .padding(.top)
                 }
@@ -259,12 +121,10 @@ struct Home: View {
                 Color(.black)
                     .cornerRadius(25)
                     .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
-                    .animation(.easeInOut(duration: 0.5), value: taskModel.currentDay) // Animate opacity changes
+                    //.animation(.easeInOut(duration: 0.5), value: taskModel.currentDay) // Animate opacity changes
             )
-            .onAppear {
-                taskModel.currentDay = Date()
-            }
-            // Adding ContextMenu for Force Touch / Haptic Touch
+            
+            // Adding ContextMenu for Haptic Touch
             .contextMenu {
                 if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
                     
@@ -290,7 +150,6 @@ struct Home: View {
                 NewTaskView()
                     .environmentObject(taskModel)
             }
-            
         }
         .hLeading()
     }
