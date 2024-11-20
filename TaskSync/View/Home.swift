@@ -69,22 +69,30 @@ struct Home: View {
             
             // Task Card
             VStack {
-                HStack(alignment: .top, spacing: 10) {
-                    VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .top, spacing: 15) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text(task.taskTitle ?? "")
                             .font(.title2.bold())
+                            .lineLimit(1)
                         
                         Text(task.taskDescription ?? "")
                             .font(.callout)
                             .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                        
                     }
                     .hLeading()
                     
                     Image(systemName: "bell")
                         .foregroundStyle(.white)
                     
-                    Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "")
-                        .font(.callout)
+                    VStack(alignment: .trailing) {
+                        Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "No date")
+                            .font(.callout)
+                        
+                        Text("\(task.taskEstTime) h")
+                            .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
+                    }
                 }
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
@@ -109,6 +117,18 @@ struct Home: View {
                             .hLeading()
                         
                         Spacer()
+                        
+                        Text(task.taskPriority ?? "No Priority")
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white) // Text color
+                            .padding(10)
+                            .background(GeometryReader { geometry in
+                                Capsule(style: .circular)
+                                    .strokeBorder(Color.white, lineWidth: 1)
+                                    .padding(2)
+                                    .frame(width: geometry.size.width, height: geometry.size.height)
+                            })
                     }
                     .padding(.top)
                 }
@@ -121,10 +141,7 @@ struct Home: View {
                 Color(.black)
                     .cornerRadius(25)
                     .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
-                    //.animation(.easeInOut(duration: 0.5), value: taskModel.currentDay) // Animate opacity changes
             )
-            
-            // Adding ContextMenu for Haptic Touch
             .contextMenu {
                 if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
                     
@@ -143,7 +160,7 @@ struct Home: View {
                 } label: {
                     Label("Delete", systemImage: "trash")
                 }
-            }
+            } // Adding ContextMenu for Haptic Touch
             .sheet(isPresented: $taskModel.addNewTask) {
                 taskModel.editTask = nil
             } content: {

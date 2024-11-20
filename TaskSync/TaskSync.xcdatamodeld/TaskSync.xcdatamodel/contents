@@ -4,6 +4,8 @@
         <attribute name="isCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="taskDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="taskDescription" optional="YES" attributeType="String"/>
+        <attribute name="taskEstTime" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="taskPriority" optional="YES" attributeType="String"/>
         <attribute name="taskTitle" optional="YES" attributeType="String"/>
     </entity>
 </model>

@@ -36,9 +36,7 @@ class TaskViewModel: ObservableObject {
         let calendar = Calendar.current
         let week = calendar.dateInterval(of: .weekOfMonth, for: today)
         
-        guard let firstWeekDay = week?.start else {
-            return
-        }
+        guard let firstWeekDay = week?.start else { return }
         
         (0...14).forEach { day in
             if let weekday = calendar.date(byAdding: .day, value: day, to: firstWeekDay) {
@@ -63,9 +61,26 @@ class TaskViewModel: ObservableObject {
     // MARK: Checking if the currentHour is task Hour
     func isCurrentHour(date: Date) -> Bool {
         let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: date)
-        let currentHour = calendar.component(.hour, from: Date())
-        return hour == currentHour
+        let taskTimeComponents = calendar.dateComponents([.hour, .minute], from: date)
+        let currentTimeComponents = calendar.dateComponents([.hour, .minute], from: Date())
+        return taskTimeComponents == currentTimeComponents
+    }
+    
+    /*
+    func isCurrentHour(date: Date) -> Bool {
+        let calendar = Calendar.current
+        let taskTimeComponents = calendar.dateComponents([.hour, .minute], from: date)
+        let currentTimeComponents = calendar.dateComponents([.hour, .minute], from: Date())
+        return taskTimeComponents == currentTimeComponents
+    }
+    */
+    
+    func filterTasksForToday(tasks: [Task]) {
+        let calendar = Calendar.current
+        filteredTasks = tasks.filter { task in
+            guard let taskDate = task.taskDate else { return false }
+            return calendar.isDate(taskDate, inSameDayAs: currentDay)
+        }
     }
 }
 
