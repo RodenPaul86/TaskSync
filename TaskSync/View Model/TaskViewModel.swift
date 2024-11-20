@@ -61,19 +61,12 @@ class TaskViewModel: ObservableObject {
     // MARK: Checking if the currentHour is task Hour
     func isCurrentHour(date: Date) -> Bool {
         let calendar = Calendar.current
-        let taskTimeComponents = calendar.dateComponents([.hour, .minute], from: date)
-        let currentTimeComponents = calendar.dateComponents([.hour, .minute], from: Date())
-        return taskTimeComponents == currentTimeComponents
+        let taskHour = calendar.component(.hour, from: date)
+        let currentHour = calendar.component(.hour, from: Date())
+        let isSameDay = calendar.isDateInToday(date)
+        
+        return taskHour == currentHour && isSameDay
     }
-    
-    /*
-    func isCurrentHour(date: Date) -> Bool {
-        let calendar = Calendar.current
-        let taskTimeComponents = calendar.dateComponents([.hour, .minute], from: date)
-        let currentTimeComponents = calendar.dateComponents([.hour, .minute], from: Date())
-        return taskTimeComponents == currentTimeComponents
-    }
-    */
     
     func filterTasksForToday(tasks: [Task]) {
         let calendar = Calendar.current
