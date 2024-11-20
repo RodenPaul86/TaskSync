@@ -16,7 +16,7 @@ struct NewTaskView: View {
     @State private var taskDescription: String = ""
     @State private var taskDate: Date = Date()
     
-    @State private var taskEstTime: Int = 1
+    @State private var taskEstTime: Int = 0
     @State private var taskPriority: String = "NORMAL"
     
     let priorities = ["URGENT", "NORMAL", "LOW"]
@@ -87,28 +87,32 @@ struct NewTaskView: View {
                 }
             }
             
-            Text("Priority")
-                .font(.callout)
-                .foregroundColor(.gray)
-            
-            HStack(spacing: 10) {
-                ForEach(priorities, id: \.self) { priorityLevel in
-                    Button(action: {
-                        taskPriority = priorityLevel
-                    }) {
-                        Text(priorityLevel)
-                            .fontWeight(.bold)
-                            .foregroundColor(taskPriority == priorityLevel ? .blue : .white)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(taskPriority == priorityLevel ? Color.white : Color.blue.opacity(0.2))
-                            .cornerRadius(8)
+            VStack(alignment: .leading) {
+                Text("Priority")
+                    .font(.callout)
+                    .foregroundColor(.gray)
+                
+                HStack(spacing: 10) {
+                    ForEach(priorities, id: \.self) { priorityLevel in
+                        Button(action: {
+                            taskPriority = priorityLevel
+                        }) {
+                            Text(priorityLevel)
+                                .fontWeight(.bold)
+                                .foregroundColor(taskPriority == priorityLevel ? .black : .white)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(taskPriority == priorityLevel ? Color.white : Color.black.opacity(0.2))
+                                .cornerRadius(8)
+                        }
                     }
                 }
+                .padding(10)
+                .frame(maxWidth: .infinity)
+                .background(Color.gray.opacity(0.2))
+                .cornerRadius(10)
+                
             }
-            .padding(10)
-            .background(Color.blue.opacity(0.2))
-            .cornerRadius(10)
         }
         .padding()
     }
@@ -179,7 +183,7 @@ struct InputField: View {
             
             TextField(placeholder, text: $text)
                 .clearButton(text: $text)
-                .background(Color.gray.opacity(0.2))
+                .background(Color.gray.opacity(0.1))
                 .cornerRadius(10)
                 .font(.system(size: 16))
         }
