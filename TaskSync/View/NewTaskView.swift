@@ -49,7 +49,7 @@ struct NewTaskView: View {
     @ViewBuilder
     private func formFields() -> some View {
         VStack(alignment: .leading, spacing: 30) {
-            InputField(title: "Title", text: $taskTitle, placeholder: "Event title")
+            InputField(title: "Title", text: $taskTitle, placeholder: "Example: Meeting")
             InputField(title: "Description", text: $taskDescription, placeholder: "Description (Optional)")
             HStack {
                 VStack(alignment: .leading, spacing: 8) {
@@ -99,10 +99,10 @@ struct NewTaskView: View {
                         }) {
                             Text(priorityLevel)
                                 .fontWeight(.bold)
-                                .foregroundColor(taskPriority == priorityLevel ? .black : .white)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
+                                .padding(5)
+                                .frame(maxWidth: .infinity)
                                 .background(taskPriority == priorityLevel ? Color.white : Color.black.opacity(0.2))
+                                .foregroundColor(taskPriority == priorityLevel ? .black : .white)
                                 .cornerRadius(8)
                         }
                     }
@@ -120,7 +120,7 @@ struct NewTaskView: View {
     private func saveButton() -> some View {
         Button(action: saveTask) {
             Text(taskModel.editTask != nil ? "Update" : "Create")
-                .font(.title2.bold())
+                .font(.title3.bold())
                 .foregroundColor(taskTitle.isEmpty ? .gray : .white)
                 .padding()
                 .frame(maxWidth: .infinity)

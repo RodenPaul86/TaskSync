@@ -93,6 +93,7 @@ struct Home: View {
                         
                         Text("\(task.taskEstTime) h")
                             .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
+                            .padding(.vertical, 10)
                     }
                 }
                 
