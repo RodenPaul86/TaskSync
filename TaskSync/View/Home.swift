@@ -85,6 +85,7 @@ struct Home: View {
                     
                     Image(systemName: "bell")
                         .foregroundStyle(.white)
+                        .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
                     
                     VStack(alignment: .trailing) {
                         Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "No date")
