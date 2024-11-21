@@ -78,27 +78,48 @@ struct Home: View {
                         Text(task.taskDescription ?? "")
                             .font(.callout)
                             .foregroundStyle(.secondary)
-                            .lineLimit(2)
+                            .lineLimit(3)
                         
                     }
                     .hLeading()
                     
-                    Image(systemName: "bell")
-                        .foregroundStyle(.white)
-                        .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
-                    
                     VStack(alignment: .trailing) {
-                        Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "No date")
-                            .font(.callout)
+                        HStack {
+                            Image(systemName: "bell")
+                                .foregroundStyle(.white)
+                                .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
+                            
+                            Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "No date")
+                                .font(.callout)
+                        }
                         
-                        Text("\(task.taskEstTime) h")
-                            .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
-                            .padding(.vertical, 10)
+                        HStack {
+                            Text("\(task.selectedHour) h")
+                                .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
+                                .padding(.vertical, 10)
+                            
+                            Text("\(task.selectedMinute) m")
+                                .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
+                                .padding(.vertical, 10)
+                        }
                     }
                 }
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
-                    HStack(spacing: 12) {
+                    HStack {
+                        Text(task.isCompleted ? "Completed" : "\(task.taskPriority ?? "No Priority")")
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundColor(task.isCompleted ? .gray : .white) // Text color
+                            .padding(10)
+                            .background(GeometryReader { geometry in
+                                Capsule(style: .circular)
+                                    .strokeBorder(.white, lineWidth: 1)
+                                    .padding(2)
+                                    .frame(width: geometry.size.width, height: geometry.size.height)
+                            })
+                            .hLeading()
+                        
                         if !task.isCompleted {
                             Button {
                                 task.isCompleted = true
@@ -112,25 +133,6 @@ struct Home: View {
                                     .background(Color.white, in: Circle())
                             }
                         }
-                        
-                        Text(task.isCompleted ? "Completed" : "")
-                            .font(.system(size: task.isCompleted ? 14 : 16, weight: .light))
-                            .foregroundStyle(task.isCompleted ? .gray : .white)
-                            .hLeading()
-                        
-                        Spacer()
-                        
-                        Text(task.taskPriority ?? "No Priority")
-                            .font(.subheadline)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white) // Text color
-                            .padding(10)
-                            .background(GeometryReader { geometry in
-                                Capsule(style: .circular)
-                                    .strokeBorder(Color.white, lineWidth: 1)
-                                    .padding(2)
-                                    .frame(width: geometry.size.width, height: geometry.size.height)
-                            })
                     }
                     .padding(.top)
                 }

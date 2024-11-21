@@ -11,16 +11,17 @@ struct NewTaskView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) var context
     @EnvironmentObject var taskModel: TaskViewModel
-
+    
     @State private var taskTitle: String = ""
     @State private var taskDescription: String = ""
     @State private var taskDate: Date = Date()
     
-    @State private var taskEstTime: Int = 0
-    @State private var taskPriority: String = "NORMAL"
+    @State private var selectedHour: Int = 0
+    @State private var selectedMinute = 0
+    @State private var taskPriority: String = "Normally"
     
-    let priorities = ["URGENT", "NORMAL", "LOW"]
-
+    let priorities = ["Urgently", "Normally", "Low"]
+    
     var body: some View {
         VStack {
             ScrollView(.vertical, showsIndicators: false) {
@@ -35,17 +36,18 @@ struct NewTaskView: View {
             saveButton()
         }
     }
-
+    
     private func loadTaskData() {
         if let task = taskModel.editTask {
             taskTitle = task.taskTitle ?? ""
             taskDescription = task.taskDescription ?? ""
             taskDate = task.taskDate ?? Date()
-            taskEstTime = Int(task.taskEstTime)
-            taskPriority = task.taskPriority ?? "NORMAL"
+            selectedHour = Int(task.selectedHour)
+            selectedMinute = Int(task.selectedMinute)
+            taskPriority = task.taskPriority ?? "Normally"
         }
     }
-
+    
     @ViewBuilder
     private func formFields() -> some View {
         VStack(alignment: .leading, spacing: 30) {
@@ -69,15 +71,27 @@ struct NewTaskView: View {
                         .labelsHidden()
                         .accentColor(.black)
                 }
+            }
+            
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Duration")
+                    .font(.callout)
+                    .foregroundColor(.gray)
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Estimate")
-                        .font(.callout)
-                        .foregroundColor(.gray)
-                    
-                    Picker("", selection: $taskEstTime) {
+                HStack {
+                    Picker("", selection: $selectedHour) {
                         ForEach(0..<25) { hour in
                             Text("\(hour) hours").tag(hour)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .accentColor(.black)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    
+                    Picker("", selection: $selectedMinute) {
+                        ForEach(0..<60) { minute in
+                            Text("\(minute) minute").tag(minute)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
@@ -116,7 +130,7 @@ struct NewTaskView: View {
         }
         .padding()
     }
-
+    
     private func saveButton() -> some View {
         Button(action: saveTask) {
             Text(taskModel.editTask != nil ? "Update" : "Create")
@@ -131,18 +145,19 @@ struct NewTaskView: View {
         .padding(.horizontal)
         .padding(.bottom)
     }
-
+    
     private func saveTask() {
         let task = taskModel.editTask ?? Task(context: context)
         task.taskTitle = taskTitle
         task.taskDescription = taskDescription
         task.taskDate = taskDate
-        task.taskEstTime = Int16(taskEstTime)
+        task.selectedHour = Int16(selectedHour)
+        task.selectedMinute = Int16(selectedMinute)
         task.taskPriority = taskPriority
         try? context.save()
         dismiss()
     }
-
+    
     private func headerView() -> some View {
         HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 10) {
@@ -156,7 +171,7 @@ struct NewTaskView: View {
         .padding()
         .background(Color.white)
     }
-
+    
     private func dismissButton() -> some View {
         Button(action: { dismiss() }) {
             Image(systemName: "xmark")
@@ -165,7 +180,7 @@ struct NewTaskView: View {
                 .padding()
                 .background(Color.black.gradient)
                 .clipShape(Circle())
-                
+            
         }
     }
 }
@@ -174,7 +189,7 @@ struct InputField: View {
     var title: String
     @Binding var text: String
     var placeholder: String
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
