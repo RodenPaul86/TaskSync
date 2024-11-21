@@ -14,8 +14,6 @@ struct Home: View {
     
     @Environment(\.managedObjectContext) var context
     
-    @State private var isDeleteAlertPresented = false
-    
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 15, pinnedViews: [.sectionHeaders]) {
@@ -159,7 +157,10 @@ struct Home: View {
                         }
                     }
                     Button(role: .destructive) {
-                        isDeleteAlertPresented = true
+                        context.delete(task)
+                        DispatchQueue.main.async {
+                            try? context.save()
+                        }
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
@@ -170,15 +171,6 @@ struct Home: View {
             } content: {
                 NewTaskView()
                     .environmentObject(taskModel)
-            }
-            .alert("Are you sure you want to delete this task?", isPresented: $isDeleteAlertPresented) {
-                Button("Cancel", role: .cancel) { }
-                Button("Delete", role: .destructive) {
-                    context.delete(task)
-                    DispatchQueue.main.async {
-                        try? context.save()
-                    }
-                }
             }
         }
         .hLeading()
@@ -201,7 +193,7 @@ struct Home: View {
             
             // Horizontal Calendar
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
+                HStack(spacing: 7) {
                     ForEach(taskModel.currentWeek, id: \.self) { day in
                         VStack(spacing: 10) {
                             Text(taskModel.extractDate(date: day, format: "dd"))
