@@ -18,9 +18,9 @@ struct NewTaskView: View {
     
     @State private var selectedHour: Int = 0
     @State private var selectedMinute = 0
-    @State private var taskPriority: String = "Normally"
+    @State private var taskPriority: String = "Normal"
     
-    let priorities = ["Urgently", "Normally", "Low"]
+    let priorities = ["Urgent", "Normal", "Low"]
     
     var body: some View {
         VStack {
@@ -44,7 +44,7 @@ struct NewTaskView: View {
             taskDate = task.taskDate ?? Date()
             selectedHour = Int(task.selectedHour)
             selectedMinute = Int(task.selectedMinute)
-            taskPriority = task.taskPriority ?? "Normally"
+            taskPriority = task.taskPriority ?? "Normal"
         }
     }
     

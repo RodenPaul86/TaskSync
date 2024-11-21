@@ -13,7 +13,8 @@ struct Home: View {
     @Namespace var animation
     
     @Environment(\.managedObjectContext) var context
-    //@Environment(\.editMode) var editButton
+    
+    @State private var isDeleteAlertPresented = false
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -147,22 +148,21 @@ struct Home: View {
                     .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
             )
             .contextMenu {
-                if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
-                    
-                    Button {
-                        taskModel.editTask = task
-                        taskModel.addNewTask.toggle()
+                VStack {
+                    if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
+                        
+                        Button {
+                            taskModel.editTask = task
+                            taskModel.addNewTask.toggle()
+                        } label: {
+                            Label("Edit", systemImage: "pencil")
+                        }
+                    }
+                    Button(role: .destructive) {
+                        isDeleteAlertPresented = true
                     } label: {
-                        Label("Edit", systemImage: "pencil")
+                        Label("Delete", systemImage: "trash")
                     }
-                }
-                Button(role: .destructive) {
-                    context.delete(task)
-                    DispatchQueue.main.async {
-                        try? context.save()
-                    }
-                } label: {
-                    Label("Delete", systemImage: "trash")
                 }
             } // Adding ContextMenu for Haptic Touch
             .sheet(isPresented: $taskModel.addNewTask) {
@@ -170,6 +170,15 @@ struct Home: View {
             } content: {
                 NewTaskView()
                     .environmentObject(taskModel)
+            }
+            .alert("Are you sure you want to delete this task?", isPresented: $isDeleteAlertPresented) {
+                Button("Cancel", role: .cancel) { }
+                Button("Delete", role: .destructive) {
+                    context.delete(task)
+                    DispatchQueue.main.async {
+                        try? context.save()
+                    }
+                }
             }
         }
         .hLeading()
