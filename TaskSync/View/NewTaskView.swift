@@ -17,7 +17,7 @@ struct NewTaskView: View {
     @State private var taskDate: Date = Date()
     
     @State private var selectedHour: Int = 0
-    @State private var selectedMinute = 0
+    @State private var selectedMinute = 30
     @State private var taskPriority: String = "Normal"
     
     let priorities = ["Urgent", "Normal", "Low"]
