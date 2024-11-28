@@ -14,6 +14,7 @@ struct Home: View {
     
     @Environment(\.managedObjectContext) var context
     
+    // MARK: Main View
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 15, pinnedViews: [.sectionHeaders]) {
@@ -32,6 +33,7 @@ struct Home: View {
         }
     }
     
+    // MARK: Task View
     func TasksView() -> some View {
         LazyVStack(spacing: 20) {
             DynamicFilteredView(dateToFilter: taskModel.currentDay) { (object: Task) in
@@ -41,6 +43,7 @@ struct Home: View {
         .padding()
     }
     
+    // MARK: Task Card View
     func TaskCardView(task: Task) -> some View {
         HStack(alignment: .top, spacing: 30) {
             // Side circle indecator and vertical line
@@ -176,6 +179,7 @@ struct Home: View {
         .hLeading()
     }
     
+    // MARK: Header View
     func HeaderView() -> some View {
         VStack {
             HStack(spacing: 10) {
@@ -191,7 +195,7 @@ struct Home: View {
                 .hLeading()
             }
             
-            // Horizontal Calendar
+            // MARK: Horizontal Calendar
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 7) {
                     ForEach(taskModel.currentWeek, id: \.self) { day in
