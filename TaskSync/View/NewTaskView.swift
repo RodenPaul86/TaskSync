@@ -81,7 +81,7 @@ struct NewTaskView: View {
                 HStack {
                     Picker("", selection: $selectedHour) {
                         ForEach(0..<25) { hour in
-                            Text("\(hour) hours").tag(hour)
+                            Text("\(hour) hour\(hour == 1 ? "" : "s")").tag(hour)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
@@ -91,7 +91,7 @@ struct NewTaskView: View {
                     
                     Picker("", selection: $selectedMinute) {
                         ForEach(0..<60) { minute in
-                            Text("\(minute) minute").tag(minute)
+                            Text("\(minute) minute\(minute == 1 ? "" : "s")").tag(minute)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
