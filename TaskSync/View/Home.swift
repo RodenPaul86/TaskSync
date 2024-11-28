@@ -48,21 +48,39 @@ struct Home: View {
         HStack(alignment: .top, spacing: 30) {
             // Side circle indecator and vertical line
             VStack(spacing: 10) {
-                Circle()
-                    .fill(
-                        taskModel.isCurrentHour(date: task.taskDate ?? Date()) ?
-                        (task.isCompleted ? .green : .black) :  // Current task: green if completed, red if not completed
-                        (task.taskDate ?? Date()).compare(Date()) == .orderedAscending ? // Past task (before now)
-                        (task.isCompleted ? .green : .red) : // Past tasks: green if completed, red if not completed
-                            .clear // Future tasks are clear
-                    )
-                    .frame(width: 15, height: 15)
-                    .background(
-                        Circle()
-                            .stroke(.black, lineWidth: 3)
-                            .padding(-3)
-                    )
-                    .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
+                ZStack {
+                    Circle()
+                        .fill(
+                            task.isCompleted ? .green : // Completed task
+                            task.isCanceled ? .red : // Canceled task
+                            (taskModel.isCurrentHour(date: task.taskDate ?? Date()) ?
+                                .black : // Current task
+                             (task.taskDate ?? Date()).compare(Date()) == .orderedAscending ?
+                                .gray : // Overdue task
+                                .clear) // Future task
+                        )
+                        .frame(width: 15, height: 15)
+                        .background(
+                            Circle()
+                                .stroke(.black, lineWidth: 3)
+                                .padding(-3)
+                        )
+                        .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
+                    
+                    // Display "X" if the task is canceled
+                    if task.isCanceled {
+                        Text("X")
+                            .foregroundColor(.black)
+                            .font(.system(size: 10, weight: .bold))
+                    }
+                    
+                    // Display "checkmark" if the task is completed
+                    if task.isCompleted {
+                        Image(systemName: "checkmark")
+                            .foregroundStyle(.black)
+                            .font(.system(size: 10, weight: .bold))
+                    }
+                }
                 
                 Rectangle()
                     .fill(.black)
@@ -74,35 +92,41 @@ struct Home: View {
                 HStack(alignment: .top, spacing: 15) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(task.taskTitle ?? "")
-                            .font(.title2.bold())
+                            .font(.title3.bold())
                             .lineLimit(1)
                         
                         Text(task.taskDescription ?? "")
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .lineLimit(3)
-                        
                     }
                     .hLeading()
                     
                     VStack(alignment: .trailing) {
-                        HStack {
-                            Image(systemName: "bell")
-                                .foregroundStyle(.white)
-                                .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
-                            
-                            Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "No date")
-                                .font(.callout)
-                        }
+                        Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "No date")
+                            .font(.callout)
                         
-                        HStack {
-                            Text("\(task.selectedHour) h")
-                                .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
-                                .padding(.vertical, 10)
-                            
-                            Text("\(task.selectedMinute) m")
-                                .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
-                                .padding(.vertical, 10)
+                        if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
+                            HStack {
+                                Text("\(task.selectedHour) hr")
+                                Text("\(task.selectedMinute) min")
+                            }
+                            .font(.caption)
+                            .padding(.vertical, 10)
+                        } else {
+                            if task.taskPriority == "Urgent" {
+                                Text("\(task.taskPriority ?? "No Priority")")
+                                    .font(.subheadline)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.black)
+                                    .padding(10)
+                                    .background(GeometryReader { geometry in
+                                        Capsule(style: .circular)
+                                            .strokeBorder(.gray, lineWidth: 1)
+                                            .padding(2)
+                                            .frame(width: geometry.size.width, height: geometry.size.height)
+                                    })
+                            }
                         }
                     }
                 }
@@ -159,6 +183,33 @@ struct Home: View {
                             Label("Edit", systemImage: "pencil")
                         }
                     }
+                    
+                    if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
+                        if !task.isCompleted {
+                            Button {
+                                task.isCompleted = true
+                                task.isCanceled = false
+                                DispatchQueue.main.async {
+                                    try? context.save()
+                                }
+                            } label: {
+                                Label("Complete", systemImage: "checkmark.circle")
+                            }
+                        }
+                    }
+                    
+                    if !task.isCanceled {
+                        Button {
+                            task.isCanceled = true
+                            task.isCompleted = false
+                            DispatchQueue.main.async {
+                                try? context.save()
+                            }
+                        } label: {
+                            Label("Cancel", systemImage: "x.circle")
+                        }
+                    }
+                    
                     Button(role: .destructive) {
                         context.delete(task)
                         DispatchQueue.main.async {
@@ -175,6 +226,7 @@ struct Home: View {
                 NewTaskView()
                     .environmentObject(taskModel)
             }
+            .opacity(task.isCanceled ? 0.2 : 1)
         }
         .hLeading()
     }
