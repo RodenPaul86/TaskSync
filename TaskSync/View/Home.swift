@@ -146,17 +146,19 @@ struct Home: View {
                             })
                             .hLeading()
                         
-                        if !task.isCompleted {
-                            Button {
-                                task.isCompleted = true
-                                DispatchQueue.main.async {
-                                    try? context.save()
+                        if !task.isCanceled {
+                            if !task.isCompleted {
+                                Button {
+                                    task.isCompleted = true
+                                    DispatchQueue.main.async {
+                                        try? context.save()
+                                    }
+                                } label: {
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(.black)
+                                        .padding(10)
+                                        .background(Color.white, in: Circle())
                                 }
-                            } label: {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(.black)
-                                    .padding(10)
-                                    .background(Color.white, in: Circle())
                             }
                         }
                     }
@@ -174,36 +176,50 @@ struct Home: View {
             )
             .contextMenu {
                 VStack {
-                    if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
-                        
-                        Button {
-                            taskModel.editTask = task
-                            taskModel.addNewTask.toggle()
-                        } label: {
-                            Label("Edit", systemImage: "pencil")
-                        }
-                    }
-                    
-                    if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
-                        if !task.isCompleted {
+                    if !task.isCanceled {
+                        if task.taskDate?.compare(Date()) == .orderedDescending || Calendar.current.isDateInToday(task.taskDate ?? Date()) {
+                            
                             Button {
-                                task.isCompleted = true
-                                task.isCanceled = false
-                                DispatchQueue.main.async {
-                                    try? context.save()
-                                }
+                                taskModel.editTask = task
+                                taskModel.addNewTask.toggle()
                             } label: {
-                                Label("Complete", systemImage: "checkmark.circle")
+                                Label("Edit", systemImage: "pencil")
                             }
                         }
-                    }
-                    
-                    if !task.isCanceled {
+                        
+                        if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
+                            if !task.isCompleted {
+                                Button {
+                                    task.isCompleted = true
+                                    task.isCanceled = false
+                                    DispatchQueue.main.async {
+                                        try? context.save()
+                                    }
+                                } label: {
+                                    Label("Complete", systemImage: "checkmark.circle")
+                                }
+                            }
+                        }
+                        
                         Button {
+                            // Cancel the notification if it exists
+                            if let notificationID = task.notificationID, task.hasNotification {
+                                NotificationManager.shared.cancelNotification(for: notificationID)
+                                print("Notification canceled for task: \(task.taskTitle ?? "")")
+                            }
+                            
+                            // Mark the task as canceled
                             task.isCanceled = true
                             task.isCompleted = false
+                            
+                            // Save the changes to Core Data
                             DispatchQueue.main.async {
-                                try? context.save()
+                                do {
+                                    try context.save()
+                                    print("Task marked as canceled and notification removed.")
+                                } catch {
+                                    print("Failed to save context after canceling task: \(error.localizedDescription)")
+                                }
                             }
                         } label: {
                             Label("Cancel", systemImage: "x.circle")
@@ -211,6 +227,14 @@ struct Home: View {
                     }
                     
                     Button(role: .destructive) {
+                        if task.hasNotification && ((task.notificationID?.isEmpty) == nil) {
+                            // Cancel the notification if it's scheduled
+                            NotificationManager.shared.cancelNotification(for: task.notificationID ?? "")
+                            
+                            // Set the hasNotification flag to false
+                            task.hasNotification = false
+                        }
+                        
                         context.delete(task)
                         DispatchQueue.main.async {
                             try? context.save()

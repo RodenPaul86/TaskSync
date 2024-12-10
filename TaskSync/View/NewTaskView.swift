@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct NewTaskView: View {
     @Environment(\.dismiss) var dismiss
@@ -125,7 +126,6 @@ struct NewTaskView: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
-                
             }
         }
         .padding()
@@ -154,8 +154,23 @@ struct NewTaskView: View {
         task.selectedHour = Int16(selectedHour)
         task.selectedMinute = Int16(selectedMinute)
         task.taskPriority = taskPriority
-        try? context.save()
-        dismiss()
+        
+        do {
+            try context.save()
+            
+            // Schedule notification
+            if let taskID = task.objectID as NSManagedObjectID? {
+                NotificationManager.shared.scheduleNotification(
+                    for: taskTitle,
+                    at: taskDate,
+                    taskObject: context,
+                    taskID: taskID
+                )
+            }
+            dismiss()
+        } catch {
+            print("Failed to save task: \(error.localizedDescription)")
+        }
     }
     
     private func headerView() -> some View {
@@ -180,7 +195,6 @@ struct NewTaskView: View {
                 .padding()
                 .background(Color.black.gradient)
                 .clipShape(Circle())
-            
         }
     }
 }

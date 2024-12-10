@@ -30,7 +30,6 @@ class NotificationManager {
         }
     }
     
-    // Function to schedule a local notification and update Core Data
     func scheduleNotification(for task: String, at date: Date, taskObject: NSManagedObjectContext, taskID: NSManagedObjectID) {
         let content = UNMutableNotificationContent()
         content.title = "Task Reminder"
@@ -44,7 +43,8 @@ class NotificationManager {
         )
         
         // Create the request
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        let notificationID = UUID().uuidString
+        let request = UNNotificationRequest(identifier: notificationID, content: content, trigger: trigger)
         
         // Schedule the notification
         UNUserNotificationCenter.current().add(request) { error in
@@ -53,17 +53,32 @@ class NotificationManager {
             } else {
                 print("Notification scheduled successfully.")
                 
-                // Update Core Data to set hasNotification to true
+                // Update Core Data to save the notification ID and set hasNotification to true
                 DispatchQueue.main.async {
                     do {
                         let task = try taskObject.existingObject(with: taskID)
                         task.setValue(true, forKey: "hasNotification")
+                        task.setValue(notificationID, forKey: "notificationID")  // Save notification ID here
                         try taskObject.save()
-                        print("Task updated with notification flag.")
+                        print("Task updated with notification flag and ID.")
                     } catch {
                         print("Failed to update task in Core Data: \(error.localizedDescription)")
                     }
                 }
+            }
+        }
+    }
+    
+    // Function to cancel a notification using its identifier
+    func cancelNotification(for taskID: String) {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            // Find the notification with the matching identifier
+            let identifiersToCancel = requests.filter { $0.identifier == taskID }.map { $0.identifier }
+            
+            // Remove the notification
+            if !identifiersToCancel.isEmpty {
+                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiersToCancel)
+                print("Notification with ID \(taskID) canceled.")
             }
         }
     }
