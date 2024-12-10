@@ -6,31 +6,49 @@
 //
 
 import CoreData
+import UIKit
 
 struct PersistenceController {
     static let shared = PersistenceController()
-
+    
     @MainActor
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-///        for _ in 0..<10 {
-///            let newItem = Item(context: viewContext)
-///            newItem.timestamp = Date()
-///        }
+        ///        for _ in 0..<10 {
+        ///            let newItem = Item(context: viewContext)
+        ///            newItem.timestamp = Date()
+        ///        }
         do {
             try viewContext.save()
         } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            if let error = error as NSError? {
+                // Log the error for debugging purposes
+                print("Unresolved error: \(error), \(error.userInfo)")
+                
+                // Optionally, inform the user
+                let alert = UIAlertController(title: "Error",
+                                              message: "An issue occurred while accessing the app's data. Please try again later or contact support.",
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                
+                // Present the alert on the topmost view controller
+                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = scene.windows.first,
+                   let rootViewController = window.rootViewController {
+                    rootViewController.present(alert, animated: true)
+                }
+                
+                // Optionally, send the error to a logging service or take other actions
+            }
+            //let nsError = error as NSError
+            //fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
         return result
     }()
-
+    
     let container: NSPersistentCloudKitContainer
-
+    
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "TaskSync")
         if inMemory {
@@ -38,18 +56,23 @@ struct PersistenceController {
         }
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                // Log the error for debugging purposes
+                print("Unresolved error: \(error), \(error.userInfo)")
+                
+                // Optionally, inform the user
+                let alert = UIAlertController(title: "Error",
+                                              message: "An issue occurred while accessing the app's data. Please try again later or contact support.",
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                
+                // Present the alert on the topmost view controller
+                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = scene.windows.first,
+                   let rootViewController = window.rootViewController {
+                    rootViewController.present(alert, animated: true)
+                }
+                
+                // Optionally, send the error to a logging service or take other actions
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true

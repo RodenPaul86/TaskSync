@@ -226,7 +226,7 @@ struct Home: View {
                 NewTaskView()
                     .environmentObject(taskModel)
             }
-            .opacity(task.isCanceled ? 0.2 : 1)
+            //.opacity(task.isCanceled ? 0.2 : 1)
         }
         .hLeading()
     }
