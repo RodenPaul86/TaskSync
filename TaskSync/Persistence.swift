@@ -26,20 +26,7 @@ struct PersistenceController {
                 // Log the error for debugging purposes
                 print("Unresolved error: \(error), \(error.userInfo)")
                 
-                // Optionally, inform the user
-                let alert = UIAlertController(title: "Error",
-                                              message: "An issue occurred while accessing the app's data. Please try again later or contact support.",
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
-                
-                // Present the alert on the topmost view controller
-                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let window = scene.windows.first,
-                   let rootViewController = window.rootViewController {
-                    rootViewController.present(alert, animated: true)
-                }
-                
-                // Optionally, send the error to a logging service or take other actions
+                AlertHelper.showGlobalAlert(title: "Error", message: "An issue occurred while accessing the app's data. Please try again later or contact support.")
             }
             //let nsError = error as NSError
             //fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -59,20 +46,7 @@ struct PersistenceController {
                 // Log the error for debugging purposes
                 print("Unresolved error: \(error), \(error.userInfo)")
                 
-                // Optionally, inform the user
-                let alert = UIAlertController(title: "Error",
-                                              message: "An issue occurred while accessing the app's data. Please try again later or contact support.",
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
-                
-                // Present the alert on the topmost view controller
-                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let window = scene.windows.first,
-                   let rootViewController = window.rootViewController {
-                    rootViewController.present(alert, animated: true)
-                }
-                
-                // Optionally, send the error to a logging service or take other actions
+                AlertHelper.showGlobalAlert(title: "Error", message: "An issue occurred while accessing the app's data. Please try again later or contact support.")
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true

@@ -7,6 +7,7 @@
 
 import UserNotifications
 import CoreData
+import UIKit
 
 class NotificationManager {
     static let shared = NotificationManager()
@@ -18,11 +19,13 @@ class NotificationManager {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {
                 print("Error requesting notification permissions: \(error.localizedDescription)")
+                AlertHelper.showGlobalAlert(title: "Error", message: "An issue occurred while requesting notification permissions. Please try again later or contact support.")
             }
             if granted {
                 print("Notification permissions granted.")
             } else {
                 print("Notification permissions denied.")
+                AlertHelper.showGlobalAlert(title: "Enable Notifications", message: "Notifications help you stay informed about your upcoming tasks.")
             }
         }
     }
