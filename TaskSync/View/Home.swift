@@ -101,17 +101,22 @@ struct Home: View {
                             .padding(.vertical, 10)
                         } else {
                             if task.taskPriority == "Urgent" {
-                                Text("\(task.taskPriority ?? "No Priority")")
-                                    .font(.subheadline)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.black)
-                                    .padding(10)
-                                    .background(GeometryReader { geometry in
-                                        Capsule(style: .circular)
-                                            .strokeBorder(.gray, lineWidth: 1)
-                                            .padding(2)
-                                            .frame(width: geometry.size.width, height: geometry.size.height)
-                                    })
+                                HStack {
+                                    if let priority = task.taskPriority {
+                                        Image(systemName: icon(for: priority))
+                                    }
+                                    Text("\(task.taskPriority ?? "No Priority")")
+                                        .fontWeight(.bold)
+                                }
+                                .font(.caption)
+                                .foregroundColor(.black)
+                                .padding(10)
+                                .background(GeometryReader { geometry in
+                                    Capsule(style: .circular)
+                                        .strokeBorder(.gray, lineWidth: 1)
+                                        .padding(2)
+                                        .frame(width: geometry.size.width, height: geometry.size.height)
+                                })
                             }
                         }
                     }
