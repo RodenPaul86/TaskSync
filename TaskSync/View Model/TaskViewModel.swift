@@ -31,6 +31,7 @@ class TaskViewModel: ObservableObject {
         fetchCurrentWeek()
     }
     
+    // MARK: Fetch Current Week
     func fetchCurrentWeek() {
         let today = Date()
         let calendar = Calendar.current
@@ -68,6 +69,7 @@ class TaskViewModel: ObservableObject {
         return taskHour == currentHour && isSameDay
     }
     
+    // MARK: Filter Tasks for Today
     func filterTasksForToday(tasks: [Task]) {
         let calendar = Calendar.current
         filteredTasks = tasks.filter { task in
