@@ -40,12 +40,6 @@ struct Home: View {
             }
         }
         .padding()
-        .onAppear {
-            taskModel.startTaskRefreshTimer()
-        }
-        .onDisappear {
-            taskModel.timer?.invalidate()
-        }
     }
     
     // MARK: Task Card View
@@ -63,7 +57,6 @@ struct Home: View {
                         .frame(width: 15, height: 15)
                         .background(Circle().stroke(.black, lineWidth: 3).padding(-3))
                         .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
-                        .animation(.easeInOut(duration: 0.3), value: taskModel.isCurrentHour(date: task.taskDate ?? Date()))
                     
                     if task.isCanceled {
                         Text("X")
@@ -126,18 +119,24 @@ struct Home: View {
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
                     HStack {
-                        Text(task.isCompleted ? "Completed" : "\(task.taskPriority ?? "No Priority")")
-                            .font(.subheadline)
-                            .fontWeight(.bold)
-                            .foregroundColor(task.isCompleted ? .gray : .white)
-                            .padding(10)
-                            .background(GeometryReader { geometry in
-                                Capsule(style: .circular)
-                                    .strokeBorder(.white, lineWidth: 1)
-                                    .padding(2)
-                                    .frame(width: geometry.size.width, height: geometry.size.height)
-                            })
-                            .hLeading()
+                        HStack {
+                            if let priority = task.taskPriority {
+                                Image(systemName: icon(for: priority))
+                                    .foregroundColor(task.isCompleted ? .gray : .white)
+                            }
+                            Text(task.isCompleted ? "Completed" : "\(task.taskPriority ?? "No Priority")")
+                                .fontWeight(.bold)
+                                .foregroundColor(task.isCompleted ? .gray : .white)
+                        }
+                        .font(.footnote)
+                        .padding(10)
+                        .background(GeometryReader { geometry in
+                            Capsule(style: .circular)
+                                .strokeBorder(.white, lineWidth: 1)
+                                .padding(2)
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                        })
+                        .hLeading()
                         
                         if !task.isCanceled && !task.isCompleted {
                             Button {
@@ -189,24 +188,24 @@ struct Home: View {
                                 } label: {
                                     Label("Complete", systemImage: "checkmark.circle")
                                 }
+                                
+                                Button {
+                                    if let notificationID = task.notificationID, task.hasNotification {
+                                        NotificationManager.shared.cancelNotification(for: notificationID)
+                                        print("Notification canceled for task: \(task.taskTitle ?? "")")
+                                    }
+                                    
+                                    task.isCanceled = true
+                                    task.isCompleted = false
+                                    
+                                    DispatchQueue.main.async {
+                                        try? context.save()
+                                        print("Task marked as canceled and notification removed.")
+                                    }
+                                } label: {
+                                    Label("Cancel", systemImage: "x.circle")
+                                }
                             }
-                        }
-                        
-                        Button {
-                            if let notificationID = task.notificationID, task.hasNotification {
-                                NotificationManager.shared.cancelNotification(for: notificationID)
-                                print("Notification canceled for task: \(task.taskTitle ?? "")")
-                            }
-                            
-                            task.isCanceled = true
-                            task.isCompleted = false
-                            
-                            DispatchQueue.main.async {
-                                try? context.save()
-                                print("Task marked as canceled and notification removed.")
-                            }
-                        } label: {
-                            Label("Cancel", systemImage: "x.circle")
                         }
                     }
                     
@@ -291,6 +290,20 @@ struct Home: View {
         .padding()
         .padding(.top, getSafeArea().top)
         .background(Color.white)
+    }
+    
+    // MARK: icons for priority
+    func icon(for priority: String) -> String {
+        switch priority {
+        case "Urgent":
+            return "flame.fill"
+        case "Normal":
+            return "hourglass"
+        case "Low":
+            return "leaf.fill"
+        default:
+            return "circle"
+        }
     }
 }
 
