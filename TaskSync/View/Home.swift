@@ -14,6 +14,8 @@ struct Home: View {
     
     @Environment(\.managedObjectContext) var context
     
+    @State private var showActionSheet = false
+    
     // MARK: Main View
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -215,15 +217,7 @@ struct Home: View {
                     }
                     
                     Button(role: .destructive) {
-                        if task.hasNotification && ((task.notificationID?.isEmpty) == nil) {
-                            NotificationManager.shared.cancelNotification(for: task.notificationID ?? "")
-                            task.hasNotification = false
-                        }
-                        
-                        context.delete(task)
-                        DispatchQueue.main.async {
-                            try? context.save()
-                        }
+                        showActionSheet.toggle()
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
@@ -234,6 +228,21 @@ struct Home: View {
             } content: {
                 NewTaskView()
                     .environmentObject(taskModel)
+            }
+            .confirmationDialog("", isPresented: $showActionSheet, titleVisibility: .hidden) {
+                Button(role: .destructive) {
+                    if task.hasNotification && ((task.notificationID?.isEmpty) == nil) {
+                        NotificationManager.shared.cancelNotification(for: task.notificationID ?? "")
+                        task.hasNotification = false
+                    }
+                    
+                    context.delete(task)
+                    DispatchQueue.main.async {
+                        try? context.save()
+                    }
+                } label: {
+                    Text("Delete Task")
+                }
             }
         }
         .hLeading()
