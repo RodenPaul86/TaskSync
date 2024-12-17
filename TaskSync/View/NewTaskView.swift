@@ -13,6 +13,8 @@ struct NewTaskView: View {
     @Environment(\.managedObjectContext) var context
     @EnvironmentObject var taskModel: TaskViewModel
     
+    @State private var showActionSheet = false
+    
     @State private var taskTitle: String = ""
     @State private var taskDescription: String = ""
     @State private var taskDate: Date = Date()
@@ -188,13 +190,28 @@ struct NewTaskView: View {
     }
     
     private func dismissButton() -> some View {
-        Button(action: { dismiss() }) {
+        Button(action: {
+            showActionSheet.toggle()
+        }) {
             Image(systemName: "xmark")
                 .frame(width: 10, height: 10)
                 .foregroundColor(.white)
                 .padding()
                 .background(Color.black.gradient)
                 .clipShape(Circle())
+        }
+        .confirmationDialog("", isPresented: $showActionSheet, titleVisibility: .hidden) {
+            Button(role: .destructive) {
+                dismiss()
+            } label: {
+                Text(taskModel.editTask != nil ? "Discard Changes" : "Discard Task")
+            }
+            
+            Button(role: .cancel) {
+                
+            } label: {
+                Text(taskModel.editTask != nil ? "Continue Editing" : "Continue")
+            }
         }
     }
 }
