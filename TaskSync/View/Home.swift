@@ -20,7 +20,6 @@ struct Home: View {
             LazyVStack(spacing: 15, pinnedViews: [.sectionHeaders]) {
                 Section {
                     TasksView()
-                    
                 } header: {
                     HeaderView()
                 }
@@ -87,7 +86,7 @@ struct Home: View {
                     .frame(width: 3)
             }
             
-            // Task Card
+            // MARK: Task Card
             VStack {
                 HStack(alignment: .top, spacing: 15) {
                     VStack(alignment: .leading, spacing: 8) {
@@ -317,6 +316,7 @@ struct Home: View {
     }
 }
 
+// MARK: Extension
 extension View {
     func hLeading() -> some View {
         self

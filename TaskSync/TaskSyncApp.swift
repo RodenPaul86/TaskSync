@@ -20,6 +20,7 @@ struct TaskSyncApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.light)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .onAppear {
                     NotificationManager.shared.requestNotificationPermissions()
