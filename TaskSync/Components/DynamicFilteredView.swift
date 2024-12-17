@@ -8,24 +8,22 @@
 import SwiftUI
 import CoreData
 
-struct DynamicFilteredView<Content: View,T>: View where T: NSManagedObject {
+struct DynamicFilteredView<Content: View, T>: View where T: NSManagedObject {
     // MARK: CoreData Request
     @FetchRequest var request: FetchedResults<T>
     let content: (T) -> Content
     
     // MARK: Building Custom ForEach whitch will give CoreData object to build view
     init(dateToFilter: Date, @ViewBuilder content: @escaping (T) -> Content) {
-        
-        // MARK: Predicate to filter current date Task
+        // MARK: Predicate to filter tasks for today
         let calendar = Calendar.current
-        
         let today = calendar.startOfDay(for: dateToFilter)
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
         
         // Filter Key
         let filterKey = "taskDate"
         
-        // This will fetch task between today and tomarrow whitch is 24 hours
+        // Fetch tasks between today and tomorrow (24-hour window)
         let predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@", argumentArray: [today, tomorrow])
         
         // Intializing Request with NSPredicate
