@@ -14,6 +14,7 @@ struct Home: View {
     
     @Environment(\.managedObjectContext) var context
     
+    @State private var selectedDate: Date = Date() // Default to today
     @State private var showActionSheet = false
     
     // MARK: Main View
@@ -255,7 +256,7 @@ struct Home: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(Date().formatted(date: .abbreviated, time: .omitted))
                         .foregroundStyle(.gray)
-                    Text("Today")
+                    Text(getDynamicDateTitle(for: selectedDate))
                         .font(.largeTitle.bold())
                 }
                 .hLeading()
@@ -294,6 +295,7 @@ struct Home: View {
                         .contentShape(Capsule())
                         .onTapGesture {
                             withAnimation(.easeInOut) {
+                                selectedDate = day
                                 taskModel.currentDay = day
                             }
                         }
@@ -304,6 +306,28 @@ struct Home: View {
         .padding()
         .padding(.top, getSafeArea().top)
         .background(Color.white)
+    }
+}
+
+extension Home {
+    // Function to return dynamic date title
+    private func getDynamicDateTitle(for date: Date) -> String {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date()) // Start of today
+        let targetDate = calendar.startOfDay(for: date) // Start of the selected date
+        
+        if targetDate == today {
+            return "Today"
+        } else if targetDate == calendar.date(byAdding: .day, value: 1, to: today) {
+            return "Tomorrow"
+        } else if targetDate == calendar.date(byAdding: .day, value: -1, to: today) {
+            return "Yesterday"
+        } else {
+            // Format the date for the day after tomorrow or any other day
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MMM d" // Example: Dec 18
+            return formatter.string(from: date)
+        }
     }
     
     // MARK: icons for priority
