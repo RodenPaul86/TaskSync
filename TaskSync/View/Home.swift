@@ -35,45 +35,42 @@ struct Home: View {
     // MARK: Task View
     func TasksView() -> some View {
         LazyVStack(spacing: 20) {
-            DynamicFilteredView(dateToFilter: taskModel.currentDay) { (object: Task) in
-                TaskCardView(task: object)
+            DynamicFilteredView(dateToFilter: taskModel.currentDay) { (task: Task) in
+                TaskCardView(task: task)
             }
         }
         .padding()
+        .onAppear {
+            taskModel.startTaskRefreshTimer()
+        }
+        .onDisappear {
+            taskModel.timer?.invalidate()
+        }
     }
     
     // MARK: Task Card View
     func TaskCardView(task: Task) -> some View {
         HStack(alignment: .top, spacing: 30) {
-            // Side circle indecator and vertical line
             VStack(spacing: 10) {
                 ZStack {
                     Circle()
                         .fill(
-                            task.isCompleted ? .green : // Completed task
-                            task.isCanceled ? .red : // Canceled task
-                            (taskModel.isCurrentHour(date: task.taskDate ?? Date()) ?
-                                .black : // Current task
-                             (task.taskDate ?? Date()).compare(Date()) == .orderedAscending ?
-                                .gray : // Overdue task
-                                .clear) // Future task
+                            task.isCompleted ? .green :
+                                task.isCanceled ? .red :
+                                (taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .black :
+                                    (task.taskDate ?? Date()).compare(Date()) == .orderedAscending ? .gray : .clear)
                         )
                         .frame(width: 15, height: 15)
-                        .background(
-                            Circle()
-                                .stroke(.black, lineWidth: 3)
-                                .padding(-3)
-                        )
+                        .background(Circle().stroke(.black, lineWidth: 3).padding(-3))
                         .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
+                        .animation(.easeInOut(duration: 0.3), value: taskModel.isCurrentHour(date: task.taskDate ?? Date()))
                     
-                    // Display "X" if the task is canceled
                     if task.isCanceled {
                         Text("X")
                             .foregroundColor(.black)
                             .font(.system(size: 10, weight: .bold))
                     }
                     
-                    // Display "checkmark" if the task is completed
                     if task.isCompleted {
                         Image(systemName: "checkmark")
                             .foregroundStyle(.black)
@@ -81,12 +78,9 @@ struct Home: View {
                     }
                 }
                 
-                Rectangle()
-                    .fill(.black)
-                    .frame(width: 3)
+                Rectangle().fill(.black).frame(width: 3)
             }
             
-            // MARK: Task Card
             VStack {
                 HStack(alignment: .top, spacing: 15) {
                     VStack(alignment: .leading, spacing: 8) {
@@ -135,7 +129,7 @@ struct Home: View {
                         Text(task.isCompleted ? "Completed" : "\(task.taskPriority ?? "No Priority")")
                             .font(.subheadline)
                             .fontWeight(.bold)
-                            .foregroundColor(task.isCompleted ? .gray : .white) // Text color
+                            .foregroundColor(task.isCompleted ? .gray : .white)
                             .padding(10)
                             .background(GeometryReader { geometry in
                                 Capsule(style: .circular)
@@ -145,19 +139,17 @@ struct Home: View {
                             })
                             .hLeading()
                         
-                        if !task.isCanceled {
-                            if !task.isCompleted {
-                                Button {
-                                    task.isCompleted = true
-                                    DispatchQueue.main.async {
-                                        try? context.save()
-                                    }
-                                } label: {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(.black)
-                                        .padding(10)
-                                        .background(Color.white, in: Circle())
+                        if !task.isCanceled && !task.isCompleted {
+                            Button {
+                                task.isCompleted = true
+                                DispatchQueue.main.async {
+                                    try? context.save()
                                 }
+                            } label: {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(.black)
+                                    .padding(10)
+                                    .background(Color.white, in: Circle())
                             }
                         }
                     }
@@ -201,24 +193,17 @@ struct Home: View {
                         }
                         
                         Button {
-                            // Cancel the notification if it exists
                             if let notificationID = task.notificationID, task.hasNotification {
                                 NotificationManager.shared.cancelNotification(for: notificationID)
                                 print("Notification canceled for task: \(task.taskTitle ?? "")")
                             }
                             
-                            // Mark the task as canceled
                             task.isCanceled = true
                             task.isCompleted = false
                             
-                            // Save the changes to Core Data
                             DispatchQueue.main.async {
-                                do {
-                                    try context.save()
-                                    print("Task marked as canceled and notification removed.")
-                                } catch {
-                                    print("Failed to save context after canceling task: \(error.localizedDescription)")
-                                }
+                                try? context.save()
+                                print("Task marked as canceled and notification removed.")
                             }
                         } label: {
                             Label("Cancel", systemImage: "x.circle")
@@ -227,10 +212,7 @@ struct Home: View {
                     
                     Button(role: .destructive) {
                         if task.hasNotification && ((task.notificationID?.isEmpty) == nil) {
-                            // Cancel the notification if it's scheduled
                             NotificationManager.shared.cancelNotification(for: task.notificationID ?? "")
-                            
-                            // Set the hasNotification flag to false
                             task.hasNotification = false
                         }
                         
@@ -242,14 +224,13 @@ struct Home: View {
                         Label("Delete", systemImage: "trash")
                     }
                 }
-            } // Adding ContextMenu for Haptic Touch
+            }
             .sheet(isPresented: $taskModel.addNewTask) {
                 taskModel.editTask = nil
             } content: {
                 NewTaskView()
                     .environmentObject(taskModel)
             }
-            //.opacity(task.isCanceled ? 0.2 : 1)
         }
         .hLeading()
     }
@@ -259,11 +240,8 @@ struct Home: View {
         VStack {
             HStack(spacing: 10) {
                 VStack(alignment: .leading, spacing: 10) {
-                    // Display today's date
                     Text(Date().formatted(date: .abbreviated, time: .omitted))
                         .foregroundStyle(.gray)
-                    
-                    // Display "Today" title
                     Text("Today")
                         .font(.largeTitle.bold())
                 }
@@ -302,7 +280,7 @@ struct Home: View {
                         )
                         .contentShape(Capsule())
                         .onTapGesture {
-                            withAnimation(.easeInOut) { // Simplified animation
+                            withAnimation(.easeInOut) {
                                 taskModel.currentDay = day
                             }
                         }
@@ -319,18 +297,15 @@ struct Home: View {
 // MARK: Extension
 extension View {
     func hLeading() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .leading)
+        self.frame(maxWidth: .infinity, alignment: .leading)
     }
     
     func hTrailing() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .trailing)
+        self.frame(maxWidth: .infinity, alignment: .trailing)
     }
     
     func hCenter() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .center)
+        self.frame(maxWidth: .infinity, alignment: .center)
     }
     
     func getSafeArea() -> UIEdgeInsets {
