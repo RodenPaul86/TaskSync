@@ -52,7 +52,6 @@ struct ContentView: View {
                                     }
                                 }
                             }
-                        
                         Text("Search")
                             .tag(TabModel.search)
                         
