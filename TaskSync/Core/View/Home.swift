@@ -199,7 +199,7 @@ struct Home: View {
                                 
                                 Button {
                                     if let notificationID = task.notificationID, task.hasNotification {
-                                        NotificationManager.shared.cancelNotification(for: notificationID)
+                                        NotificationManager.shared.cancelNotification(withIdentifier: notificationID)
                                         print("Notification canceled for task: \(task.taskTitle ?? "")")
                                     }
                                     
@@ -233,7 +233,7 @@ struct Home: View {
             .confirmationDialog("", isPresented: $showActionSheet, titleVisibility: .hidden) {
                 Button(role: .destructive) {
                     if task.hasNotification && ((task.notificationID?.isEmpty) == nil) {
-                        NotificationManager.shared.cancelNotification(for: task.notificationID ?? "")
+                        NotificationManager.shared.cancelNotification(withIdentifier: task.notificationID ?? "")
                         task.hasNotification = false
                     }
                     

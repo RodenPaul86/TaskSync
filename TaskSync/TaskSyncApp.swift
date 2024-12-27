@@ -23,7 +23,22 @@ struct TaskSyncApp: App {
                 .preferredColorScheme(.light)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .onAppear {
-                    NotificationManager.shared.requestNotificationPermissions()
+                    NotificationManager.shared.requestNotificationPermissions { granted in
+                        if granted {
+                            // Permission granted: schedule the notification
+                            //let time = Date(timeIntervalSince1970: notificationTime)
+                            //NotificationManager.shared.scheduleDailyNotification(at: time, soundName: "\(customSound).wav")
+                        } else {
+                            // Permission denied: update the toggle or show an alert
+                            DispatchQueue.main.async {
+                                //notificationsEnabled = false // Update the toggle state
+                                AlertHelper.showGlobalAlert(
+                                    title: "Enable Notifications",
+                                    message: "You denied notification permissions. Enable them in settings to receive reminders."
+                                )
+                            }
+                        }
+                    }
                 }
         }
     }

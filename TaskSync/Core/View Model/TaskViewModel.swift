@@ -93,7 +93,7 @@ extension TaskViewModel {
                 if let taskDate = task.taskDate, taskDate < oneWeekAgo {
                     if task.hasNotification && ((task.notificationID?.isEmpty) == nil) {
                         // Cancel the notification if it's scheduled
-                        NotificationManager.shared.cancelNotification(for: task.notificationID ?? "")
+                        NotificationManager.shared.cancelNotification(withIdentifier: task.notificationID ?? "")
                         
                         // Set the hasNotification flag to false
                         task.hasNotification = false

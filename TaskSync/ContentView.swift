@@ -30,13 +30,8 @@ struct ContentView: View {
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
-                        Tab.init(value: .notifications) {
-                            Text("Notifications")
-                                .toolbarVisibility(.hidden, for: .tabBar)
-                        }
-                        
                         Tab.init(value: .settings) {
-                            Text("Settings")
+                            Settings()
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                     }
@@ -54,9 +49,6 @@ struct ContentView: View {
                             }
                         Text("Search")
                             .tag(TabModel.search)
-                        
-                        Text("Notifications")
-                            .tag(TabModel.notifications)
                         
                         Text("Settings")
                             .tag(TabModel.settings)
