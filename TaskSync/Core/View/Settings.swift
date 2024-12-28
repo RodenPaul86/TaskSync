@@ -126,7 +126,6 @@ struct Settings: View {
                 // Support
                 Section(header: Text("Support")) {
                     NavigationLink("Help & FAQ", destination: HelpFAQView())
-                    NavigationLink("Contact Support", destination: ContactSupportView())
                     HStack {
                         Text("App Version")
                         Spacer()
@@ -183,14 +182,6 @@ struct Settings: View {
         isiCloudSyncEnabled = true
         faceIDEnabled = false
         selectedLanguage = "English"
-    }
-}
-
-// Placeholder views for navigation links
-
-struct ContactSupportView: View {
-    var body: some View {
-        Text("Contact Support")
     }
 }
 
