@@ -8,12 +8,13 @@
 import SwiftUI
 import UserNotifications
 
+@available(iOS 18.0, *)
 struct Settings: View {
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
     @AppStorage("sortOption") private var sortOption: String = "Priority"
     @AppStorage("startOfWeek") private var startOfWeek: String = "Sunday"
     @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = true
-    @AppStorage("notificationTime") private var notificationTime: Double = Date().timeIntervalSince1970
+    @AppStorage("notificationTime") private var notificationTime: Date = defaultNotificationTime
     @AppStorage("selectedAppIcon") private var selectedAppIcon: String = "Default"
     @AppStorage("customSound") private var customSound: String = "Chime"
     @AppStorage("isiCloudSyncEnabled") private var isiCloudSyncEnabled: Bool = true
@@ -25,6 +26,14 @@ struct Settings: View {
     let appIcons = ["Default", "Alternate 1", "Alternate 2"]
     let sounds = ["Chime", "Bell", "Silent"]
     let languages = ["English", "Spanish", "French"]
+    
+    static var defaultNotificationTime: Date {
+        // Default to 9:00 AM
+        var components = DateComponents()
+        components.hour = 9
+        components.minute = 0
+        return Calendar.current.date(from: components) ?? Date()
+    }
     
     var body: some View {
         NavigationView {
@@ -45,29 +54,45 @@ struct Settings: View {
                 }
                 
                 // Notifications
-                Section(header: Text("Notifications")) {
-                    Toggle("Enable Notifications", isOn: Binding(
-                        get: { notificationsEnabled },
-                        set: { newValue in
-                            notificationsEnabled = newValue
-                            handleNotificationToggle(isEnabled: newValue)
-                        }
-                    ))
-                    if notificationsEnabled {
-                        DatePicker(
-                            "Notification Time",
-                            selection: Binding(
-                                get: { Date(timeIntervalSince1970: notificationTime) },
-                                set: {
-                                    notificationTime = $0.timeIntervalSince1970
-                                    if notificationsEnabled {
-                                        NotificationManager.shared.scheduleDailyNotification(at: $0, soundName: "\(customSound).wav")
+                Section {
+                    Toggle("Enable Daily Notifications", isOn: $notificationsEnabled)
+                        .onChange(of: notificationsEnabled) {
+                            if notificationsEnabled {
+                                // Re-enable notifications
+                                NotificationManager.shared.requestNotificationPermissions { granted in
+                                    if !granted {
+                                        notificationsEnabled = false
                                     }
                                 }
-                            ),
-                            displayedComponents: .hourAndMinute
-                        )
+                            } else {
+                                // Disable notifications
+                                NotificationManager.shared.cancelAllNotifications()
+                            }
+                        }
+                    if notificationsEnabled {
+                        DatePicker("Notification Time", selection: $notificationTime, displayedComponents: .hourAndMinute)
+                            .onChange(of: notificationTime) { oldTime, newTime in
+                                print("Notification time changed from \(oldTime) to \(newTime)")
+                                NotificationManager.shared.scheduleDailyNotification(at: newTime)
+                            }
+                        Picker("Notification Sound", selection: $customSound) {
+                            ForEach(sounds, id: \.self) { sound in
+                                Text(sound.capitalized) // Optional: Capitalize the sound names for better display
+                            }
+                        }
+                        .onChange(of: customSound) { oldSound, newSound in
+                            if notificationsEnabled {
+                                let soundName = Bundle.main.path(forResource: newSound, ofType: "wav") != nil ? "\(newSound).wav" : "default"
+                                NotificationManager.shared.scheduleDailyNotification(at: notificationTime, soundName: soundName)
+                            }
+                        }
                     }
+                    
+                } header: {
+                    Text("Notifications")
+                    
+                } footer: {
+                    Text("Turn on a daily reminder to receive notifications at your preferred time.")
                 }
                 
                 // Customization
@@ -75,17 +100,6 @@ struct Settings: View {
                     Picker("App Icon", selection: $selectedAppIcon) {
                         ForEach(appIcons, id: \.self) { icon in
                             Text(icon)
-                        }
-                    }
-                    Picker("Notification Sound", selection: $customSound) {
-                        ForEach(sounds, id: \.self) { sound in
-                            Text(sound)
-                        }
-                    }
-                    .onChange(of: customSound) {
-                        if notificationsEnabled {
-                            let time = Date(timeIntervalSince1970: notificationTime)
-                            NotificationManager.shared.scheduleDailyNotification(at: time, soundName: "\(customSound).wav")
                         }
                     }
                 }
@@ -119,32 +133,33 @@ struct Settings: View {
                         Text("1.0.0").foregroundColor(.gray)
                     }
                 }
-                /*
+                
                 // Miscellaneous
                 Section(header: Text("Miscellaneous")) {
+                    /*
                     Picker("Language", selection: $selectedLanguage) {
                         ForEach(languages, id: \.self) { language in
                             Text(language)
                         }
                     }
-                    Button("Reset to Defaults") {
+                     */
+                    Button("Reset") {
                         resetToDefaults()
                     }
                 }
-                 */
             }
             .navigationTitle("Settings")
             .safeAreaPadding(.bottom, 60)
         }
     }
-    
+    /*
     // Handle Notifications Toggle
     private func handleNotificationToggle(isEnabled: Bool) {
         if isEnabled {
             NotificationManager.shared.requestNotificationPermissions { granted in
                 if granted {
                     let time = Date(timeIntervalSince1970: notificationTime)
-                    NotificationManager.shared.scheduleDailyNotification(at: time, soundName: "\(customSound).wav")
+                    //NotificationManager.shared.scheduleDailyNotification(at: time, soundName: "\(customSound).wav")
                 } else {
                     DispatchQueue.main.async {
                         notificationsEnabled = false
@@ -155,14 +170,14 @@ struct Settings: View {
             NotificationManager.shared.cancelNotification(withIdentifier: "dailyReminder")
         }
     }
-    
+    */
     // Function to reset settings to defaults
     private func resetToDefaults() {
         isDarkMode = false
         sortOption = "Priority"
         startOfWeek = "Sunday"
-        notificationsEnabled = true
-        notificationTime = Date().timeIntervalSince1970
+        notificationsEnabled = false
+        //notificationTime = Date = defaultNotificationTime
         selectedAppIcon = "Default"
         customSound = "Chime"
         isiCloudSyncEnabled = true
@@ -172,11 +187,6 @@ struct Settings: View {
 }
 
 // Placeholder views for navigation links
-struct HelpFAQView: View {
-    var body: some View {
-        Text("Help & FAQ")
-    }
-}
 
 struct ContactSupportView: View {
     var body: some View {
@@ -185,5 +195,9 @@ struct ContactSupportView: View {
 }
 
 #Preview {
-    Settings()
+    if #available(iOS 18.0, *) {
+        Settings()
+    } else {
+        // Fallback on earlier versions
+    }
 }

@@ -30,52 +30,46 @@ class NotificationManager {
         }
     }
     
-    // MARK: - General Daily Notification (Settings Integration)
-    func scheduleDailyNotification(at time: Date, soundName: String = "default") {
-        // Cancel existing daily reminders first
-        cancelNotification(withIdentifier: "dailyReminder")
-        
-        // Notification Content
-        let content = UNMutableNotificationContent()
-        content.title = "Daily Reminder"
-        content.body = "Check your tasks for today!"
-        
-        // Use default sound or a custom sound
-        if soundName == "default" {
-            content.sound = .default
-        } else {
-            content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: soundName))
-        }
-        
-        // Trigger at specified time daily
-        let calendar = Calendar.current
-        let hour = calendar.component(.hour, from: time)
-        let minute = calendar.component(.minute, from: time)
-        var dateComponents = DateComponents()
-        dateComponents.hour = hour
-        dateComponents.minute = minute
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        
-        // Create the request
-        let request = UNNotificationRequest(identifier: "dailyReminder", content: content, trigger: trigger)
-        
-        // Schedule the notification
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Failed to schedule daily reminder: \(error.localizedDescription)")
-            } else {
-                print("Daily reminder scheduled successfully.")
-            }
-        }
-    }
-    
     func cancelNotification(withIdentifier identifier: String) {
+        guard !identifier.isEmpty else {
+            print("Invalid notification ID: \(identifier). Skipping cancellation.")
+            return
+        }
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
         print("Notification with ID \(identifier) canceled.")
     }
     
+    // MARK: - Daily Notifications
+    func scheduleDailyNotification(at time: Date, soundName: String = "default") {
+        cancelNotification(withIdentifier: "dailyReminder")
+        
+        let content = UNMutableNotificationContent()
+        content.title = "Daily Reminder"
+        content.body = "Check your tasks for today!"
+        content.sound = soundName == "default" ? .default : UNNotificationSound(named: UNNotificationSoundName(rawValue: soundName))
+        
+        let calendar = Calendar.current
+        let dateComponents = calendar.dateComponents([.hour, .minute], from: time)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        
+        let request = UNNotificationRequest(identifier: "dailyReminder", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to schedule daily reminder: \(error.localizedDescription)")
+            } else {
+                print("Daily reminder scheduled at \(time).")
+            }
+        }
+    }
+    
     // MARK: - Task-Specific Notifications
     func scheduleNotification(for task: String, at date: Date, taskObject: NSManagedObjectContext, taskID: NSManagedObjectID) {
+        guard UserDefaults.standard.bool(forKey: "notificationsEnabled") else {
+            print("Notifications are disabled; task notification not scheduled.")
+            return
+        }
+        
         let content = UNMutableNotificationContent()
         content.title = "Task Reminder"
         content.body = "It's time for: \(task)"
@@ -111,5 +105,13 @@ class NotificationManager {
     
     func cancelTaskNotification(for taskID: String) {
         cancelNotification(withIdentifier: taskID)
+    }
+}
+
+extension NotificationManager {
+    func cancelAllNotifications() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        print("All notifications have been canceled.")
     }
 }
