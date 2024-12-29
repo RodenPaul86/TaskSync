@@ -30,6 +30,11 @@ struct ContentView: View {
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
+                        Tab.init(value: .premium) {
+                            Text("premium")
+                                .toolbarVisibility(.hidden, for: .tabBar)
+                        }
+                        
                         Tab.init(value: .settings) {
                             Settings()
                                 .toolbarVisibility(.hidden, for: .tabBar)
@@ -49,6 +54,9 @@ struct ContentView: View {
                             }
                         Text("Search")
                             .tag(TabModel.search)
+                        
+                        Text("Premium")
+                            .tag(TabModel.premium)
                         
                         Text("Settings")
                             .tag(TabModel.settings)
