@@ -13,30 +13,23 @@ struct Settings: View {
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
     @AppStorage("sortOption") private var sortOption: String = "Priority"
     @AppStorage("startOfWeek") private var startOfWeek: String = "Sunday"
-    @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = true
-    @AppStorage("notificationTime") private var notificationTime: Date = defaultNotificationTime
     @AppStorage("selectedAppIcon") private var selectedAppIcon: String = "Default"
-    @AppStorage("customSound") private var customSound: String = "Chime"
     @AppStorage("isiCloudSyncEnabled") private var isiCloudSyncEnabled: Bool = true
     @AppStorage("faceIDEnabled") private var faceIDEnabled: Bool = false
     @AppStorage("selectedLanguage") private var selectedLanguage: String = "English"
     
+    @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = true
+    @AppStorage("priorityNotifications") private var priorityNotifications = false
+    @AppStorage("alertSound") private var alertSound: String = "Default"
+    
     let sortOptions = ["Priority", "Due Date", "Creation Date"]
     let weekStartOptions = ["Sunday", "Monday"]
     let appIcons = ["Default", "Alternate 1", "Alternate 2"]
-    let sounds = ["Chime", "Bell", "Silent"]
+    let sounds = ["Default", "Chime", "Doorbell", "Alert-1", "Alert-2"]
     let languages = ["English", "Spanish", "French"]
     
-    static var defaultNotificationTime: Date {
-        // Default to 9:00 AM
-        var components = DateComponents()
-        components.hour = 9
-        components.minute = 0
-        return Calendar.current.date(from: components) ?? Date()
-    }
-    
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 // User Preferences
                 Section(header: Text("User Preferences")) {
@@ -53,46 +46,24 @@ struct Settings: View {
                     }
                 }
                 
-                // Notifications
-                Section {
-                    Toggle("Enable Daily Notifications", isOn: $notificationsEnabled)
-                        .onChange(of: notificationsEnabled) {
-                            if notificationsEnabled {
-                                // Re-enable notifications
-                                NotificationManager.shared.requestNotificationPermissions { granted in
-                                    if !granted {
-                                        notificationsEnabled = false
-                                    }
-                                }
-                            } else {
-                                // Disable notifications
-                                NotificationManager.shared.cancelAllNotifications()
-                            }
+                // MARK: Notifications
+                Section(header: Text("Notifications")){
+                    Toggle("Allow Notifications", isOn: $notificationsEnabled)
+                        .onChange(of: notificationsEnabled) { oldValue, newValue in
+                            NotificationManager.shared.toggleNotifications(enable: newValue)
                         }
+                    
+                    /*
                     if notificationsEnabled {
-                        DatePicker("Notification Time", selection: $notificationTime, displayedComponents: .hourAndMinute)
-                            .onChange(of: notificationTime) { oldTime, newTime in
-                                print("Notification time changed from \(oldTime) to \(newTime)")
-                                NotificationManager.shared.scheduleDailyNotification(at: newTime)
-                            }
-                        Picker("Notification Sound", selection: $customSound) {
+                        Picker("Alert Sound", selection: $alertSound) {
                             ForEach(sounds, id: \.self) { sound in
-                                Text(sound.capitalized) // Optional: Capitalize the sound names for better display
+                                Text(sound).tag(sound)
                             }
                         }
-                        .onChange(of: customSound) { oldSound, newSound in
-                            if notificationsEnabled {
-                                let soundName = Bundle.main.path(forResource: newSound, ofType: "wav") != nil ? "\(newSound).wav" : "default"
-                                NotificationManager.shared.scheduleDailyNotification(at: notificationTime, soundName: soundName)
-                            }
-                        }
+                        
+                        Toggle("Priority Notifications", isOn: $priorityNotifications)
                     }
-                    
-                } header: {
-                    Text("Notifications")
-                    
-                } footer: {
-                    Text("Turn on a daily reminder to receive notifications at your preferred time.")
+                     */
                 }
                 
                 // Customization
@@ -149,8 +120,21 @@ struct Settings: View {
             }
             .navigationTitle("Settings")
             .safeAreaPadding(.bottom, 60)
+            .onAppear {
+                // Ensure notifications are synced with system settings
+                syncNotificationStatus()
+            }
         }
     }
+    
+    private func syncNotificationStatus() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                notificationsEnabled = (settings.authorizationStatus == .authorized)
+            }
+        }
+    }
+    
     /*
     // Handle Notifications Toggle
     private func handleNotificationToggle(isEnabled: Bool) {
@@ -175,13 +159,13 @@ struct Settings: View {
         isDarkMode = false
         sortOption = "Priority"
         startOfWeek = "Sunday"
-        notificationsEnabled = false
-        //notificationTime = Date = defaultNotificationTime
+        notificationsEnabled = true
         selectedAppIcon = "Default"
-        customSound = "Chime"
         isiCloudSyncEnabled = true
         faceIDEnabled = false
         selectedLanguage = "English"
+        priorityNotifications = false
+        alertSound = "Chime"
     }
 }
 

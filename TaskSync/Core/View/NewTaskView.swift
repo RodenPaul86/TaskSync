@@ -165,7 +165,7 @@ struct NewTaskView: View {
                 NotificationManager.shared.scheduleNotification(
                     for: taskTitle,
                     at: taskDate,
-                    taskObject: context,
+                    taskContext: context,
                     taskID: taskID
                 )
             }
