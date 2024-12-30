@@ -14,6 +14,10 @@ struct Home: View {
     @Namespace var animation
     @State private var selectedDate: Date = Date() // Default to today
     
+    @State private var currentDate = Date()
+    @State private var isTodayUpdated = false
+    @State private var timer: Timer?
+    
     //@State private var selectedSort: TaskSortCriteria = .dueDate  // Default sort by due date
     
     @AppStorage("sortOption") private var sortOption: String = "Priority & Due Date"
@@ -35,7 +39,9 @@ struct Home: View {
         .ignoresSafeArea(.container, edges: .top)
         .safeAreaPadding(.bottom, 60)
         .onAppear {
-            taskModel.autoDeleteOldTasks(context: context)
+            DispatchQueue.main.async {
+                taskModel.autoDeleteOldTasks(context: context)
+            }
         }
     }
     
@@ -60,7 +66,34 @@ struct Home: View {
     
     // MARK: Task Card View
     func TaskCardView(task: Task) -> some View {
-        HStack(alignment: .top, spacing: 30) {
+        // Get current hour
+        let currentHour = Calendar.current.component(.hour, from: Date())
+        
+        // Check if the task's due hour matches the current hour and update the task
+        if let taskDueDate = task.taskDate {
+            let taskHour = Calendar.current.component(.hour, from: taskDueDate)
+            
+            // If the task's due hour matches the current hour
+            if taskHour == currentHour && !task.isCompleted && !task.isCanceled {
+                // Perform the update asynchronously to avoid modifying state during view update
+                DispatchQueue.main.async {
+                    // Animate the status change
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        // Update the task's status or other properties as needed
+                        task.status = "Ready for action"  // You can customize this status or logic as needed
+                    }
+                    
+                    // Save the context asynchronously to avoid blocking the UI
+                    do {
+                        try context.save()
+                    } catch {
+                        print("Failed to save task: \(error)")
+                    }
+                }
+            }
+        }
+        
+        return HStack(alignment: .top, spacing: 30) {
             VStack(spacing: 10) {
                 ZStack {
                     Circle()
@@ -267,8 +300,13 @@ struct Home: View {
         VStack {
             HStack(spacing: 10) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(Date().formatted(date: .abbreviated, time: .omitted))
-                        .foregroundStyle(.gray)
+                    if Calendar.current.isDate(selectedDate, inSameDayAs: Date()) {
+                        Text(Date().formatted(date: .abbreviated, time: .omitted))
+                            .foregroundStyle(.gray)
+                    } else {
+                        Text(Date().formatted(date: .abbreviated, time: .omitted))
+                            .foregroundStyle(.gray)
+                    }
                     Text(getDynamicDateTitle(for: selectedDate))
                         .font(.largeTitle.bold())
                 }
@@ -317,14 +355,49 @@ struct Home: View {
             }
             .onAppear {
                 taskModel.fetchCurrentWeek(startOfWeek: startOfWeek) // Fetch initial week
+                checkIfDayChanged()
+                startPeriodicCheck() // Start periodic check when the app is active
             }
             .onChange(of: startOfWeek) { oldStartOfWeek, newStartOfWeek in
                 taskModel.fetchCurrentWeek(startOfWeek: newStartOfWeek) // React to setting changes
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                // Check if the day has changed when app comes into the foreground
+                checkIfDayChanged()
+                startPeriodicCheck() // Restart periodic check if needed
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+                // Stop the timer when the app goes into the background
+                stopPeriodicCheck()
             }
         }
         .padding()
         .padding(.top, getSafeArea().top)
         .background(Color.white)
+    }
+    
+    private func checkIfDayChanged() {
+        let newDate = Date()
+        if !Calendar.current.isDate(newDate, inSameDayAs: currentDate) {
+            withAnimation(.easeInOut) {
+                currentDate = newDate
+                isTodayUpdated.toggle() // Trigger view update
+                taskModel.currentDay = newDate
+            }
+        }
+    }
+    
+    private func startPeriodicCheck() {
+        // Check every minute if the day has changed
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            checkIfDayChanged()
+        }
+    }
+    
+    private func stopPeriodicCheck() {
+        // Invalidate the timer when app goes into the background
+        timer?.invalidate()
+        timer = nil
     }
 }
 
