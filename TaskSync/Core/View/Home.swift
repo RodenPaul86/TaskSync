@@ -14,6 +14,10 @@ struct Home: View {
     @Namespace var animation
     @State private var selectedDate: Date = Date() // Default to today
     
+    //@State private var selectedSort: TaskSortCriteria = .dueDate  // Default sort by due date
+    
+    @AppStorage("sortOption") private var sortOption: String = "Priority & Due Date"
+    
     @Environment(\.managedObjectContext) var context
     @State private var showActionSheet = false
     
@@ -37,12 +41,21 @@ struct Home: View {
     
     // MARK: Task View
     func TasksView() -> some View {
-        LazyVStack(spacing: 20) {
-            DynamicFilteredView(dateToFilter: taskModel.currentDay) { (task: Task) in
-                TaskCardView(task: task)
+        var sortCriteria = TaskSortCriteria(rawValue: sortOption) ?? .dueDate
+        
+        return VStack {
+            // Display the tasks with the selected sorting criteria
+            LazyVStack(spacing: 20) {
+                DynamicFilteredView(dateToFilter: taskModel.currentDay, sortCriteria: sortCriteria) { (task: Task) in
+                    TaskCardView(task: task)
+                }
             }
+            .padding()
         }
-        .padding()
+        .onChange(of: sortOption) { oldValue, newValue in
+            // Update the sortCriteria when sortOption changes
+            sortCriteria = TaskSortCriteria(rawValue: newValue) ?? .priorityAndDueDate
+        }
     }
     
     // MARK: Task Card View

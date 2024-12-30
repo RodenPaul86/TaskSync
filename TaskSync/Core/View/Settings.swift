@@ -11,7 +11,7 @@ import UserNotifications
 @available(iOS 18.0, *)
 struct Settings: View {
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
-    @AppStorage("sortOption") private var sortOption: String = "Priority"
+    @AppStorage("sortOption") private var sortOption: String = "Due Date"
     @AppStorage("startOfWeek") private var startOfWeek: String = "Sunday"
     @AppStorage("selectedAppIcon") private var selectedAppIcon: String = "Default"
     @AppStorage("isiCloudSyncEnabled") private var isiCloudSyncEnabled: Bool = true
@@ -22,7 +22,6 @@ struct Settings: View {
     @AppStorage("priorityNotifications") private var priorityNotifications = false
     @AppStorage("alertSound") private var alertSound: String = "Default"
     
-    let sortOptions = ["Priority", "Due Date", "Creation Date"]
     let weekStartOptions = ["Sunday", "Monday", "Saturday"]
     let appIcons = ["Default", "Alternate 1", "Alternate 2"]
     let sounds = ["Default", "Chime", "Doorbell", "Alert-1", "Alert-2"]
@@ -34,9 +33,9 @@ struct Settings: View {
                 // User Preferences
                 Section(header: Text("User Preferences")) {
                     //Toggle("Dark Mode", isOn: $isDarkMode)
-                    Picker("Sort Tasks By", selection: $sortOption) {
-                        ForEach(sortOptions, id: \.self) { option in
-                            Text(option)
+                    Picker("Sort By", selection: $sortOption) {
+                        ForEach(TaskSortCriteria.allCases, id: \.self) { criteria in
+                            Text(criteria.rawValue).tag(criteria.rawValue)
                         }
                     }
                     Picker("Start of the Week", selection: $startOfWeek) {
@@ -156,16 +155,16 @@ struct Settings: View {
     */
     // Function to reset settings to defaults
     private func resetToDefaults() {
-        isDarkMode = false
-        sortOption = "Priority"
-        startOfWeek = "Sunday"
-        notificationsEnabled = true
-        selectedAppIcon = "Default"
-        isiCloudSyncEnabled = true
-        faceIDEnabled = false
-        selectedLanguage = "English"
-        priorityNotifications = false
-        alertSound = "Chime"
+        //isDarkMode = false
+        //sortOption = "Priority"
+        //startOfWeek = "Sunday"
+        //notificationsEnabled = true
+        //selectedAppIcon = "Default"
+        //isiCloudSyncEnabled = true
+        //faceIDEnabled = false
+        //selectedLanguage = "English"
+        //priorityNotifications = false
+        //alertSound = "Chime"
     }
 }
 
