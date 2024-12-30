@@ -30,8 +30,8 @@ struct ContentView: View {
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
-                        Tab.init(value: .premium) {
-                            Text("premium")
+                        Tab.init(value: .whatsNew) {
+                            Text("What's New")
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
@@ -55,8 +55,8 @@ struct ContentView: View {
                         Text("Search")
                             .tag(TabModel.search)
                         
-                        Text("Premium")
-                            .tag(TabModel.premium)
+                        Text("What's New")
+                            .tag(TabModel.whatsNew)
                         
                         Text("Settings")
                             .tag(TabModel.settings)
@@ -64,6 +64,10 @@ struct ContentView: View {
                 }
             }
             CustomTabBar(activeTab: $activeTab)
+            /*
+            AdBanner()
+                .safeAreaPadding(.bottom, 60)
+             */
         }
     }
 }

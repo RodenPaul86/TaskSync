@@ -18,9 +18,7 @@ struct Home: View {
     @State private var isTodayUpdated = false
     @State private var timer: Timer?
     
-    //@State private var selectedSort: TaskSortCriteria = .dueDate  // Default sort by due date
-    
-    @AppStorage("sortOption") private var sortOption: String = "Priority & Due Date"
+    @AppStorage("sortOption") private var sortOption: String = "Due Date"
     
     @Environment(\.managedObjectContext) var context
     @State private var showActionSheet = false

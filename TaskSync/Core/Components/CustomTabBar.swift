@@ -90,7 +90,7 @@ struct CustomTabBar: View {
                     print("Account Profile")
                 }
             } label: {
-                MorphingSymbolView(symbol: activeTab == .home ? "plus" : activeTab == .search ? "mic.fill" : "person.fill",
+                MorphingSymbolView(symbol: activeTab == .home ? "plus" : activeTab == .search ? "mic.fill" : "crown.fill",
                                    config: .init(font: .title3,
                                                  frame: .init(width: 42, height: 42),
                                                  radius: 2,
