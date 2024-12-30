@@ -14,6 +14,7 @@ struct FAQItem: Identifiable {
     var isExpanded: Bool = false
 }
 
+// MARK: Data
 struct HelpFAQView: View {
     @State private var faqItems: [FAQItem] = [
         FAQItem(question: "How do I add a new task?",
@@ -49,6 +50,7 @@ struct HelpFAQView: View {
                 answer: "We welcome feedback! Use the ''eMail Support'' option below to share your ideas and requests.")
     ]
     
+    // MARK: Main View
     var body: some View {
         NavigationStack {
             VStack {
@@ -95,13 +97,14 @@ struct HelpFAQView: View {
     }
 }
 
+// MARK: Custom Row
 struct FAQRow: View {
     @Binding var item: FAQItem
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Button(action: {
-                withAnimation {
+                withAnimation(.easeInOut(duration: 0.3)) {
                     item.isExpanded.toggle()
                 }
             }) {
@@ -126,8 +129,6 @@ struct FAQRow: View {
     }
 }
 
-struct HelpFAQView_Previews: PreviewProvider {
-    static var previews: some View {
-        HelpFAQView()
-    }
+#Preview {
+    HelpFAQView()
 }
