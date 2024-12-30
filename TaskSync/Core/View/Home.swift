@@ -303,9 +303,6 @@ struct Home: View {
                     if Calendar.current.isDate(selectedDate, inSameDayAs: Date()) {
                         Text(Date().formatted(date: .abbreviated, time: .omitted))
                             .foregroundStyle(.gray)
-                    } else {
-                        Text(Date().formatted(date: .abbreviated, time: .omitted))
-                            .foregroundStyle(.gray)
                     }
                     Text(getDynamicDateTitle(for: selectedDate))
                         .font(.largeTitle.bold())
