@@ -22,7 +22,7 @@ struct Settings: View {
     @AppStorage("priorityNotifications") private var priorityNotifications = false
     @AppStorage("alertSound") private var alertSound: String = "Default"
     
-    let weekStartOptions = ["Sunday", "Monday", "Saturday"]
+    let weekStartOptions = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     let appIcons = ["Default", "Alternate 1", "Alternate 2"]
     let sounds = ["Default", "Chime", "Doorbell", "Alert-1", "Alert-2"]
     let languages = ["English", "Spanish", "French"]

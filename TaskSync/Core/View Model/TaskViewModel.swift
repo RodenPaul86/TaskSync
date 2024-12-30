@@ -42,6 +42,14 @@ class TaskViewModel: ObservableObject {
         switch startOfWeek {
         case "Monday":
             calendar.firstWeekday = 2 // Monday
+        case "Tuesday":
+            calendar.firstWeekday = 3 // Tuesday
+        case "Wednesday":
+            calendar.firstWeekday = 4 // Wednesday
+        case "Thursday":
+            calendar.firstWeekday = 5 // Thursday
+        case "Friday":
+            calendar.firstWeekday = 6 // Friday
         case "Saturday":
             calendar.firstWeekday = 7 // Saturday
         default:
