@@ -9,12 +9,12 @@ import SwiftUI
 import CoreData
 
 struct Home: View {
-    @StateObject var taskModel: TaskViewModel = TaskViewModel()
+    @AppStorage("startOfWeek") private var startOfWeek: String = "Sunday" // Observing user preference
+    @StateObject var taskModel: TaskViewModel = TaskViewModel() // Observing TaskViewModel
     @Namespace var animation
+    @State private var selectedDate: Date = Date() // Default to today
     
     @Environment(\.managedObjectContext) var context
-    
-    @State private var selectedDate: Date = Date() // Default to today
     @State private var showActionSheet = false
     
     // MARK: Main View
@@ -301,6 +301,12 @@ struct Home: View {
                         }
                     }
                 }
+            }
+            .onAppear {
+                taskModel.fetchCurrentWeek(startOfWeek: startOfWeek) // Fetch initial week
+            }
+            .onChange(of: startOfWeek) { oldStartOfWeek, newStartOfWeek in
+                taskModel.fetchCurrentWeek(startOfWeek: newStartOfWeek) // React to setting changes
             }
         }
         .padding()

@@ -23,7 +23,7 @@ struct Settings: View {
     @AppStorage("alertSound") private var alertSound: String = "Default"
     
     let sortOptions = ["Priority", "Due Date", "Creation Date"]
-    let weekStartOptions = ["Sunday", "Monday"]
+    let weekStartOptions = ["Sunday", "Monday", "Saturday"]
     let appIcons = ["Default", "Alternate 1", "Alternate 2"]
     let sounds = ["Default", "Chime", "Doorbell", "Alert-1", "Alert-2"]
     let languages = ["English", "Spanish", "French"]

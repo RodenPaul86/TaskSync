@@ -11,7 +11,7 @@ import Combine
 
 class TaskViewModel: ObservableObject {
     
-    // MARK: Current Week Days
+    // MARK: Current week
     @Published var currentWeek: [Date] = []
     
     // MARK: Current day
@@ -28,16 +28,31 @@ class TaskViewModel: ObservableObject {
     
     // MARK: Intializing
     init() {
-        fetchCurrentWeek()
+        // Retrieve the "Start of the Week" setting from UserDefaults or use a default value
+        let startOfWeek = UserDefaults.standard.string(forKey: "startOfWeek") ?? "Sunday"
+        fetchCurrentWeek(startOfWeek: startOfWeek)
     }
     
     // MARK: Fetch Current Week
-    func fetchCurrentWeek() {
+    func fetchCurrentWeek(startOfWeek: String) {
         let today = Date()
-        let calendar = Calendar.current
-        let week = calendar.dateInterval(of: .weekOfMonth, for: today)
+        var calendar = Calendar.current
         
-        guard let firstWeekDay = week?.start else { return }
+        // Determine the user's start of the week
+        switch startOfWeek {
+        case "Monday":
+            calendar.firstWeekday = 2 // Monday
+        case "Saturday":
+            calendar.firstWeekday = 7 // Saturday
+        default:
+            calendar.firstWeekday = 1 // Sunday (default)
+        }
+        
+        // Find the week interval based on the custom calendar
+        guard let weekInterval = calendar.dateInterval(of: .weekOfMonth, for: today),
+              let firstWeekDay = calendar.date(byAdding: .day, value: 0, to: weekInterval.start) else { return }
+        
+        currentWeek = [] // Clear the existing week data
         
         (0...14).forEach { day in
             if let weekday = calendar.date(byAdding: .day, value: day, to: firstWeekDay) {
