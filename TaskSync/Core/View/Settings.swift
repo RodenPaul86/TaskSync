@@ -156,9 +156,9 @@ struct Settings: View {
     // Function to reset settings to defaults
     private func resetToDefaults() {
         //isDarkMode = false
-        //sortOption = "Priority"
-        //startOfWeek = "Sunday"
-        //notificationsEnabled = true
+        sortOption = "Due Date"
+        startOfWeek = "Sunday"
+        notificationsEnabled = true
         //selectedAppIcon = "Default"
         //isiCloudSyncEnabled = true
         //faceIDEnabled = false
