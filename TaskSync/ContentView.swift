@@ -31,7 +31,7 @@ struct ContentView: View {
                         }
                         
                         Tab.init(value: .whatsNew) {
-                            Text("What's New")
+                            WhatsNewView()
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
