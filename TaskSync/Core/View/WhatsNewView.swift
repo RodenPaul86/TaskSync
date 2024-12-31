@@ -10,10 +10,12 @@ import SwiftUI
 struct WhatsNewView: View {
     let updates: [Update] = [
         Update(
-            title: "Better Mirror",
-            version: "v1.2.3",
-            date: "December 2024",
-            description: "This update adds sharing to the Mirror tool. When using the selfie view, tap the camera button to take a snapshot, then tap the share button to send it to a friend, post it to the group thread, or save it to your photo library.\n\nThis version of TaskSync also allows you to increase the number of items shown in the list widgets.",
+            title: "TaskSync is Here!",
+            version: "v1.0.0",
+            date: "January 2025",
+            description: """
+            We're excited to introduce TaskSync, the ultimate tool for managing your tasks! With this first release, you can easily create, organize, and track tasks across all your devices. Stay on top of your schedule with intuitive reminders and due dates. TaskSync is designed to help you stay productive and organized, wherever you go.
+            """,
             imageName: "exampleImage" // Replace with actual image name
         )
     ]
