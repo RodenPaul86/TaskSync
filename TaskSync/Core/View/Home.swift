@@ -296,19 +296,21 @@ struct Home: View {
     // MARK: Header View
     func HeaderView() -> some View {
         VStack {
-            HStack(spacing: 10) {
-                Text(getDynamicDateTitle(for: selectedDate))
-                    .font(.largeTitle.bold())
-                
-                Spacer()
-                
-                if Calendar.current.isDate(selectedDate, inSameDayAs: Date()) {
-                    Text("\(Date().formatted(.dateTime.month())), \(Date().formatted(.dateTime.year()))")
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 10) {
+                    Text(getDynamicDateTitle(for: selectedDate))
                         .font(.largeTitle.bold())
-                        .foregroundStyle(.gray)
+                    
+                    Spacer()
+                    
+                    if Calendar.current.isDate(selectedDate, inSameDayAs: Date()) {
+                        Text("\(Date().formatted(.dateTime.month())), \(Date().formatted(.dateTime.year()))")
+                            .font(.largeTitle.bold())
+                            .foregroundStyle(.gray)
+                    }
                 }
+                .hLeading()
             }
-            .hLeading()
             
             // MARK: Horizontal Calendar
             ScrollView(.horizontal, showsIndicators: false) {
@@ -412,7 +414,18 @@ extension Home {
         } else if targetDate == calendar.date(byAdding: .day, value: -1, to: today) {
             return "Yesterday"
         } else {
-            // Format the date for the day after tomorrow or any other day
+            // Check if the date is in the next week (for better dynamic text)
+            let components = calendar.dateComponents([.year, .month, .day], from: today)
+            let targetComponents = calendar.dateComponents([.year, .month, .day], from: targetDate)
+            
+            // If the date is within the same year and month, format it more simply
+            if components.year == targetComponents.year && components.month == targetComponents.month {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "MMM d" // Example: Dec 18
+                return formatter.string(from: date)
+            }
+            
+            // Default format for other dates
             let formatter = DateFormatter()
             formatter.dateFormat = "MMM d, yyyy" // Example: Dec 18, 2024
             return formatter.string(from: date)
