@@ -297,16 +297,18 @@ struct Home: View {
     func HeaderView() -> some View {
         VStack {
             HStack(spacing: 10) {
-                VStack(alignment: .leading, spacing: 10) {
-                    if Calendar.current.isDate(selectedDate, inSameDayAs: Date()) {
-                        Text(Date().formatted(date: .abbreviated, time: .omitted))
-                            .foregroundStyle(.gray)
-                    }
-                    Text(getDynamicDateTitle(for: selectedDate))
+                Text(getDynamicDateTitle(for: selectedDate))
+                    .font(.largeTitle.bold())
+                
+                Spacer()
+                
+                if Calendar.current.isDate(selectedDate, inSameDayAs: Date()) {
+                    Text("\(Date().formatted(.dateTime.month())), \(Date().formatted(.dateTime.year()))")
                         .font(.largeTitle.bold())
+                        .foregroundStyle(.gray)
                 }
-                .hLeading()
             }
+            .hLeading()
             
             // MARK: Horizontal Calendar
             ScrollView(.horizontal, showsIndicators: false) {
@@ -412,7 +414,7 @@ extension Home {
         } else {
             // Format the date for the day after tomorrow or any other day
             let formatter = DateFormatter()
-            formatter.dateFormat = "MMM d" // Example: Dec 18
+            formatter.dateFormat = "MMM d, yyyy" // Example: Dec 18, 2024
             return formatter.string(from: date)
         }
     }
