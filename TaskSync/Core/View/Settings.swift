@@ -31,9 +31,9 @@ struct Settings: View {
         NavigationStack {
             Form {
                 // User Preferences
-                Section(header: Text("User Preferences")) {
+                Section(header: Text("Task Preferences")) {
                     //Toggle("Dark Mode", isOn: $isDarkMode)
-                    Picker("Sort By", selection: $sortOption) {
+                    Picker("Sort Task By", selection: $sortOption) {
                         ForEach(TaskSortCriteria.allCases, id: \.self) { criteria in
                             Text(criteria.rawValue).tag(criteria.rawValue)
                         }

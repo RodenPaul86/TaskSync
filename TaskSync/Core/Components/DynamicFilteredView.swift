@@ -12,6 +12,7 @@ enum TaskSortCriteria: String, CaseIterable, Hashable {
     case title = "Title"
     case priority = "Priority"
     case dueDate = "Due Date"
+    case titleAndDueDate = "Title & Due Date"
     case priorityAndDueDate = "Priority & Due Date"
 }
 
@@ -45,6 +46,15 @@ struct DynamicFilteredView<Content: View, T>: View where T: NSManagedObject {
             sortDescriptor = NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)
         case .title:
             sortDescriptor = NSSortDescriptor(keyPath: \Task.taskTitle, ascending: true)
+            
+        case .titleAndDueDate:
+            let primarySort = NSSortDescriptor(keyPath: \Task.taskTitle, ascending: false)
+            let secondarySort = NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)
+            _request = FetchRequest(entity: T.entity(), sortDescriptors: [primarySort, secondarySort], predicate: predicate)
+            self.content = content
+            self.dateToFilter = dateToFilter
+            return
+            
         case .priorityAndDueDate:
             let primarySort = NSSortDescriptor(keyPath: \Task.taskPriority, ascending: false)
             let secondarySort = NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)
