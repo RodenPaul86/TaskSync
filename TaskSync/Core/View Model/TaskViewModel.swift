@@ -62,7 +62,7 @@ class TaskViewModel: ObservableObject {
         
         currentWeek = [] // Clear the existing week data
         
-        (0...14).forEach { day in
+        (0...10).forEach { day in
             if let weekday = calendar.date(byAdding: .day, value: day, to: firstWeekDay) {
                 currentWeek.append(weekday)
             }

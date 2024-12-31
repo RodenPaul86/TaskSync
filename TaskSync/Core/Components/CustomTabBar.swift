@@ -113,7 +113,7 @@ struct CustomTabBar: View {
                     .environmentObject(taskModel)
             }
         }
-        .padding(.bottom, 5)
+        .padding(.bottom)
         .animation(.smooth(duration: 0.3, extraBounce: 0), value: activeTab)
     }
 }
