@@ -21,7 +21,7 @@ struct CustomTabBar: View {
     @State private var tabLocation: CGRect = .zero
     
     var body: some View {
-        let status = activeTab == .home || activeTab == .search || activeTab == .settings
+        let status = activeTab == .home || activeTab == .settings // add activeTab to add a extra button
         
         HStack(spacing: !status ? 0 : 12) {
             HStack(spacing: 0) {
@@ -80,17 +80,16 @@ struct CustomTabBar: View {
             .zIndex(10)
             
             // MARK: Add new task button
-            Button {
+            Button { // add to the if statment
                 if activeTab == .home {
                     print("Plus Sign")
                     taskModel.addNewTask.toggle()
-                } else if activeTab == .search {
-                    print("Microphone Search")
                 } else {
-                    print("Account Profile")
+                    print("Paywall")
                 }
             } label: {
-                MorphingSymbolView(symbol: activeTab == .home ? "plus" : activeTab == .search ? "mic.fill" : "crown.fill",
+                // slao add activeTab to the symbols
+                MorphingSymbolView(symbol: activeTab == .home ? "plus" : "crown.fill",
                                    config: .init(font: .title3,
                                                  frame: .init(width: 42, height: 42),
                                                  radius: 2,
