@@ -31,26 +31,21 @@ struct Settings: View {
         NavigationStack {
             Form {
                 // User Preferences
-                Section(header: Text("Task Preferences")) {
+                Section(header: Text("General")) {
                     //Toggle("Dark Mode", isOn: $isDarkMode)
-                    Picker("Sort Task By", selection: $sortOption) {
-                        ForEach(TaskSortCriteria.allCases, id: \.self) { criteria in
-                            Text(criteria.rawValue).tag(criteria.rawValue)
-                        }
-                    }
-                    Picker("Start of the Week", selection: $startOfWeek) {
-                        ForEach(weekStartOptions, id: \.self) { option in
-                            Text(option)
-                        }
-                    }
+                    
                 }
                 
                 // MARK: Notifications
                 Section(header: Text("Notifications")){
-                    Toggle("Allow Notifications", isOn: $notificationsEnabled)
+                    Toggle("Notifications", isOn: $notificationsEnabled)
                         .onChange(of: notificationsEnabled) { oldValue, newValue in
                             NotificationManager.shared.toggleNotifications(enable: newValue)
                         }
+                    
+                    Text("Reminders for tasks")
+                    Text("Snooze options")
+                    Text("Daily Summary")
                     
                     /*
                     if notificationsEnabled {
@@ -64,6 +59,27 @@ struct Settings: View {
                     }
                      */
                 }
+                
+                Section(header: Text("Task Preferences")) {
+                    Picker("Start of the Week", selection: $startOfWeek) {
+                        ForEach(weekStartOptions, id: \.self) { option in
+                            Text(option)
+                        }
+                    }
+                    
+                    Text("Task Priority")
+                    
+                    Picker("Sort Task By", selection: $sortOption) {
+                        ForEach(TaskSortCriteria.allCases, id: \.self) { criteria in
+                            Text(criteria.rawValue).tag(criteria.rawValue)
+                        }
+                    }
+                }
+                
+                
+                
+                
+                
                 
                 // Customization
                 Section(header: Text("Customization")) {
@@ -96,11 +112,12 @@ struct Settings: View {
                 // Support
                 Section(header: Text("Support")) {
                     NavigationLink("Help & FAQ", destination: HelpFAQView())
-                    HStack {
-                        Text("App Version")
-                        Spacer()
-                        Text("1.0.0").foregroundColor(.gray)
-                    }
+                }
+                
+                Section(header: Text("Legal")) {
+                    NavigationLink("Privacy Policy", destination: Text("Privacy Policy"))
+                    NavigationLink("Terms of Service", destination: Text("Terms of Service"))
+                    NavigationLink("Developer credits", destination: Text("Developer credits"))
                 }
                 
                 // Miscellaneous
