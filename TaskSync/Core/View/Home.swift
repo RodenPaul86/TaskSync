@@ -296,17 +296,16 @@ struct Home: View {
     // MARK: Header View
     func HeaderView() -> some View {
         VStack {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 10) {
                     Text(getDynamicDateTitle(for: selectedDate))
                         .font(.largeTitle.bold())
                     
-                    Spacer()
-                    
                     if Calendar.current.isDate(selectedDate, inSameDayAs: Date()) {
                         Text("\(Date().formatted(.dateTime.month())), \(Date().formatted(.dateTime.year()))")
-                            .font(.largeTitle.bold())
+                            .font(.title2.bold())
                             .foregroundStyle(.gray)
+                            .baselineOffset(-10)
                     }
                 }
                 .hLeading()
