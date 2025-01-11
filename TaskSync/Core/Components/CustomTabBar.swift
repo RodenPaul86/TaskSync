@@ -107,7 +107,7 @@ struct CustomTabBar: View {
                 // Clearing Edit Data
                 taskModel.editTask = nil
             } content: {
-                NewTaskView()
+                newTaskView()
                     .interactiveDismissDisabled(true)  // Disabling Dismiss on Swipe
                     .environmentObject(taskModel)
             }

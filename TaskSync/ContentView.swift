@@ -21,28 +21,28 @@ struct ContentView: View {
                 if #available(iOS 18.0, *) {
                     TabView(selection: $activeTab) {
                         Tab.init(value: .home) {
-                            Home()
+                            homeView()
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
                         Tab.init(value: .search) {
-                            SearchView(isSearching: $isSearching, filteredTasks: $filteredTasks)
+                            searchView(isSearching: $isSearching, filteredTasks: $filteredTasks)
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
                         Tab.init(value: .whatsNew) {
-                            WhatsNewView()
+                            whatsNewView()
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                         
                         Tab.init(value: .settings) {
-                            Settings()
+                            settingsView()
                                 .toolbarVisibility(.hidden, for: .tabBar)
                         }
                     }
                 } else {
                     TabView(selection: $activeTab) {
-                        Home()
+                        homeView()
                             .tag(TabModel.home)
                             .background {
                                 if !isTabBarHidden {

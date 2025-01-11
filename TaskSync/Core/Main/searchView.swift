@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreData
 
-struct SearchView: View {
+struct searchView: View {
     @Binding var isSearching: Bool
     @Binding var filteredTasks: [Task]
     @Environment(\.managedObjectContext) var context

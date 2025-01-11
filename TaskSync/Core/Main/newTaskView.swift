@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreData
 
-struct NewTaskView: View {
+struct newTaskView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) var context
     @EnvironmentObject var taskModel: TaskViewModel

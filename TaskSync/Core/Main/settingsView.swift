@@ -8,7 +8,7 @@
 import SwiftUI
 import UserNotifications
 
-struct Settings: View {
+struct settingsView: View {
     @StateObject var taskModel: TaskViewModel = TaskViewModel() // Observing TaskViewModel
     
     
@@ -208,7 +208,7 @@ struct Settings: View {
 }
 
 #Preview {
-    Settings()
+    settingsView()
 }
 
 struct ReusableSection: View {

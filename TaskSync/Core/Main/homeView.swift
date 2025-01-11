@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreData
 
-struct Home: View {
+struct homeView: View {
     @AppStorage("startOfWeek") private var startOfWeek: String = "Sunday" // Observing user preference
     @StateObject var taskModel: TaskViewModel = TaskViewModel() // Observing TaskViewModel
     @Namespace var animation
@@ -272,7 +272,7 @@ struct Home: View {
             .sheet(isPresented: $taskModel.addNewTask) {
                 taskModel.editTask = nil
             } content: {
-                NewTaskView()
+                newTaskView()
                     .environmentObject(taskModel)
             }
             .confirmationDialog("", isPresented: $showActionSheet, titleVisibility: .hidden) {
@@ -400,7 +400,7 @@ struct Home: View {
     }
 }
 
-extension Home {
+extension homeView {
     // Function to return dynamic date title
     private func getDynamicDateTitle(for date: Date) -> String {
         let calendar = Calendar.current
@@ -472,5 +472,5 @@ extension View {
 }
 
 #Preview {
-    Home()
+    homeView()
 }

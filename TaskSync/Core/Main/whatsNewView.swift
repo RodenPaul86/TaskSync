@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WhatsNewView: View {
+struct whatsNewView: View {
     let updates: [Update] = [
         Update(
             title: "TaskSync is Here!",
@@ -87,5 +87,5 @@ struct Update: Identifiable {
 
 // Preview
 #Preview {
-    WhatsNewView()
+    whatsNewView()
 }
