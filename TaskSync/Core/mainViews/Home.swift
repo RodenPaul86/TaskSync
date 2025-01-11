@@ -39,6 +39,7 @@ struct Home: View {
         .onAppear {
             DispatchQueue.main.async {
                 taskModel.autoDeleteOldTasks(context: context)
+                taskModel.startSyncing()
             }
         }
     }

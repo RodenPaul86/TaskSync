@@ -15,7 +15,7 @@ struct FAQItem: Identifiable {
 }
 
 // MARK: Data
-struct HelpFAQView: View {
+struct HelpFAQ: View {
     @State private var faqItems: [FAQItem] = [
         FAQItem(question: "How do I add a new task?",
                 answer: "To add a new task, tap the “+” button on the main screen. Enter the task title, description (optional), set a due date. Once you’re done, tap “Create” to add the task to your list."),
@@ -130,5 +130,5 @@ struct FAQRow: View {
 }
 
 #Preview {
-    HelpFAQView()
+    HelpFAQ()
 }
