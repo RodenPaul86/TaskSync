@@ -22,6 +22,7 @@ struct homeView: View {
     
     @Environment(\.managedObjectContext) var context
     @State private var showActionSheet = false
+    @State private var showSheet: Bool = false
     
     // MARK: Main View
     var body: some View {
@@ -123,7 +124,7 @@ struct homeView: View {
             }
             
             VStack {
-                HStack(alignment: .top, spacing: 15) {
+                HStack(alignment: .top, spacing: 15) { // <-- this is the beginning of task card view.
                     VStack(alignment: .leading, spacing: 8) {
                         Text(task.taskTitle ?? "")
                             .font(.title3.bold())
@@ -168,6 +169,9 @@ struct homeView: View {
                             }
                         }
                     }
+                }
+                .onTapGesture {
+                    showSheet.toggle()
                 }
                 
                 if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
@@ -290,6 +294,10 @@ struct homeView: View {
                     Text("Delete Task")
                 }
             }
+            .floatingBottomSheet(isPresented: $showSheet, content: {
+                TaskDetailView()
+                    .presentationDetents([.height(330)])
+            })
         }
         .hLeading()
     }
@@ -400,6 +408,10 @@ struct homeView: View {
     }
 }
 
+#Preview {
+    homeView()
+}
+
 extension homeView {
     // Function to return dynamic date title
     private func getDynamicDateTitle(for date: Date) -> String {
@@ -471,6 +483,52 @@ extension View {
     }
 }
 
-#Preview {
-    homeView()
+/// Sample View
+struct SheetView: View {
+    var title: String
+    var content: String
+    var image: Config
+    var button1: Config
+    var button2: Config?
+    var body: some View {
+        VStack(spacing: 15) {
+            Image(systemName: image.content)
+                .font(.title)
+                .foregroundStyle(image.foreground)
+                .frame(width: 65, height: 65)
+                .background(image.tint.gradient, in: .circle)
+            
+            Text(title)
+                .font(.title3.bold())
+                .foregroundStyle(.black)
+            
+            Text(content)
+                .font(.callout)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .foregroundStyle(.gray)
+            
+            ButtonView(button1)
+            
+            if let button2 {
+                ButtonView(button2)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func ButtonView(_ config: Config) -> some View {
+        Text(config.content)
+            .fontWeight(.semibold)
+            .foregroundColor(config.foreground)
+            .padding(.vertical, 10)
+            .frame(minWidth: 0, maxWidth: .infinity)
+            .background(config.tint.gradient, in: .rect(cornerRadius: 10))
+    }
+    
+    struct Config {
+        var content: String
+        var tint: Color
+        var foreground: Color
+    }
 }
