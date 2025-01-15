@@ -26,7 +26,6 @@ enum SyncStatus {
 }
 
 class TaskViewModel: ObservableObject {
-    
     // MARK: - Published Properties
     @Published var tasks: [Task] = [] // All tasks for syncing
     @Published var currentWeek: [Date] = [] // Current week's dates
@@ -34,6 +33,7 @@ class TaskViewModel: ObservableObject {
     @Published var filteredTasks: [Task]? // Filtered tasks for the day
     @Published var addNewTask: Bool = false // For adding new tasks
     @Published var editTask: Task? // For editing tasks
+    @Published var showTask: Task?
     @Published var syncStatus: SyncStatus = .idle // Sync status tracking
     @AppStorage("lastSyncTime") var lastSyncTime: Date?
     private let persistenceController = PersistenceController.shared

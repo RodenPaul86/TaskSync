@@ -58,18 +58,29 @@ struct newTaskView: View {
             InputField(title: "Description", text: $taskDescription, placeholder: "Description (Optional)")
             HStack {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Date")
-                        .font(.callout)
-                        .foregroundStyle(.gray)
+                    HStack {
+                        Text("Due Date")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                        
+                        Image(systemName: "calendar")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                    }
                     DatePicker("", selection: $taskDate, displayedComponents: .date)
                         .labelsHidden()
                         .accentColor(.black)
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Time")
-                        .font(.callout)
-                        .foregroundStyle(.gray)
+                    HStack {
+                        Text("Time")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                        Image(systemName: "clock")
+                            .font(.callout)
+                            .foregroundStyle(.gray)
+                    }
                     DatePicker("", selection: $taskDate, displayedComponents: .hourAndMinute)
                         .labelsHidden()
                         .accentColor(.black)
