@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct TaskDetailView: View {
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         VStack(spacing: 16) {
             // Title Section
@@ -15,12 +18,10 @@ struct TaskDetailView: View {
                 HStack(alignment: .top) {
                     HStack {
                         VStack(alignment: .leading) {
-                            HStack {
-                                Text("1/11/25, 10:00 PM")
-                                    .font(.footnote)
-                                    .foregroundColor(.gray)
-                            }
-                            Text("Wind Down")
+                            Text("01/11/2025, 10:00 PM")
+                                .font(.footnote)
+                                .foregroundColor(.gray)
+                            Text("No Title")
                                 .font(.title2)
                                 .fontWeight(.semibold)
                         }
@@ -29,7 +30,7 @@ struct TaskDetailView: View {
                     Spacer()
                     
                     Button(action: {
-                        // Close action
+                        dismiss()
                     }) {
                         Image(systemName: "xmark")
                             .font(.system(size: 15)).bold()

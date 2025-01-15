@@ -4,6 +4,7 @@
         <attribute name="hasNotification" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isCanceled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isCrossedOut" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="notificationID" optional="YES" attributeType="String"/>
         <attribute name="selectedHour" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="selectedMinute" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

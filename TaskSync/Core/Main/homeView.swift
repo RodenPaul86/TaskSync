@@ -9,8 +9,12 @@ import SwiftUI
 import CoreData
 
 struct homeView: View {
-    @AppStorage("startOfWeek") private var startOfWeek: String = "Sunday" // Observing user preference
+    @Environment(\.managedObjectContext) var context
     @StateObject var taskModel: TaskViewModel = TaskViewModel() // Observing TaskViewModel
+    
+    @AppStorage("startOfWeek") private var startOfWeek: String = "Sunday" // Observing user preference
+    @AppStorage("sortOption") private var sortOption: String = "Due Date"
+    
     @Namespace var animation
     @State private var selectedDate: Date = Date() // Default to today
     
@@ -18,18 +22,32 @@ struct homeView: View {
     @State private var isTodayUpdated = false
     @State private var timer: Timer?
     
-    @AppStorage("sortOption") private var sortOption: String = "Due Date"
+    @State private var sortCriteria: TaskSortCriteria = .dueDate
     
-    @Environment(\.managedObjectContext) var context
-    @State private var showActionSheet = false
     @State private var showSheet: Bool = false
+    @State private var showDeleteComfirm = false
+    @State private var showActionComfirm = false
+    
+    private let dateToFilter = Date() // Today's date
+    
     
     // MARK: Main View
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 15, pinnedViews: [.sectionHeaders]) {
                 Section {
-                    TasksView()
+                    VStack {
+                        LazyVStack(spacing: 20) {
+                            DynamicFilteredView(dateToFilter: dateToFilter, sortCriteria: sortCriteria) { (task: Task) in
+                                TaskCardView(task: task)
+                            }
+                        }
+                        .padding()
+                    }
+                    .onChange(of: sortOption) { oldValue, newValue in
+                        // Update the sortCriteria when sortOption changes
+                        sortCriteria = TaskSortCriteria(rawValue: newValue) ?? .priorityAndDueDate
+                    }
                 } header: {
                     HeaderView()
                 }
@@ -42,25 +60,6 @@ struct homeView: View {
                 taskModel.autoDeleteOldTasks(context: context)
                 taskModel.startSyncing()
             }
-        }
-    }
-    
-    // MARK: Task View
-    func TasksView() -> some View {
-        var sortCriteria = TaskSortCriteria(rawValue: sortOption) ?? .dueDate
-        
-        return VStack {
-            // Display the tasks with the selected sorting criteria
-            LazyVStack(spacing: 20) {
-                DynamicFilteredView(dateToFilter: taskModel.currentDay, sortCriteria: sortCriteria) { (task: Task) in
-                    TaskCardView(task: task)
-                }
-            }
-            .padding()
-        }
-        .onChange(of: sortOption) { oldValue, newValue in
-            // Update the sortCriteria when sortOption changes
-            sortCriteria = TaskSortCriteria(rawValue: newValue) ?? .priorityAndDueDate
         }
     }
     
@@ -93,6 +92,10 @@ struct homeView: View {
             }
         }
         
+        var isCurrentHour: Bool {
+            taskModel.isCurrentHour(date: task.taskDate ?? Date())
+        }
+        
         return HStack(alignment: .top, spacing: 30) {
             VStack(spacing: 10) {
                 ZStack {
@@ -100,12 +103,12 @@ struct homeView: View {
                         .fill(
                             task.isCompleted ? .green :
                                 task.isCanceled ? .red :
-                                (taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .black :
+                                (isCurrentHour ? .black :
                                     (task.taskDate ?? Date()).compare(Date()) == .orderedAscending ? .gray : .clear)
                         )
                         .frame(width: 15, height: 15)
                         .background(Circle().stroke(.black, lineWidth: 3).padding(-3))
-                        .scaleEffect(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0.8 : 1)
+                        .scaleEffect(isCurrentHour ? 0.8 : 1)
                     
                     if task.isCanceled {
                         Text("X")
@@ -119,107 +122,101 @@ struct homeView: View {
                             .font(.system(size: 10, weight: .bold))
                     }
                 }
-                
                 Rectangle().fill(.black).frame(width: 3)
             }
             
             VStack {
-                HStack(alignment: .top, spacing: 15) { // <-- this is the beginning of task card view.
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(task.taskTitle ?? "")
-                            .font(.title3.bold())
-                            .lineLimit(1)
-                        
-                        Text(task.taskDescription ?? "")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(3)
-                    }
-                    .hLeading()
-                    
-                    VStack(alignment: .trailing) {
-                        Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "No date")
-                            .font(.callout)
-                        
-                        if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
+                VStack(alignment: .leading) { // <-- This is the beginning of task card.
+                    HStack(alignment: .top) { // <-- Task Header
+                        VStack(alignment: .leading) {
                             HStack {
-                                Text("\(task.selectedHour) hr")
-                                Text("\(task.selectedMinute) min")
-                            }
-                            .font(.caption)
-                            .padding(.vertical, 10)
-                        } else {
-                            if task.taskPriority == "Urgent" {
-                                HStack {
-                                    if let priority = task.taskPriority {
-                                        Image(systemName: icon(for: priority))
-                                    }
-                                    Text("\(task.taskPriority ?? "No Priority")")
-                                        .fontWeight(.bold)
+                                Text(task.taskDate?.formatted(date: .omitted, time: .shortened) ?? "No date")
+                                    .font(.footnote)
+                                    .foregroundColor(.gray)
+                                
+                                if isCurrentHour {
+                                    Text("(\(task.selectedHour) hr, \(task.selectedMinute) min)")
+                                        .font(.footnote)
+                                        .foregroundStyle(.gray)
                                 }
-                                .font(.caption)
-                                .foregroundColor(.black)
-                                .padding(10)
-                                .background(GeometryReader { geometry in
-                                    Capsule(style: .circular)
-                                        .strokeBorder(.gray, lineWidth: 1)
-                                        .padding(2)
-                                        .frame(width: geometry.size.width, height: geometry.size.height)
-                                })
                             }
+                            
+                            Text(task.taskTitle ?? "")
+                                .font(.title2.bold())
+                                .foregroundStyle(task.isCrossedOut ? .gray : taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .white : .black)
+                                .strikethrough(task.isCrossedOut, color: .black)
+                                .animation(.easeInOut, value: task.isCrossedOut)
+                                .lineLimit(1)
+                        }
+                        
+                        Spacer()
+                        
+                        if isCurrentHour || task.taskPriority == "Urgent" {
+                            Image(systemName: icon(for: task.taskPriority ?? ""))
+                                .foregroundStyle(task.isCompleted ? .gray : isCurrentHour ? .white : .black)
+                                .font(.footnote)
+                                .padding(10)
+                                
                         }
                     }
+                    
+                    Text(task.taskDescription ?? "")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
+                        .padding(.vertical, 2)
+                        .lineLimit(3)
                 }
-                .onTapGesture {
-                    showSheet.toggle()
-                }
+                .hLeading()
                 
-                if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
+                if isCurrentHour {
                     HStack {
-                        HStack {
-                            if let priority = task.taskPriority {
-                                Image(systemName: icon(for: priority))
-                                    .foregroundColor(task.isCompleted ? .gray : .white)
-                            }
-                            Text(task.isCompleted ? "Completed" : "\(task.taskPriority ?? "No Priority")")
-                                .fontWeight(.bold)
-                                .foregroundColor(task.isCompleted ? .gray : .white)
-                        }
-                        .font(.footnote)
-                        .padding(10)
-                        .background(GeometryReader { geometry in
-                            Capsule(style: .circular)
-                                .strokeBorder(.white, lineWidth: 1)
-                                .padding(2)
-                                .frame(width: geometry.size.width, height: geometry.size.height)
-                        })
-                        .hLeading()
+                        Spacer()
                         
-                        if !task.isCanceled && !task.isCompleted {
-                            Button {
+                        Button(action: {
+                            showActionComfirm.toggle()
+                        }, label: {
+                            Image(systemName: "ellipsis")
+                                .foregroundStyle(.black)
+                                .frame(width: 42, height: 42)
+                                .background(Color.white, in: Circle())
+                        })
+                    }
+                    .confirmationDialog("What would you like to do?", isPresented: $showActionComfirm, titleVisibility: .visible) {
+                        // Real actions
+                        if !task.isCompleted {
+                            Button("Complete") {
+                                task.isCrossedOut.toggle()
                                 task.isCompleted = true
                                 DispatchQueue.main.async {
                                     try? context.save()
                                 }
-                            } label: {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(.black)
-                                    .padding(10)
-                                    .background(Color.white, in: Circle())
                             }
                         }
+                        
+                        Button("Edit Task") {
+                            taskModel.editTask = task
+                            taskModel.addNewTask.toggle()
+                        }
+                        
+                        Button("Delete", role: .destructive) {
+                            showDeleteComfirm.toggle()
+                        }
+                        
+                        Button("Cancel", role: .cancel) {}
                     }
-                    .padding(.top)
                 }
             }
-            .foregroundStyle(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? .white : .black)
-            .padding(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 15 : 15)
-            .padding(.bottom, taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 0 : 10)
+            .padding(isCurrentHour ? 15 : 15)
+            .padding(.bottom, isCurrentHour ? 0 : 10)
             .hLeading()
             .background(
-                Color(.black)
-                    .cornerRadius(25)
-                    .opacity(taskModel.isCurrentHour(date: task.taskDate ?? Date()) ? 1 : 0)
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(isCurrentHour ? .black : Color.clear)
+                    .overlay(
+                        isCurrentHour ? nil : Rectangle()
+                            .frame(height: 1)
+                            .foregroundStyle(.gray), alignment: .top
+                    )
             )
             .contextMenu {
                 VStack {
@@ -230,11 +227,11 @@ struct homeView: View {
                                 taskModel.editTask = task
                                 taskModel.addNewTask.toggle()
                             } label: {
-                                Label("Edit", systemImage: "pencil")
+                                Label("Edit", systemImage: "square.and.pencil")
                             }
                         }
                         
-                        if taskModel.isCurrentHour(date: task.taskDate ?? Date()) {
+                        if isCurrentHour {
                             if !task.isCompleted {
                                 Button {
                                     task.isCompleted = true
@@ -267,7 +264,7 @@ struct homeView: View {
                     }
                     
                     Button(role: .destructive) {
-                        showActionSheet.toggle()
+                        showDeleteComfirm.toggle()
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
@@ -279,25 +276,13 @@ struct homeView: View {
                 newTaskView()
                     .environmentObject(taskModel)
             }
-            .confirmationDialog("", isPresented: $showActionSheet, titleVisibility: .hidden) {
+            .confirmationDialog("Are you sure you want to delete this task?", isPresented: $showDeleteComfirm, titleVisibility: .visible) {
                 Button(role: .destructive) {
-                    if task.hasNotification && ((task.notificationID?.isEmpty) == nil) {
-                        NotificationManager.shared.cancelNotification(withIdentifier: task.notificationID ?? "")
-                        task.hasNotification = false
-                    }
-                    
-                    context.delete(task)
-                    DispatchQueue.main.async {
-                        try? context.save()
-                    }
+                    deleteTask(task)
                 } label: {
                     Text("Delete Task")
                 }
             }
-            .floatingBottomSheet(isPresented: $showSheet, content: {
-                TaskDetailView()
-                    .presentationDetents([.height(330)])
-            })
         }
         .hLeading()
     }
@@ -406,6 +391,25 @@ struct homeView: View {
         timer?.invalidate()
         timer = nil
     }
+    
+    func deleteTask(_ task: Task) {
+        guard let context = task.managedObjectContext else { return }
+        
+        let taskID = task.objectID // Get unique ID for the task
+        
+        DispatchQueue.main.async {
+            do {
+                // Fetch the object from Core Data using the objectID
+                if let taskToDelete = try context.existingObject(with: taskID) as? Task {
+                    context.delete(taskToDelete) // Safely delete the object
+                    try context.save() // Save changes
+                    print("Task deleted: \(taskToDelete.taskTitle ?? "Unknown")")
+                }
+            } catch {
+                print("Error deleting task: \(error)")
+            }
+        }
+    }
 }
 
 #Preview {
@@ -450,9 +454,9 @@ extension homeView {
         case "Urgent":
             return "flame.fill"
         case "Normal":
-            return "hourglass"
+            return "tray"
         case "Low":
-            return "leaf.fill"
+            return "leaf"
         default:
             return "circle"
         }

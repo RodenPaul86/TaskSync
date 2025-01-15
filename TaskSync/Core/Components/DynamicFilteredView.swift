@@ -17,69 +17,53 @@ enum TaskSortCriteria: String, CaseIterable, Hashable {
 }
 
 struct DynamicFilteredView<Content: View, T>: View where T: NSManagedObject {
-    // MARK: CoreData Request
     @FetchRequest var request: FetchedResults<T>
     private var content: (T) -> Content
-    private var dateToFilter: Date
-    private var sortCriteria: TaskSortCriteria
     
-    // MARK: Building Custom ForEach which will give CoreData object to build view
     init(dateToFilter: Date, sortCriteria: TaskSortCriteria, @ViewBuilder content: @escaping (T) -> Content) {
-        self.dateToFilter = dateToFilter
-        self.sortCriteria = sortCriteria
-        
-        // Build the predicate for filtering
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: dateToFilter)
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
-        let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
         
         let filterKey = "taskDate"
-        let predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@", argumentArray: [today, tomorrow, yesterday])
+        let predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@", argumentArray: [today, tomorrow])
         
-        // Sort based on the selected sort criteria
-        let sortDescriptor: NSSortDescriptor
+        var sortDescriptors: [NSSortDescriptor] = []
+        
         switch sortCriteria {
         case .priority:
-            sortDescriptor = NSSortDescriptor(keyPath: \Task.taskPriority, ascending: false)
+            sortDescriptors = [NSSortDescriptor(keyPath: \Task.taskPriority, ascending: false)]
         case .dueDate:
-            sortDescriptor = NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)
+            sortDescriptors = [NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)]
         case .title:
-            sortDescriptor = NSSortDescriptor(keyPath: \Task.taskTitle, ascending: true)
-            
+            sortDescriptors = [NSSortDescriptor(keyPath: \Task.taskTitle, ascending: true)]
         case .titleAndDueDate:
-            let primarySort = NSSortDescriptor(keyPath: \Task.taskTitle, ascending: false)
-            let secondarySort = NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)
-            _request = FetchRequest(entity: T.entity(), sortDescriptors: [primarySort, secondarySort], predicate: predicate)
-            self.content = content
-            self.dateToFilter = dateToFilter
-            return
-            
+            sortDescriptors = [
+                NSSortDescriptor(keyPath: \Task.taskTitle, ascending: true),
+                NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)
+            ]
         case .priorityAndDueDate:
-            let primarySort = NSSortDescriptor(keyPath: \Task.taskPriority, ascending: false)
-            let secondarySort = NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)
-            _request = FetchRequest(entity: T.entity(), sortDescriptors: [primarySort, secondarySort], predicate: predicate)
-            self.content = content
-            self.dateToFilter = dateToFilter
-            return
+            sortDescriptors = [
+                NSSortDescriptor(keyPath: \Task.taskPriority, ascending: false),
+                NSSortDescriptor(keyPath: \Task.taskDate, ascending: true)
+            ]
         }
         
-        // Initializing FetchRequest
-        _request = FetchRequest(entity: T.entity(), sortDescriptors: [sortDescriptor], predicate: predicate)
+        _request = FetchRequest(entity: T.entity(), sortDescriptors: sortDescriptors, predicate: predicate)
         self.content = content
     }
     
     var body: some View {
         Group {
             if request.isEmpty {
-                Text(getTaskMessage(for: dateToFilter))
+                Text("No tasks available")
                     .foregroundColor(.gray)
                     .italic()
-                    .font(.title3)
-                    .padding()
             } else {
-                ForEach(request, id: \.objectID) { object in
-                    self.content(object)
+                LazyVStack(spacing: 20) {
+                    ForEach(request, id: \.objectID) { object in
+                        content(object)
+                    }
                 }
             }
         }
