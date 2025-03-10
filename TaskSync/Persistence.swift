@@ -67,9 +67,11 @@ struct PersistenceController {
         print("Unresolved error: \(nsError), \(nsError.userInfo)")
         
         // Optionally show a global alert
+        /*
         AlertHelper.showGlobalAlert(
             title: "Core Data Error",
             message: "An issue occurred while accessing the app's data. Please try again later or contact support."
         )
+         */
     }
 }
