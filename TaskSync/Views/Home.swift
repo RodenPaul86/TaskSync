@@ -11,6 +11,13 @@ struct Home: View {
     @StateObject var taskModel: TaskViewModel = .init()
     @Namespace var animation
     
+    // MARK: Fetching Task
+    @FetchRequest(entity: Task.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: false)], predicate: nil, animation: .easeInOut) var task: FetchedResults<Task>
+    
+    // MARK: Environment
+    
+    @Environment(\.self) var environment
+    
     // MARK: Main View
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -27,19 +34,14 @@ struct Home: View {
                 CustomSegmentedBar()
                     .padding(.top, 5)
                 
-                // TODO: Task View
-                
-                
-                
-                
-                
+                TaskView()
             }
             .padding()
         }
         .overlay(alignment: .bottom) {
             // MARK: ADD Button
             Button {
-                
+                taskModel.openEditTask.toggle()
             } label: {
                 Label {
                     Text("Add Task")
@@ -63,6 +65,12 @@ struct Home: View {
                     .white
                 ], startPoint: .top, endPoint: .bottom)
             }
+        }
+        .fullScreenCover(isPresented: $taskModel.openEditTask) {
+            taskModel.resetTaskData()
+        } content: {
+            AddNewTask()
+                .environmentObject(taskModel)
         }
     }
     
@@ -90,8 +98,92 @@ struct Home: View {
                     .onTapGesture {
                         withAnimation { taskModel.currentTab = tab }
                     }
-                
             }
+        }
+    }
+    
+    // MARK: TaskView
+    func TaskView() -> some View {
+        LazyVStack(spacing: 20) {
+            // MARK: Custom filtering request view
+            DynamicFilteredView(currentTab: taskModel.currentTab) { (task: Task) in
+                TaskRowView(task: task)
+            }
+        }
+        .padding(.top, 20)
+    }
+    
+    // MARK: Task Row View
+    @ViewBuilder
+    func TaskRowView(task: Task) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text(task.type ?? "")
+                    .font(.callout)
+                    .padding(.vertical, 5)
+                    .padding(.horizontal)
+                    .background {
+                        Capsule()
+                            .fill(.white.opacity(0.3))
+                    }
+                
+                Spacer()
+                
+                // MARK: Edit button only for none completed tasks
+                if !task.isCompleted && taskModel.currentTab != "Failed" {
+                    Button(action: {
+                        taskModel.editTask = task
+                        taskModel.openEditTask = true
+                        taskModel.setupTask()
+                    }) {
+                        Image(systemName: "square.and.pencil")
+                            .foregroundStyle(.black)
+                    }
+                }
+            }
+            
+            Text(task.title ?? "")
+                .font(.title2.bold())
+                .foregroundStyle(.black)
+                .padding(.vertical, 10)
+            
+            HStack(alignment: .bottom, spacing: 0) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Label {
+                        Text((task.deadline ?? Date()).formatted(date: .long, time: .omitted))
+                    } icon: {
+                        Image(systemName: "calendar")
+                    }
+                    .font(.caption)
+                    
+                    Label {
+                        Text((task.deadline ?? Date()).formatted(date: .omitted, time: .shortened))
+                    } icon: {
+                        Image(systemName: "clock")
+                    }
+                    .font(.caption)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                if !task.isCompleted && taskModel.currentTab != "Failed" {
+                    Button(action: {
+                        // MARK: Updating CoreData
+                        task.isCompleted.toggle()
+                        try? environment.managedObjectContext.save()
+                    }) {
+                        Circle()
+                            .strokeBorder(.black, lineWidth: 1.5)
+                            .frame(width: 25, height: 25)
+                            .contentShape(Circle())
+                    }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(task.color ?? "Yellow"))
         }
     }
     
