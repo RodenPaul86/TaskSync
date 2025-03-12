@@ -137,6 +137,7 @@ struct Home: View {
                         taskModel.setupTask()
                     }) {
                         Image(systemName: "square.and.pencil")
+                            .font(.title2)
                             .foregroundStyle(.black)
                     }
                 }
