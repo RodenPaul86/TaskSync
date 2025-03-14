@@ -8,24 +8,29 @@
 import SwiftUI
 
 struct Home: View {
+    // MARK: Environment
+    @Environment(\.self) var environment
+    
     @StateObject var taskModel: TaskViewModel = .init()
     @Namespace var animation
     
     // MARK: Fetching Task
-    @FetchRequest(entity: Task.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: false)], predicate: nil, animation: .easeInOut) var task: FetchedResults<Task>
-    
-    // MARK: Environment
-    
-    @Environment(\.self) var environment
+    @FetchRequest(
+        entity: Task.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: false)],
+        predicate: NSPredicate(format: "deadline >= %@ AND deadline < %@ AND isCompleted == NO",
+                               Calendar.current.startOfDay(for: Date()) as NSDate,
+                               Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: Date()))! as NSDate), animation: .easeInOut
+    ) var todayTasks: FetchedResults<Task>
     
     // MARK: Main View
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             VStack {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Welcom Back")
+                    Text("Good Morning ")
                         .font(.callout)
-                    Text("Here's Update Today.")
+                    Text("You have \(todayTasks.count) tasks today")
                         .font(.title2.bold())
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -77,7 +82,7 @@ struct Home: View {
     // MARK: Custom Segmented Bar
     @ViewBuilder
     func CustomSegmentedBar() -> some View {
-        let tabs = ["Today", "Upcoming", "Task Done", "Failed"]
+        let tabs = ["Today", "Upcoming", "Complete", "Incomplete"]
         HStack(spacing: 10) {
             ForEach(tabs, id: \.self) { tab in
                 Text(tab)

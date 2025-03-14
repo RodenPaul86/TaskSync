@@ -39,7 +39,7 @@ struct DynamicFilteredView<Content: View,T>: View where T: NSManagedObject {
             // This will fetch task between today and tomorrow which is 24hrs
             predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [today, tomorrow, 0])
             
-        } else if currentTab == "Failed" {
+        } else if currentTab == "Incomplete" {
             let today = calendar.startOfDay(for: Date())
             let past = Date.distantPast
             
@@ -52,7 +52,7 @@ struct DynamicFilteredView<Content: View,T>: View where T: NSManagedObject {
             predicate = NSPredicate(format: "isCompleted == %i", argumentArray: [1])
         }
         
-        _request = FetchRequest(entity: T.entity(), sortDescriptors: [.init(keyPath: \Task.deadline, ascending: false)], predicate: predicate)
+        _request = FetchRequest(entity: T.entity(), sortDescriptors: [.init(keyPath: \Task.deadline, ascending: true)], predicate: predicate)
         self.content = content
     }
     
@@ -66,7 +66,6 @@ struct DynamicFilteredView<Content: View,T>: View where T: NSManagedObject {
             } else {
                 ForEach(request, id: \.objectID) { object in
                     self.content(object)
-                    
                 }
             }
         }
