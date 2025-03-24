@@ -8,51 +8,49 @@
 import SwiftUI
 import CoreData
 
-struct DynamicFilteredView<Content: View,T>: View where T: NSManagedObject {
-    // MARK: CoreData request
+struct DynamicFilteredView<Content: View, T>: View where T: NSManagedObject {
     @FetchRequest var request: FetchedResults<T>
     let content: (T) -> Content
     
-    // MARK: Building custom forEach which will give CoreData object to build view
     init(currentTab: String, @ViewBuilder content: @escaping (T) -> Content) {
-        // MARK: Predicate to filter current date Tasks
         let calendar = Calendar.current
-        var predicate: NSPredicate!
+        var predicate: NSPredicate?
         
         if currentTab == "Today" {
             let today = calendar.startOfDay(for: Date())
             let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
             
-            // Filter Key
             let filterKey = "deadline"
-            
-            // This will fetch task between today and tomorrow which is 24hrs
             predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [today, tomorrow, 0])
             
         } else if currentTab == "Upcoming" {
             let today = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: Date())!)
-            let tomorrow = Date.distantFuture
+            let future = Date.distantFuture
             
-            // Filter Key
             let filterKey = "deadline"
-            
-            // This will fetch task between today and tomorrow which is 24hrs
-            predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [today, tomorrow, 0])
+            predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [today, future, 0])
             
         } else if currentTab == "Incomplete" {
             let today = calendar.startOfDay(for: Date())
             let past = Date.distantPast
             
-            // Filter Key
             let filterKey = "deadline"
-            
-            // This will fetch task between today and tomorrow which is 24hrs
             predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [past, today, 0])
-        } else {
+            
+        } else if currentTab == "Complete" {
             predicate = NSPredicate(format: "isCompleted == %i", argumentArray: [1])
+            
+        } else if currentTab == "All Tasks" {
+            predicate = nil // 🚩 No filtering, show everything!
+        } else {
+            // Fallback (optional)
+            predicate = NSPredicate(value: true)
         }
         
-        _request = FetchRequest(entity: T.entity(), sortDescriptors: [.init(keyPath: \Task.deadline, ascending: true)], predicate: predicate)
+        _request = FetchRequest(entity: T.entity(),
+                                sortDescriptors: [.init(keyPath: \Task.deadline, ascending: true)],
+                                predicate: predicate)
+        
         self.content = content
     }
     

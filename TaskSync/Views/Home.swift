@@ -23,25 +23,20 @@ struct Home: View {
                                Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: Date()))! as NSDate), animation: .easeInOut
     ) var todayTasks: FetchedResults<Task>
     
+    @State private var activeTab: TabModel = .today
+    
     // MARK: Main View
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Good Morning ")
-                        .font(.callout)
-                    Text("You have \(todayTasks.count) tasks today")
-                        .font(.title2.bold())
+            Section {
+                VStack {
+                    TaskView(currentTab: activeTab)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical)
+                .padding(.horizontal)
                 
-                CustomSegmentedBar()
-                    .padding(.top, 5)
-                
-                TaskView()
+            } header: {
+                HeaderView()
             }
-            .padding()
         }
         .overlay(alignment: .bottom) {
             // MARK: ADD Button
@@ -79,39 +74,11 @@ struct Home: View {
         }
     }
     
-    // MARK: Custom Segmented Bar
-    @ViewBuilder
-    func CustomSegmentedBar() -> some View {
-        let tabs = ["Today", "Upcoming", "Complete", "Incomplete"]
-        HStack(spacing: 10) {
-            ForEach(tabs, id: \.self) { tab in
-                Text(tab)
-                    .font(.callout)
-                    .fontWeight(.semibold)
-                    .scaleEffect(0.9)
-                    .foregroundColor(taskModel.currentTab == tab ? .white : .black)
-                    .padding(.vertical, 6)
-                    .frame(maxWidth: .infinity)
-                    .background {
-                        if taskModel.currentTab == tab {
-                            Capsule()
-                                .fill(.black)
-                                .matchedGeometryEffect(id: "TAB", in: animation)
-                        }
-                    }
-                    .contentShape(Capsule())
-                    .onTapGesture {
-                        withAnimation { taskModel.currentTab = tab }
-                    }
-            }
-        }
-    }
-    
     // MARK: TaskView
-    func TaskView() -> some View {
+    func TaskView(currentTab: TabModel) -> some View {
         LazyVStack(spacing: 20) {
             // MARK: Custom filtering request view
-            DynamicFilteredView(currentTab: taskModel.currentTab) { (task: Task) in
+            DynamicFilteredView(currentTab: currentTab.rawValue) { (task: Task) in
                 TaskRowView(task: task)
             }
         }
@@ -193,7 +160,105 @@ struct Home: View {
         }
     }
     
+    // MARK: Header View
+    func HeaderView() -> some View {
+        VStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(Date().formatted(.dateTime.month())) \(Date().formatted(.dateTime.day())), \(Date().formatted(.dateTime.year()))")
+                    .font(.callout.bold())
+                    .foregroundStyle(.gray)
+                
+                Text("Today")
+                    .font(.largeTitle.bold())
+                
+                Text("You have \(todayTasks.count) task\(todayTasks.count == 1 ? "" : "s") today")
+                    .font(.title3)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
+            
+            
+            // MARK: Custom Segmented Bar
+            VStack(spacing: 0) {
+                CustomTabBar(activeTab: $activeTab)
+            }
+        }
+    }
 }
+
+struct CustomTabBar: View {
+    @Binding var activeTab: TabModel
+    @Environment(\.colorScheme) private var scheme
+    
+    var body: some View {
+        GeometryReader { _ in
+            HStack(spacing: 8) {
+                HStack(spacing: activeTab == .allTask ? -15 : 8) {
+                    ForEach(TabModel.allCases.filter({ $0 != .allTask }), id:\.rawValue) { tab in
+                        ResizableTabButton(tab)
+                    }
+                }
+                
+                if activeTab == .allTask {
+                    ResizableTabButton(.allTask)
+                        .transition(.offset(x: 200))
+                }
+            }
+            .padding(.horizontal, 15)
+        }
+        .frame(height: 50)
+    }
+    
+    @ViewBuilder
+    func ResizableTabButton(_ tab: TabModel) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: tab.symbolImage)
+                .opacity(activeTab != tab ? 1 : 0)
+                .overlay {
+                    Image(systemName: tab.symbolImage)
+                        .symbolVariant(.fill)
+                        .opacity(activeTab == tab ? 1 : 0)
+                }
+            
+            if activeTab == tab {
+                Text(tab.rawValue)
+                    .font(.callout)
+                    .fontWeight(.semibold)
+                    .lineLimit(1)
+            }
+        }
+        .foregroundStyle(tab == .allTask ? schemeColor : activeTab == tab ? .white : .gray)
+        .frame(maxHeight: .infinity)
+        .frame(maxWidth: activeTab == tab ? .infinity : nil)
+        .padding(.horizontal, activeTab == tab ? 10 : 20)
+        .background {
+            Rectangle()
+                .fill(activeTab == tab ? tab.color : Color.gray.opacity(0.2))
+        }
+        .clipShape(.rect(cornerRadius: 20, style: .continuous))
+        .background {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.background)
+                .padding(activeTab == .allTask && tab != .allTask ? -3 : 3)
+        }
+        .contentShape(.rect)
+        .onTapGesture {
+            guard tab != .allTask else { return }
+            withAnimation(.bouncy) {
+                if activeTab == tab {
+                    activeTab = .allTask
+                } else {
+                    activeTab = tab
+                }
+            }
+        }
+    }
+    
+    var schemeColor: Color {
+        scheme == .dark ? .black : .white
+    }
+}
+
 
 #Preview {
     Home()
