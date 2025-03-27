@@ -159,7 +159,7 @@ struct Home: View {
         .frame(maxWidth: .infinity)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color(task.color ?? "Yellow"))
+                .fill(Color(task.color ?? "Gray"))
         }
     }
     
@@ -236,7 +236,7 @@ struct CustomTabBar: View {
         .padding(.horizontal, activeTab == tab ? 10 : 20)
         .background {
             Rectangle()
-                .fill(activeTab == tab ? tab.color : Color.gray.opacity(0.2))
+                .fill(activeTab == tab ? tab.color : Color(.systemGray6))
         }
         .clipShape(.rect(cornerRadius: 20, style: .continuous))
         .background {
