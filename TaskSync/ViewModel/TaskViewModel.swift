@@ -32,6 +32,7 @@ class TaskViewModel: ObservableObject {
         }
         
         task.title = taskTitle
+        task.desc = taskDescription
         task.color = taskColor
         task.deadline = taskDeadline
         task.type = taskType
@@ -56,7 +57,7 @@ class TaskViewModel: ObservableObject {
     func setupTask() {
         if let editTask = editTask {
             taskTitle = editTask.title ?? ""
-            taskDescription = ""
+            taskDescription = editTask.desc ?? ""
             taskColor = editTask.color ?? "Gray"
             taskDeadline = editTask.deadline ?? Date()
             taskType = editTask.type ?? "Basic"

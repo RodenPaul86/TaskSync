@@ -27,16 +27,16 @@ struct Home: View {
     
     // MARK: Main View
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            Section {
+        Section {
+            ScrollView(.vertical, showsIndicators: false) {
                 VStack {
                     TaskView(currentTab: activeTab)
                 }
                 .padding(.horizontal)
-                
-            } header: {
-                HeaderView()
             }
+            
+        } header: {
+            HeaderView()
         }
         .overlay(alignment: .bottom) {
             // MARK: ADD Button
@@ -119,14 +119,19 @@ struct Home: View {
             }
             
             Text(task.title ?? "")
-                .font(.title2.bold())
-                .foregroundStyle(.black)
-                .padding(.vertical, 10)
+                .font(.title.bold())
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+            
+            Text(task.desc ?? "")
+                .font(.callout)
+                .foregroundStyle(.gray)
+                .lineLimit(2)
             
             HStack(alignment: .bottom, spacing: 0) {
                 VStack(alignment: .leading, spacing: 10) {
                     Label {
-                        Text((task.deadline ?? Date()).formatted(date: .long, time: .omitted))
+                        Text((task.deadline ?? Date()).formatted(date: .abbreviated, time: .omitted))
                     } icon: {
                         Image(systemName: "calendar")
                     }
@@ -154,6 +159,7 @@ struct Home: View {
                     }
                 }
             }
+            .padding(.vertical, 5)
         }
         .padding()
         .frame(maxWidth: .infinity)
@@ -166,21 +172,31 @@ struct Home: View {
     // MARK: Header View
     func HeaderView() -> some View {
         VStack {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text("Today")
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("My Tasks")
                         .font(.largeTitle.bold())
                     
-                    Text("\(Date().formatted(.dateTime.month())) \(Date().formatted(.dateTime.day())), \(Date().formatted(.dateTime.year()))")
-                        .font(.callout.bold())
-                        .foregroundStyle(.gray)
+                    Text("You have \(todayTasks.count) task\(todayTasks.count == 1 ? "" : "s") to complete")
+                        .font(.title3)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading) // Ensures text takes up available space
+                .padding(.horizontal)
                 
-                Text("You have \(todayTasks.count) task\(todayTasks.count == 1 ? "" : "s") today")
-                    .font(.title3)
+                Button(action: {}) {
+                    ZStack {
+                        Circle()
+                            .fill(Color(.systemGray6))
+                            .frame(width: 40, height: 40) // Adjust size as needed
+                        
+                        Image(systemName: "bell")
+                            .font(.title2) // Adjust size if needed
+                            .foregroundColor(.gray)
+                    }
+                }
+                .padding(.horizontal)
+                .offset(y: -10) // Adjust vertical position if needed
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal)
             
             // MARK: Custom Segmented Bar
             VStack(spacing: 0) {
