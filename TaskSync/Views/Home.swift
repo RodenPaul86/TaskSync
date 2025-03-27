@@ -183,7 +183,7 @@ struct Home: View {
                         .font(.title3)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading) /// <-- Ensures text takes up available space
-                .padding(.horizontal)
+                .padding()
                 
                 Button(action: {}) {
                     ZStack {
@@ -205,6 +205,7 @@ struct Home: View {
                 CustomTabBar(activeTab: $activeTab)
             }
         }
+        .padding(.top, 5)
     }
 }
 
