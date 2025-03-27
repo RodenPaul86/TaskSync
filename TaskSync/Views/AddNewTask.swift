@@ -45,7 +45,7 @@ struct AddNewTask: View {
             
             // MARK: Task Color
             VStack(alignment: .leading, spacing: 12) {
-                Text("Task Color")
+                Text("Background Color")
                     .font(.caption)
                     .foregroundStyle(.gray)
                 
@@ -80,7 +80,7 @@ struct AddNewTask: View {
             
             // MARK: Task Deadline
             VStack(alignment: .leading, spacing: 12) {
-                Text("Task Deadline")
+                Text("Deadline")
                     .font(.caption)
                     .foregroundStyle(.gray)
                 
@@ -103,12 +103,25 @@ struct AddNewTask: View {
             
             // MARK: Task Title
             VStack(alignment: .leading, spacing: 12) {
-                Text("Task Title")
+                Text("Title")
                     .font(.caption)
                     .foregroundStyle(.gray)
                 
-                // MARK: Sample Card TextField
-                TextField("", text: $taskModel.taskTitle)
+                TextField("Meeting with Sally", text: $taskModel.taskTitle)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 10)
+            }
+            .padding(.top, 10)
+            
+            Divider()
+            
+            // MARK: Task Description
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Description")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+                
+                TextField("Description (Optional)", text: $taskModel.taskDescription)
                     .frame(maxWidth: .infinity)
                     .padding(.top, 10)
             }
