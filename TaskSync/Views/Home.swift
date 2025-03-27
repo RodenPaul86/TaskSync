@@ -167,19 +167,20 @@ struct Home: View {
     func HeaderView() -> some View {
         VStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(Date().formatted(.dateTime.month())) \(Date().formatted(.dateTime.day())), \(Date().formatted(.dateTime.year()))")
-                    .font(.callout.bold())
-                    .foregroundStyle(.gray)
-                
-                Text("Today")
-                    .font(.largeTitle.bold())
+                HStack {
+                    Text("Today")
+                        .font(.largeTitle.bold())
+                    
+                    Text("\(Date().formatted(.dateTime.month())) \(Date().formatted(.dateTime.day())), \(Date().formatted(.dateTime.year()))")
+                        .font(.callout.bold())
+                        .foregroundStyle(.gray)
+                }
                 
                 Text("You have \(todayTasks.count) task\(todayTasks.count == 1 ? "" : "s") today")
                     .font(.title3)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
-            
             
             // MARK: Custom Segmented Bar
             VStack(spacing: 0) {
