@@ -42,6 +42,8 @@ struct Home: View {
             // MARK: ADD Button
             Button {
                 taskModel.openEditTask.toggle()
+                taskModel.editTask = nil  /// <-- Reset edit task to nil
+                taskModel.resetTaskData() /// <-- Optional: reset other task data if needed
             } label: {
                 Label {
                     Text("Add Task")
@@ -55,7 +57,7 @@ struct Home: View {
                 .padding(.horizontal)
                 .background {
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(activeTab.color) // Use the tab's color dynamically
+                        .fill(.blue)
                 }
             }
             .padding()
@@ -163,10 +165,10 @@ struct Home: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background {
+        .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(Color(task.color ?? "Gray"))
-        }
+        )
     }
     
     // MARK: Header View
@@ -180,22 +182,22 @@ struct Home: View {
                     Text("You have \(todayTasks.count) task\(todayTasks.count == 1 ? "" : "s") to complete")
                         .font(.title3)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading) // Ensures text takes up available space
+                .frame(maxWidth: .infinity, alignment: .leading) /// <-- Ensures text takes up available space
                 .padding(.horizontal)
                 
                 Button(action: {}) {
                     ZStack {
                         Circle()
                             .fill(Color(.systemGray6))
-                            .frame(width: 40, height: 40) // Adjust size as needed
+                            .frame(width: 50, height: 50) /// <-- Adjust size as needed
                         
                         Image(systemName: "bell")
-                            .font(.title2) // Adjust size if needed
+                            .font(.title2) /// <-- Adjust size if needed
                             .foregroundColor(.gray)
                     }
                 }
                 .padding(.horizontal)
-                .offset(y: -10) // Adjust vertical position if needed
+                .offset(y: -10) /// <-- Adjust vertical position if needed
             }
             
             // MARK: Custom Segmented Bar

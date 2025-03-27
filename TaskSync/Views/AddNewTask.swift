@@ -16,7 +16,7 @@ struct AddNewTask: View {
         VStack(spacing: 12) {
             
             // MARK: Header
-            Text("Edit Task")
+            Text(taskModel.editTask == nil ? "Add New Task" : "Edit Task")
                 .font(.title3.bold())
                 .frame(maxWidth: .infinity)
                 .overlay(alignment: .leading) {
@@ -30,8 +30,8 @@ struct AddNewTask: View {
                 }
                 .overlay(alignment: .trailing) {
                     Button(action: {
-                        if let editTask = taskModel.editTask {
-                            environment.managedObjectContext.delete(editTask)
+                        if let task = taskModel.editTask {
+                            environment.managedObjectContext.delete(task)
                             try? environment.managedObjectContext.save()
                             environment.dismiss()
                         }
@@ -42,11 +42,16 @@ struct AddNewTask: View {
                     }
                     .opacity(taskModel.editTask == nil ? 0 : 1)
                 }
+                .onAppear {
+                    if taskModel.editTask == nil {
+                        taskModel.resetTaskData() /// <-- Reset data when creating a new task
+                    }
+                }
             
             // MARK: Task Color
             VStack(alignment: .leading, spacing: 12) {
                 Text("Background Color")
-                    .font(.caption)
+                    .font(.callout)
                     .foregroundStyle(.gray)
                 
                 // MARK: Sample Card Colors
@@ -81,7 +86,7 @@ struct AddNewTask: View {
             // MARK: Task Deadline
             VStack(alignment: .leading, spacing: 12) {
                 Text("Deadline")
-                    .font(.caption)
+                    .font(.callout)
                     .foregroundStyle(.gray)
                 
                 Text(taskModel.taskDeadline.formatted(date: .abbreviated, time: .omitted) + ", " + taskModel.taskDeadline.formatted(date: .omitted, time: .shortened))
@@ -104,7 +109,7 @@ struct AddNewTask: View {
             // MARK: Task Title
             VStack(alignment: .leading, spacing: 12) {
                 Text("Title")
-                    .font(.caption)
+                    .font(.callout)
                     .foregroundStyle(.gray)
                 
                 TextField("Meeting with Sally", text: $taskModel.taskTitle)
@@ -118,7 +123,7 @@ struct AddNewTask: View {
             // MARK: Task Description
             VStack(alignment: .leading, spacing: 12) {
                 Text("Description")
-                    .font(.caption)
+                    .font(.callout)
                     .foregroundStyle(.gray)
                 
                 TextField("Description (Optional)", text: $taskModel.taskDescription)
@@ -133,7 +138,7 @@ struct AddNewTask: View {
             let taskType: [String] = ["Basic", "Urgent", "Important"]
             VStack(alignment: .leading, spacing: 12) {
                 Text("Task Type")
-                    .font(.caption)
+                    .font(.callout)
                     .foregroundStyle(.gray)
                 
                 HStack(spacing: 12) {
@@ -172,16 +177,13 @@ struct AddNewTask: View {
                     environment.dismiss()
                 }
             }) {
-                Text("Save Task")
-                    .font(.callout)
-                    .fontWeight(.semibold)
+                Text(taskModel.editTask == nil ? "Create Task" : "Update Task")
+                    .font(.title3.bold())
+                    .foregroundColor(taskModel.taskTitle.isEmpty ? .gray : .white)
+                    .padding()
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .foregroundStyle(.white)
-                    .background {
-                        Capsule()
-                            .fill(.black)
-                    }
+                    .background(Color.black.gradient)
+                    .cornerRadius(50)
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
             .padding(.bottom, 10)
