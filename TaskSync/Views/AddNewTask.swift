@@ -112,7 +112,7 @@ struct AddNewTask: View {
                     .font(.callout)
                     .foregroundStyle(.gray)
                 
-                TextField("Meeting with Sally", text: $taskModel.taskTitle)
+                TextField("Enter task title...", text: $taskModel.taskTitle)
                     .frame(maxWidth: .infinity)
                     .padding(.top, 10)
             }
@@ -126,7 +126,7 @@ struct AddNewTask: View {
                     .font(.callout)
                     .foregroundStyle(.gray)
                 
-                TextField("Description (Optional)", text: $taskModel.taskDescription)
+                TextField("Optional: Add a description...", text: $taskModel.taskDescription)
                     .frame(maxWidth: .infinity)
                     .padding(.top, 10)
             }
