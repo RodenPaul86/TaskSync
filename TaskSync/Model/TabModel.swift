@@ -11,7 +11,7 @@ enum TabModel: String, CaseIterable {
     case today = "Today"
     case upcoming = "Upcoming"
     case complete = "Complete"
-    case incomplete = "Incomplete"
+    case expired = "Expired"
     case allTask = "All Tasks"
     
     var color: Color {
@@ -19,7 +19,7 @@ enum TabModel: String, CaseIterable {
         case .today: .blue
         case .upcoming: .orange
         case .complete: .green
-        case .incomplete: .red
+        case .expired: .red
         case .allTask: Color.primary
         }
     }
@@ -29,7 +29,7 @@ enum TabModel: String, CaseIterable {
         case .today: "calendar"
         case .upcoming: "clock"
         case .complete: "checkmark.circle"
-        case .incomplete: "xmark.circle"
+        case .expired: "xmark.circle"
         case .allTask: "tray.full"
         }
     }

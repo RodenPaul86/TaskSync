@@ -53,9 +53,12 @@ struct Home: View {
                 .foregroundStyle(.white)
                 .padding(.vertical, 12)
                 .padding(.horizontal)
-                .background(.black, in: Capsule())
+                .background {
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(activeTab.color) // Use the tab's color dynamically
+                }
             }
-            .padding(.top, 10)
+            .padding()
             .frame(maxWidth: .infinity)
             .background {
                 LinearGradient(colors: [

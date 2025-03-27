@@ -30,7 +30,7 @@ struct DynamicFilteredView<Content: View, T>: View where T: NSManagedObject {
             let filterKey = "deadline"
             predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [today, future, 0])
             
-        } else if currentTab == "Incomplete" {
+        } else if currentTab == "Expired" {
             let today = calendar.startOfDay(for: Date())
             let past = Date.distantPast
             
@@ -41,7 +41,7 @@ struct DynamicFilteredView<Content: View, T>: View where T: NSManagedObject {
             predicate = NSPredicate(format: "isCompleted == %i", argumentArray: [1])
             
         } else if currentTab == "All Tasks" {
-            predicate = nil // 🚩 No filtering, show everything!
+            predicate = nil /// <-- No filtering, show everything!
         } else {
             // Fallback (optional)
             predicate = NSPredicate(value: true)
