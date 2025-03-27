@@ -14,6 +14,8 @@ struct AddNewTask: View {
     
     var body: some View {
         VStack(spacing: 12) {
+            
+            // MARK: Header
             Text("Edit Task")
                 .font(.title3.bold())
                 .frame(maxWidth: .infinity)
@@ -41,6 +43,7 @@ struct AddNewTask: View {
                     .opacity(taskModel.editTask == nil ? 0 : 1)
                 }
             
+            // MARK: Task Color
             VStack(alignment: .leading, spacing: 12) {
                 Text("Task Color")
                     .font(.caption)
@@ -75,6 +78,7 @@ struct AddNewTask: View {
             Divider()
                 .padding(.vertical, 10)
             
+            // MARK: Task Deadline
             VStack(alignment: .leading, spacing: 12) {
                 Text("Task Deadline")
                     .font(.caption)
@@ -97,6 +101,7 @@ struct AddNewTask: View {
             
             Divider()
             
+            // MARK: Task Title
             VStack(alignment: .leading, spacing: 12) {
                 Text("Task Title")
                     .font(.caption)
@@ -111,7 +116,7 @@ struct AddNewTask: View {
             
             Divider()
             
-            // MARK: Sample Task Type
+            // MARK: Task Type
             let taskType: [String] = ["Basic", "Urgent", "Important"]
             VStack(alignment: .leading, spacing: 12) {
                 Text("Task Type")
