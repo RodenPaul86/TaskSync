@@ -2,6 +2,24 @@
   "colors" : [
     {
       "color" : {
+        "color-space" : "srgb",
+        "components" : {
+          "alpha" : "1.000",
+          "blue" : "255",
+          "green" : "198",
+          "red" : "174"
+        }
+      },
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "color" : {
         "platform" : "osx",
         "reference" : "systemBlueColor"
       },

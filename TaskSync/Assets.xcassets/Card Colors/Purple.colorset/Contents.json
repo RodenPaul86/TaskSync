@@ -2,8 +2,26 @@
   "colors" : [
     {
       "color" : {
+        "color-space" : "display-p3",
+        "components" : {
+          "alpha" : "1.000",
+          "blue" : "255",
+          "green" : "152",
+          "red" : "186"
+        }
+      },
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "color" : {
         "platform" : "osx",
-        "reference" : "systemPurpleColor"
+        "reference" : "systemIndigoColor"
       },
       "idiom" : "universal"
     }
