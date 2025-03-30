@@ -8,47 +8,36 @@
 import SwiftUI
 import CoreData
 
-struct DynamicFilteredView<Content: View, T>: View where T: NSManagedObject {
+struct DynamicFilteredView<Content: View, T: NSManagedObject>: View {
     @FetchRequest var request: FetchedResults<T>
     let content: (T) -> Content
     
-    init(currentTab: String, @ViewBuilder content: @escaping (T) -> Content) {
+    init(currentTab: String, sortKey: String, ascending: Bool = true, @ViewBuilder content: @escaping (T) -> Content) {
         let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
         var predicate: NSPredicate?
         
-        if currentTab == "Today" {
-            let today = calendar.startOfDay(for: Date())
-            let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
-            
-            let filterKey = "deadline"
-            predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [today, tomorrow, 0])
-            
-        } else if currentTab == "Upcoming" {
-            let today = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: Date())!)
-            let future = Date.distantFuture
-            
-            let filterKey = "deadline"
-            predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [today, future, 0])
-            
-        } else if currentTab == "Expired" {
-            let today = calendar.startOfDay(for: Date())
-            let past = Date.distantPast
-            
-            let filterKey = "deadline"
-            predicate = NSPredicate(format: "\(filterKey) >= %@ AND \(filterKey) < %@ AND isCompleted == %i", argumentArray: [past, today, 0])
-            
-        } else if currentTab == "Complete" {
-            predicate = NSPredicate(format: "isCompleted == %i", argumentArray: [1])
-            
-        } else if currentTab == "All Tasks" {
-            predicate = nil /// <-- No filtering, show everything!
-        } else {
-            // Fallback (optional)
+        switch currentTab {
+        case "Today":
+            if let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) {
+                predicate = NSPredicate(format: "%K >= %@ AND %K < %@ AND isCompleted == NO", sortKey, today as CVarArg, sortKey, tomorrow as CVarArg)
+            }
+        case "Upcoming":
+            if let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) {
+                predicate = NSPredicate(format: "%K >= %@ AND isCompleted == NO", sortKey, tomorrow as CVarArg)
+            }
+        case "Expired":
+            predicate = NSPredicate(format: "%K < %@ AND isCompleted == NO", sortKey, today as CVarArg)
+        case "Complete":
+            predicate = NSPredicate(format: "isCompleted == YES")
+        case "All Tasks":
+            predicate = nil /// <-- Show everything
+        default:
             predicate = NSPredicate(value: true)
         }
         
         _request = FetchRequest(entity: T.entity(),
-                                sortDescriptors: [.init(keyPath: \Task.deadline, ascending: false)],
+                                sortDescriptors: [NSSortDescriptor(key: sortKey, ascending: ascending)],
                                 predicate: predicate)
         
         self.content = content
@@ -57,13 +46,15 @@ struct DynamicFilteredView<Content: View, T>: View where T: NSManagedObject {
     var body: some View {
         Group {
             if request.isEmpty {
-                Text("No Task Found!!!")
-                    .font(.system(size: 16))
-                    .fontWeight(.light)
-                    .offset(y: 100)
+                Text("No Tasks Found!!!")
+                    .font(.callout)
+                    .foregroundColor(.gray)
+                    .padding(.top, 20)
             } else {
-                ForEach(request, id: \.objectID) { object in
-                    self.content(object)
+                VStack(alignment: .leading) {
+                    ForEach(request, id: \.objectID) { object in
+                        content(object)
+                    }
                 }
             }
         }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct Home: View {
     // MARK: Environment
@@ -17,13 +18,14 @@ struct Home: View {
     // MARK: Fetching Task
     @FetchRequest(
         entity: Task.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: false)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: true)],
         predicate: NSPredicate(format: "deadline >= %@ AND deadline < %@ AND isCompleted == NO",
                                Calendar.current.startOfDay(for: Date()) as NSDate,
                                Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: Date()))! as NSDate), animation: .easeInOut
     ) var todayTasks: FetchedResults<Task>
     
     @State private var activeTab: TabModel = .today
+    @State private var showActionSheet = false
     
     // MARK: Main View
     var body: some View {
@@ -57,7 +59,7 @@ struct Home: View {
                 .padding(.horizontal)
                 .background {
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.blue)
+                        .fill(.black)
                 }
             }
             .padding()
@@ -83,7 +85,7 @@ struct Home: View {
     func TaskView(currentTab: TabModel) -> some View {
         LazyVStack(spacing: 20) {
             // MARK: Custom filtering request view
-            DynamicFilteredView(currentTab: currentTab.rawValue) { (task: Task) in
+            DynamicFilteredView(currentTab: currentTab.rawValue, sortKey: "deadline") { (task: Task) in
                 TaskRowView(task: task)
             }
         }
@@ -94,36 +96,63 @@ struct Home: View {
     @ViewBuilder
     func TaskRowView(task: Task) -> some View {
         VStack(alignment: .leading, spacing: 10) {
+            /*
             HStack {
-                Text(task.type ?? "")
-                    .font(.callout)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal)
-                    .background {
-                        Capsule()
-                            .fill(.white.opacity(0.3))
-                    }
                 
                 Spacer()
                 
                 // MARK: Edit button only for none completed tasks
-                if !task.isCompleted && taskModel.currentTab != "Failed" {
+                if !task.isCompleted && taskModel.currentTab != "Expired" {
+                    
+                }
+            }
+            */
+            HStack {
+                Text(task.title ?? "")
+                    .font(.title.bold())
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                
+                Spacer()
+                
+                // MARK: Shows action button only for none completed tasks
+                if !task.isCompleted && taskModel.currentTab != "Expired" {
                     Button(action: {
-                        taskModel.editTask = task
-                        taskModel.openEditTask = true
-                        taskModel.setupTask()
+                        showActionSheet.toggle()
                     }) {
-                        Image(systemName: "square.and.pencil")
-                            .font(.title2)
-                            .foregroundStyle(.black)
+                        Image(systemName: "ellipsis")
+                            .font(.title)
+                            .foregroundColor(.primary)
+                            .frame(width: 40, height: 40)
+                            .background(.ultraThinMaterial) /// <-- Ultra-thin blur effect
+                            .clipShape(Circle()) /// <-- Makes it a circular button
+                            .shadow(radius: 3)
+                    }
+                    .confirmationDialog("Actions", isPresented: $showActionSheet, titleVisibility: .hidden) {
+                        Button("Edit") {
+                            taskModel.editTask = task
+                            taskModel.openEditTask = true
+                            taskModel.setupTask()
+                        }
+                        
+                        Button("Complete") {
+                            task.isCompleted.toggle()
+                            do {
+                                try environment.managedObjectContext.save()
+                            } catch {
+                                print("Failed to save changes: \(error.localizedDescription)")
+                            }
+                        }
+                        
+                        Button("Delete", role: .destructive) {
+                            environment.managedObjectContext.delete(task)
+                            try? environment.managedObjectContext.save()
+                        }
+                        
+                        Button("Cancel", role: .cancel) {}
                     }
                 }
             }
-            
-            Text(task.title ?? "")
-                .font(.title.bold())
-                .foregroundStyle(.primary)
-                .lineLimit(1)
             
             Text(task.desc ?? "")
                 .font(.callout)
@@ -148,11 +177,22 @@ struct Home: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
-                if !task.isCompleted && taskModel.currentTab != "Failed" {
+                Text(task.type ?? "")
+                    .font(.callout)
+                    .padding(.vertical, 5)
+                    .padding(.horizontal)
+                    .background {
+                        Capsule()
+                            .fill(.thinMaterial) /// <-- Thin material background
+                            .overlay(
+                                Capsule().stroke(Color.gray.opacity(0.1), lineWidth: 1)
+                            )
+                    }
+                    .padding(.horizontal, 5)
+                /*
+                if !task.isCompleted && taskModel.currentTab != "Expired" {
                     Button(action: {
-                        // MARK: Updating CoreData
-                        task.isCompleted.toggle()
-                        try? environment.managedObjectContext.save()
+                        
                     }) {
                         Circle()
                             .strokeBorder(.black, lineWidth: 1.5)
@@ -160,6 +200,7 @@ struct Home: View {
                             .contentShape(Circle())
                     }
                 }
+                 */
             }
             .padding(.vertical, 5)
         }

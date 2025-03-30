@@ -18,6 +18,34 @@ struct AddNewTask: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 10) {
                         
+                        // MARK: Task Title
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Title")
+                                .font(.callout)
+                                .foregroundStyle(.gray)
+                            
+                            TextField("Add a title...", text: $taskModel.taskTitle)
+                                .clearButton(text: $taskModel.taskTitle)
+                                .padding(.top, 10)
+                        }
+                        .padding(.top, 10)
+                        
+                        Divider()
+                        
+                        // MARK: Task Description
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Description (Optional)")
+                                .font(.callout)
+                                .foregroundStyle(.gray)
+                            
+                            TextField("Add a description...", text: $taskModel.taskDescription)
+                                .clearButton(text: $taskModel.taskDescription)
+                                .padding(.top, 10)
+                        }
+                        .padding(.top, 10)
+                        
+                        Divider()
+                        
                         // MARK: Task Color
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Background Color")
@@ -59,55 +87,25 @@ struct AddNewTask: View {
                                 .font(.callout)
                                 .foregroundStyle(.gray)
                             
-                            Text(taskModel.taskDeadline.formatted(date: .abbreviated, time: .omitted) + ", " + taskModel.taskDeadline.formatted(date: .omitted, time: .shortened))
-                                .font(.callout)
-                                .fontWeight(.semibold)
-                                .padding(.top, 8)
+                            HStack {
+                                DatePicker("", selection: $taskModel.taskDeadline, displayedComponents: .date)
+                                    .labelsHidden()
+                                    .accentColor(.black)
+                                
+                                DatePicker("", selection: $taskModel.taskDeadline, displayedComponents: .hourAndMinute)
+                                    .labelsHidden()
+                                    .accentColor(.black)
+                            }
+                            .padding(.top, 8)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .overlay(alignment: .bottomTrailing) {
-                            Button(action: {
-                                taskModel.showDatePicker.toggle()
-                            }) {
-                                Image(systemName: "calendar")
-                                    .foregroundStyle(.black)
-                            }
-                        }
-                        
-                        Divider()
-                        
-                        // MARK: Task Title
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Title")
-                                .font(.callout)
-                                .foregroundStyle(.gray)
-                            
-                            TextField("Add a title...", text: $taskModel.taskTitle)
-                                .clearButton(text: $taskModel.taskTitle)
-                                .padding(.top, 10)
-                        }
-                        .padding(.top, 10)
-                        
-                        Divider()
-                        
-                        // MARK: Task Description
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Description (Optional)")
-                                .font(.callout)
-                                .foregroundStyle(.gray)
-                            
-                            TextField("Add a description...", text: $taskModel.taskDescription)
-                                .clearButton(text: $taskModel.taskDescription)
-                                .padding(.top, 10)
-                        }
-                        .padding(.top, 10)
                         
                         Divider()
                         
                         // MARK: Task Type
                         let taskType: [String] = ["Basic", "Urgent", "Important"]
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Task Type")
+                            Text("Type")
                                 .font(.callout)
                                 .foregroundStyle(.gray)
                             
@@ -137,6 +135,19 @@ struct AddNewTask: View {
                             .padding(.top, 8)
                         }
                         .padding(.vertical, 10)
+                        
+                        Divider()
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Task Tag")
+                                .font(.callout)
+                                .foregroundStyle(.gray)
+                            
+                            Text("To Do's ''tag's''")
+                                .padding(.top, 10)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top, 10)
                         
                         Divider()
                     }
@@ -173,7 +184,7 @@ struct AddNewTask: View {
                         environment.dismiss()
                     }
                 }) {
-                    Text(taskModel.editTask == nil ? "Create Task" : "Update Task")
+                    Text(taskModel.editTask == nil ? "Create" : "Update")
                         .font(.title3.bold())
                         .foregroundColor(taskModel.taskTitle.isEmpty ? .gray : .white)
                         .padding()
@@ -185,13 +196,12 @@ struct AddNewTask: View {
                 .disabled(taskModel.taskTitle == "")
                 .opacity(taskModel.taskTitle == "" ? 0.6 : 1)
             }
-            .navigationTitle(taskModel.editTask == nil ? "Add New Task" : "Edit Task")
+            .navigationTitle(taskModel.editTask == nil ? "New Task" : "Edit Task")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { environment.dismiss() }) {
                         Text("Cancel")
-                            .foregroundColor(.gray)
                     }
                 }
                 

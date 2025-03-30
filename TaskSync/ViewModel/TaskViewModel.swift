@@ -18,6 +18,7 @@ class TaskViewModel: ObservableObject {
     @Published var taskColor: String = "Gray"
     @Published var taskDeadline: Date = Date()
     @Published var taskType: String = "Basic"
+    @Published var isCompleted: Bool = false
     @Published var showDatePicker: Bool = false
     @Published var editTask: Task?
     
@@ -61,6 +62,7 @@ class TaskViewModel: ObservableObject {
             taskColor = editTask.color ?? "Gray"
             taskDeadline = editTask.deadline ?? Date()
             taskType = editTask.type ?? "Basic"
+            isCompleted = editTask.isCompleted
         }
     }
 }
