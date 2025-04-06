@@ -143,8 +143,8 @@ struct Home: View {
         .hSpacing(.leading)
         .overlay(alignment: .topTrailing) {
             Menu {
-                Button("Sync from Calender") {
-                    // TODO: Add Calendar Events
+                Button(action: {}) {
+                    Label("Sync from Calender", systemImage: "square.and.arrow.down.badge.clock")
                 }
                 
                 Button(action: {}) {
@@ -152,7 +152,7 @@ struct Home: View {
                 }
                 
                 Button(action: { showInfo.toggle() }) {
-                    Label("Info", systemImage: "info.circle")
+                    Label("Color Guide", systemImage: "info.circle")
                 }
                 
             } label: {
