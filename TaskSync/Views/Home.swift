@@ -2,328 +2,274 @@
 //  Home.swift
 //  TaskSync
 //
-//  Created by Paul  on 3/8/25.
+//  Created by Paul  on 3/30/25.
 //
 
 import SwiftUI
-import CoreData
+import SwiftData
 
 struct Home: View {
-    // MARK: Environment
-    @Environment(\.self) var environment
+    // MARK: Properties
+    @State private var currentDate: Date = .init()
+    @State private var weekSlider: [[Date.WeekDay]] = []
+    @State private var currentWeekIndex: Int = 1
+    @State private var createWeek: Bool = false
+    @State private var createTask: Bool = false
+    @State private var showInfo: Bool = false
+    @State private var showSettings: Bool = false
+    @Namespace private var animation
     
-    @StateObject var taskModel: TaskViewModel = .init()
-    @Namespace var animation
+    @Query var tasks: [Task] /// <-- Ensure this fetches all tasks
+
+    var tasksForSelectedDate: [Task] {
+        tasks.filter {
+            Calendar.current.isDate($0.creationDate, inSameDayAs: currentDate) &&
+            !$0.isCompleted &&
+            !$0.creationDate.isPast // Only tasks that are incomplete and not expired
+        }
+    }
     
-    // MARK: Fetching Task
-    @FetchRequest(
-        entity: Task.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Task.deadline, ascending: true)],
-        predicate: NSPredicate(format: "deadline >= %@ AND deadline < %@ AND isCompleted == NO",
-                               Calendar.current.startOfDay(for: Date()) as NSDate,
-                               Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: Date()))! as NSDate), animation: .easeInOut
-    ) var todayTasks: FetchedResults<Task>
-    
-    @State private var activeTab: TabModel = .today
-    @State private var showActionSheet = false
-    
-    // MARK: Main View
     var body: some View {
-        Section {
+        VStack(alignment: .leading, spacing: 0) {
+            HeaderView()
+            
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
-                    TaskView(currentTab: activeTab)
+                    TasksView(currentDate: $currentDate) /// <-- View of tasks
                 }
-                .padding(.horizontal)
-            }
-            
-        } header: {
-            HeaderView()
-        }
-        .overlay(alignment: .bottom) {
-            // MARK: ADD Button
-            Button {
-                taskModel.openEditTask.toggle()
-                taskModel.editTask = nil  /// <-- Reset edit task to nil
-                taskModel.resetTaskData() /// <-- Optional: reset other task data if needed
-            } label: {
-                Label {
-                    Text("Add Task")
-                        .font(.callout)
-                        .fontWeight(.semibold)
-                } icon: {
-                    Image(systemName: "plus.app.fill")
-                }
-                .foregroundStyle(.white)
-                .padding(.vertical, 12)
-                .padding(.horizontal)
-                .background {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.black)
-                }
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background {
-                LinearGradient(colors: [
-                    .white.opacity(0.05),
-                    .white.opacity(0.4),
-                    .white.opacity(0.7),
-                    .white
-                ], startPoint: .top, endPoint: .bottom)
+                .hSpacing(.center)
+                .vSpacing(.center)
             }
         }
-        .fullScreenCover(isPresented: $taskModel.openEditTask) {
-            taskModel.resetTaskData()
-        } content: {
-            AddNewTask()
-                .environmentObject(taskModel)
+        .vSpacing(.top)
+        .overlay(alignment: .bottomTrailing) {
+            Button(action: {
+                createTask.toggle()
+            }) {
+                Image(systemName: "plus")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                    .frame(width: 55, height: 55)
+                    .background(.blue.shadow(.drop(color: .black.opacity(0.25), radius: 5, x: 10, y: 10)), in: Circle())
+            }
+            .padding(15)
         }
-    }
-    
-    // MARK: TaskView
-    func TaskView(currentTab: TabModel) -> some View {
-        LazyVStack(spacing: 20) {
-            // MARK: Custom filtering request view
-            DynamicFilteredView(currentTab: currentTab.rawValue, sortKey: "deadline") { (task: Task) in
-                TaskRowView(task: task)
+        .onAppear {
+            if weekSlider.isEmpty {
+                let currentWeek = Date().fetchWeek()
+                
+                if let firstDate = currentWeek.first?.date {
+                    weekSlider.append(firstDate.currentPreviousWeek())
+                }
+                
+                weekSlider.append(currentWeek)
+                
+                if let lastDate = currentWeek.last?.date {
+                    weekSlider.append(lastDate.currentNextWeek())
+                }
             }
         }
-        .padding(.top, 20)
-    }
-    
-    // MARK: Task Row View
-    @ViewBuilder
-    func TaskRowView(task: Task) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            /*
-            HStack {
-                
-                Spacer()
-                
-                // MARK: Edit button only for none completed tasks
-                if !task.isCompleted && taskModel.currentTab != "Expired" {
-                    
-                }
-            }
-            */
-            HStack {
-                Text(task.title ?? "")
-                    .font(.title.bold())
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-                
-                Spacer()
-                
-                // MARK: Shows action button only for none completed tasks
-                if !task.isCompleted && taskModel.currentTab != "Expired" {
-                    Button(action: {
-                        showActionSheet.toggle()
-                    }) {
-                        Image(systemName: "ellipsis")
-                            .font(.title)
-                            .foregroundColor(.primary)
-                            .frame(width: 40, height: 40)
-                            .background(.ultraThinMaterial) /// <-- Ultra-thin blur effect
-                            .clipShape(Circle()) /// <-- Makes it a circular button
-                            .shadow(radius: 3)
-                    }
-                    .confirmationDialog("Actions", isPresented: $showActionSheet, titleVisibility: .hidden) {
-                        Button("Edit") {
-                            taskModel.editTask = task
-                            taskModel.openEditTask = true
-                            taskModel.setupTask()
-                        }
-                        
-                        Button("Complete") {
-                            task.isCompleted.toggle()
-                            do {
-                                try environment.managedObjectContext.save()
-                            } catch {
-                                print("Failed to save changes: \(error.localizedDescription)")
-                            }
-                        }
-                        
-                        Button("Delete", role: .destructive) {
-                            environment.managedObjectContext.delete(task)
-                            try? environment.managedObjectContext.save()
-                        }
-                        
-                        Button("Cancel", role: .cancel) {}
-                    }
-                }
-            }
-            
-            Text(task.desc ?? "")
-                .font(.callout)
-                .foregroundStyle(.gray)
-                .lineLimit(2)
-            
-            HStack(alignment: .bottom, spacing: 0) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Label {
-                        Text((task.deadline ?? Date()).formatted(date: .abbreviated, time: .omitted))
-                    } icon: {
-                        Image(systemName: "calendar")
-                    }
-                    .font(.caption)
-                    
-                    Label {
-                        Text((task.deadline ?? Date()).formatted(date: .omitted, time: .shortened))
-                    } icon: {
-                        Image(systemName: "clock")
-                    }
-                    .font(.caption)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Text(task.type ?? "")
-                    .font(.callout)
-                    .padding(.vertical, 5)
-                    .padding(.horizontal)
-                    .background {
-                        Capsule()
-                            .fill(.thinMaterial) /// <-- Thin material background
-                            .overlay(
-                                Capsule().stroke(Color.gray.opacity(0.1), lineWidth: 1)
-                            )
-                    }
-                    .padding(.horizontal, 5)
-                /*
-                if !task.isCompleted && taskModel.currentTab != "Expired" {
-                    Button(action: {
-                        
-                    }) {
-                        Circle()
-                            .strokeBorder(.black, lineWidth: 1.5)
-                            .frame(width: 25, height: 25)
-                            .contentShape(Circle())
-                    }
-                }
-                 */
-            }
-            .padding(.vertical, 5)
+        .sheet(isPresented: $createTask) {
+            NewTaskView()
+                .presentationDetents([.height(400)])
+                .interactiveDismissDisabled()
+                .presentationCornerRadius(30)
+                .presentationBackground(.ultraThinMaterial)
         }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color(task.color ?? "Gray"))
-        )
     }
     
     // MARK: Header View
+    @ViewBuilder
     func HeaderView() -> some View {
-        VStack {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("My Tasks")
-                        .font(.largeTitle.bold())
-                    
-                    Text("You have \(todayTasks.count) task\(todayTasks.count == 1 ? "" : "s") to complete")
-                        .font(.title3)
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 5) {
+                Text(currentDate.format("MMMM"))
+                    .foregroundStyle(.blue)
+                
+                Text(currentDate.format("YYYY"))
+                    .foregroundStyle(.gray)
+            }
+            .font(.title.bold())
+            
+            Text(currentDate.formatted(date: .complete, time: .omitted))
+                .font(.callout)
+                .fontWeight(.semibold)
+                .textScale(.secondary)
+                .foregroundStyle(.gray)
+            
+            let incompleteTasks = tasksForSelectedDate
+            let expiredTasks = tasks.filter {
+                Calendar.current.isDate($0.creationDate, inSameDayAs: currentDate) &&
+                !$0.isCompleted &&
+                $0.creationDate.isPast
+            }
+            
+            if !incompleteTasks.isEmpty {
+                Text("You have \(incompleteTasks.count) task\(incompleteTasks.count > 1 ? "s" : "") to tackle today.")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.primary)
+            }
+            
+            // Display expired tasks
+            if !expiredTasks.isEmpty {
+                Text("You have \(expiredTasks.count) expired task\(expiredTasks.count > 1 ? "s" : "").")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.red)
+            }
+            
+            // If there are no tasks at all
+            if incompleteTasks.isEmpty && expiredTasks.isEmpty {
+                Text("You're all caught up!")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.green)
+            }
+            
+            /// Week Slider
+            TabView(selection: $currentWeekIndex) {
+                ForEach(weekSlider.indices, id: \.self) { index in
+                    let week = weekSlider[index]
+                    weekView(week)
+                        .padding(.horizontal, 15)
+                        .tag(index)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading) /// <-- Ensures text takes up available space
-                .padding()
+            }
+            .padding(.horizontal, -15)
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: 90)
+        }
+        .hSpacing(.leading)
+        .overlay(alignment: .topTrailing) {
+            Menu {
+                Button("Sync from Calender") {
+                    // TODO: Add Calendar Events
+                }
                 
                 Button(action: {}) {
-                    ZStack {
-                        Circle()
-                            .fill(Color(.systemGray6))
-                            .frame(width: 50, height: 50) /// <-- Adjust size as needed
-                        
-                        Image(systemName: "bell")
-                            .font(.title2) /// <-- Adjust size if needed
-                            .foregroundColor(.gray)
-                    }
-                }
-                .padding(.horizontal)
-                .offset(y: -10) /// <-- Adjust vertical position if needed
-            }
-            
-            // MARK: Custom Segmented Bar
-            VStack(spacing: 0) {
-                CustomTabBar(activeTab: $activeTab)
-            }
-        }
-        .padding(.top, 5)
-    }
-}
-
-struct CustomTabBar: View {
-    @Binding var activeTab: TabModel
-    @Environment(\.colorScheme) private var scheme
-    
-    var body: some View {
-        GeometryReader { _ in
-            HStack(spacing: 8) {
-                HStack(spacing: activeTab == .allTask ? -15 : 8) {
-                    ForEach(TabModel.allCases.filter({ $0 != .allTask }), id:\.rawValue) { tab in
-                        ResizableTabButton(tab)
-                    }
+                    Label("Settings", systemImage: "gear")
                 }
                 
-                if activeTab == .allTask {
-                    ResizableTabButton(.allTask)
-                        .transition(.offset(x: 200))
+                Button(action: { showInfo.toggle() }) {
+                    Label("Info", systemImage: "info.circle")
                 }
+                
+            } label: {
+                Image(systemName: "ellipsis.circle")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 30, height: 30)
+                    .clipShape(.circle)
             }
-            .padding(.horizontal, 15)
         }
-        .frame(height: 50)
+        .padding(15)
+        .onChange(of: currentWeekIndex, initial: false) { oldValue, newValue in
+            /// Creating when it reaches the first/last page
+            if newValue == 0 || newValue == (weekSlider.count - 1) {
+                createWeek = true
+            }
+        }
+        .sheet(isPresented: $showInfo) {
+            infoView()
+                .presentationDetents([.height(400)])
+                .interactiveDismissDisabled()
+                .presentationCornerRadius(30)
+                .presentationBackground(.ultraThinMaterial)
+        }
     }
     
+    // MARK: Week View
     @ViewBuilder
-    func ResizableTabButton(_ tab: TabModel) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: tab.symbolImage)
-                .opacity(activeTab != tab ? 1 : 0)
-                .overlay {
-                    Image(systemName: tab.symbolImage)
-                        .symbolVariant(.fill)
-                        .opacity(activeTab == tab ? 1 : 0)
+    func weekView(_ week: [Date.WeekDay]) -> some View {
+        HStack(spacing: 0) {
+            ForEach(week) { day in
+                let tasksForDay = tasks.filter { Calendar.current.isDate($0.creationDate, inSameDayAs: day.date) }
+                let taskTintColor = tasksForDay.first?.tintColor ?? .clear // Use first task's color
+                
+                VStack(spacing: 8) {
+                    Text(day.date.format("E"))
+                        .font(.callout)
+                        .fontWeight(.medium)
+                        .textScale(.secondary)
+                        .foregroundStyle(.gray)
+                    
+                    Text(day.date.format("dd"))
+                        .font(.callout)
+                        .fontWeight(.bold)
+                        .textScale(.secondary)
+                        .foregroundStyle(isSameDate(day.date, currentDate) ? .white : .gray)
+                        .frame(width: 35, height: 35)
+                        .background {
+                            if isSameDate(day.date, currentDate) {
+                                Circle()
+                                    .fill(.blue)
+                                    .matchedGeometryEffect(id: "TABINDICATOR", in: animation)
+                            }
+                            
+                            /// Indicator to show, which is today's date
+                            if day.date.isToday {
+                                Circle()
+                                    .fill(.blue)
+                                    .frame(width: 5, height: 5)
+                                    .vSpacing(.bottom)
+                                    .offset(y: 12)
+                                
+                            } else {
+                                Circle()
+                                    .fill(taskTintColor)
+                                    .frame(width: 5, height: 5)
+                                    .vSpacing(.bottom)
+                                    .offset(y: 12)
+                            }
+                        }
+                        .background(Color(.systemGray6).shadow(.drop(radius: 1)), in: .circle)
                 }
-            
-            if activeTab == tab {
-                Text(tab.rawValue)
-                    .font(.callout)
-                    .fontWeight(.semibold)
-                    .lineLimit(1)
+                .hSpacing(.center)
+                .contentShape(.rect)
+                .onTapGesture {
+                    /// Updating current date
+                    withAnimation(.snappy) {
+                        currentDate = day.date
+                    }
+                }
             }
         }
-        .foregroundStyle(tab == .allTask ? schemeColor : activeTab == tab ? .white : .gray)
-        .frame(maxHeight: .infinity)
-        .frame(maxWidth: activeTab == tab ? .infinity : nil)
-        .padding(.horizontal, activeTab == tab ? 10 : 20)
         .background {
-            Rectangle()
-                .fill(activeTab == tab ? tab.color : Color(.systemGray6))
-        }
-        .clipShape(.rect(cornerRadius: 20, style: .continuous))
-        .background {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.background)
-                .padding(activeTab == .allTask && tab != .allTask ? -3 : 3)
-        }
-        .contentShape(.rect)
-        .onTapGesture {
-            guard tab != .allTask else { return }
-            withAnimation(.bouncy) {
-                if activeTab == tab {
-                    activeTab = .allTask
-                } else {
-                    activeTab = tab
-                }
+            GeometryReader {
+                let minX = $0.frame(in: .global).minX
+                
+                Color.clear
+                    .preference(key: offsetKey.self, value: minX)
+                    .onPreferenceChange(offsetKey.self) { value in
+                        if value.rounded() == 15 && createWeek {
+                            paginateWeek()
+                            createWeek = false
+                        }
+                    }
             }
         }
     }
     
-    var schemeColor: Color {
-        scheme == .dark ? .black : .white
+    func paginateWeek() {
+        if weekSlider.indices.contains(currentWeekIndex) {
+            if let firstDate = weekSlider[currentWeekIndex].first?.date, currentWeekIndex == 0 {
+                weekSlider.insert(firstDate.currentPreviousWeek(), at: 0)
+                weekSlider.removeLast()
+                currentWeekIndex = 1
+            }
+            
+            if let lastDate = weekSlider[currentWeekIndex].last?.date, currentWeekIndex == (weekSlider.count - 1) {
+                weekSlider.append(lastDate.currentNextWeek())
+                weekSlider.removeFirst()
+                currentWeekIndex = weekSlider.count - 2
+            }
+        }
+        
+        print(weekSlider.count)
     }
 }
 
-
 #Preview {
-    Home()
+    ContentView()
 }
