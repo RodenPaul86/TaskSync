@@ -9,14 +9,16 @@ import SwiftUI
 import WebKit
 
 struct settingsView: View {
+    @State private var isPaywallPresented: Bool = false
     
     var body: some View {
         NavigationStack {
             List {
                 Section(header: Text("")) {
-                    customPremiumBanner()
-                        .listRowInsets(EdgeInsets())
-                        .frame(maxWidth: .infinity, alignment: .center)
+                    customPremiumBanner {
+                        isPaywallPresented = true
+                    }
+                    .listRowInsets(EdgeInsets())
                 }
                 
                 Section(header: Text("Costomization")) {
@@ -46,6 +48,9 @@ struct settingsView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(Text("Settings"))
+            .sheet(isPresented: $isPaywallPresented) {
+                
+            }
         }
     }
 }
@@ -147,27 +152,58 @@ struct webView: UIViewRepresentable {
 
 // MARK: Custom Banner
 struct customPremiumBanner: View {
+    var onTap: () -> Void
+    
+    let features = [
+        "Unlimited Tasks",
+        "And 87 More Features"
+    ]
+    
     var body: some View {
-        VStack(spacing: 20) {
-            HStack(spacing: 10) {
-                Image(systemName: "laurel.leading")
-                Text("TaskSync Pro")
-                Image(systemName: "laurel.trailing")
+        Button(action: onTap) {
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("TaskSync Pro")
+                        .font(.title3.bold())
+                        .foregroundStyle(.white)
+                    
+                    ForEach(features, id: \.self) { feature in
+                        Text("- \(feature)")
+                            .font(.subheadline)
+                            .foregroundStyle(.white)
+                            .opacity(0.7)
+                    }
+                }
+                
+                Spacer()
+                
+                ZStack {
+                    Image(systemName: "checklist")
+                        .font(.system(size: 70)) /// <-- Originally the size was 80
+                        .foregroundStyle(.white)
+                        .opacity(0.1)
+                        .rotationEffect(.degrees(-20))
+                        .scaleEffect(1.8) /// <-- Make it larger without affecting layout
+                        .offset(x: -10, y: 20)
+                        .allowsHitTesting(false) /// <-- Avoids affecting taps
+                    
+                    Image(systemName: "crown.fill") /// <-- Foreground icon
+                        .font(.system(size: 50))
+                        .foregroundStyle(.white)
+                }
             }
-            .font(.title.bold())
-            .foregroundColor(.gray)
-            
-            Button(action: {}) { // TODO: Add Paywall
-                Text("See What You Get")
-                    .fontWeight(.bold)
-                    .foregroundStyle(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(.blue.gradient)
-                    .cornerRadius(12)
-                    .shadow(radius: 5)
-            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
         }
-        .padding()
+        .buttonStyle(PlainButtonStyle()) /// <-- Prevents default blue button style
     }
 }
