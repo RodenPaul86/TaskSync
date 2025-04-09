@@ -45,11 +45,43 @@ struct settingsView: View {
                     customRow(icon: "", firstLabel: "Acknowledgements", secondLabel: "")
                     customRow(icon: "", firstLabel: "Privacy Policy", secondLabel: "")
                 }
+                
+                Section(header: Text("More Apps")) {
+                    customAppRow(
+                        icon: Image(systemName: "questionmark.app.dashed"),
+                        iconColor: .blue,
+                        title: "DocMatic",
+                        subtitle: "Document scanner for iPhone and iPad"
+                    ) {
+                        // Navigate to your app preview
+                        print("Tapped DocMatic")
+                    }
+                    
+                    customAppRow(
+                        icon: Image(systemName: "questionmark.app.dashed"),
+                        iconColor: .blue,
+                        title: "ProLight",
+                        subtitle: "Multi fuctional flashlight for iPhone"
+                    ) {
+                        // Navigate to your app preview
+                        print("Tapped ProLight")
+                    }
+                    
+                    customAppRow(
+                        icon: Image(systemName: "questionmark.app.dashed"),
+                        iconColor: .blue,
+                        title: "Noel",
+                        subtitle: "Christmas countdown for iPhone and iPad"
+                    ) {
+                        // Navigate to your app preview
+                        print("Tapped Noel")
+                    }
+                }
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(Text("Settings"))
             .sheet(isPresented: $isPaywallPresented) {
-                
+                // TODO: add the paywall view...
             }
         }
     }
@@ -59,6 +91,7 @@ struct settingsView: View {
     settingsView()
 }
 
+// MARK: Custom Row
 struct customRow: View {
     var icon: String
     var firstLabel: String
@@ -136,6 +169,41 @@ struct customRow: View {
     
     private func isWebsite(_ urlString: String) -> Bool {
         return urlString.hasPrefix("http") // Simple check for URLs
+    }
+}
+
+// MARK: Custom App Row
+struct customAppRow: View {
+    let icon: Image
+    let iconColor: Color
+    let title: String
+    let subtitle: String
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack(alignment: .center, spacing: 16) {
+                icon
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 48, height: 48)
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(iconColor)
+                    .cornerRadius(16)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
