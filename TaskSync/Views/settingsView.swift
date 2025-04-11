@@ -19,6 +19,9 @@ struct settingsView: View {
                         isPaywallPresented = true
                     }
                     .listRowInsets(EdgeInsets())
+                    .sheet(isPresented: $isPaywallPresented) {
+                        // TODO: add the paywall view...
+                    }
                 }
                 
                 Section(header: Text("Costomization")) {
@@ -29,39 +32,34 @@ struct settingsView: View {
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "") {
                         
                     }
+                }
+                
+                Section(header: Text("IT Support")) {
+                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "") {
+                        
+                    }
                     
-                    customRow(icon: "", firstLabel: "", secondLabel: "") {
+                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "") {
                         
                     }
                 }
                 
-                Section(header: Text("Contact & Support")) {
-                    customRow(icon: "", firstLabel: "Frequently Asked Questions", secondLabel: "")
-                    customRow(icon: "", firstLabel: "Get Help", secondLabel: "")
-                }
-                
                 Section(header: Text("Info")) {
-                    customRow(icon: "", firstLabel: "Colophon", secondLabel: "")
-                    customRow(icon: "", firstLabel: "Acknowledgements", secondLabel: "")
-                    customRow(icon: "", firstLabel: "Privacy Policy", secondLabel: "")
+                    customRow(icon: "info", firstLabel: "About", secondLabel: "") {
+                        
+                    }
+                    
+                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "") {
+                        
+                    }
                 }
                 
                 Section(header: Text("More Apps")) {
                     customAppRow(
                         icon: Image(systemName: "questionmark.app.dashed"),
                         iconColor: .blue,
-                        title: "DocMatic",
-                        subtitle: "Document scanner for iPhone and iPad"
-                    ) {
-                        // Navigate to your app preview
-                        print("Tapped DocMatic")
-                    }
-                    
-                    customAppRow(
-                        icon: Image(systemName: "questionmark.app.dashed"),
-                        iconColor: .blue,
                         title: "ProLight",
-                        subtitle: "Multi fuctional flashlight for iPhone"
+                        subtitle: "Multi Fuctional Flashlight", device1: "iphone", device2: ""
                     ) {
                         // Navigate to your app preview
                         print("Tapped ProLight")
@@ -71,18 +69,26 @@ struct settingsView: View {
                         icon: Image(systemName: "questionmark.app.dashed"),
                         iconColor: .blue,
                         title: "Noel",
-                        subtitle: "Christmas countdown for iPhone and iPad"
+                        subtitle: "Christmas Countdown", device1: "iphone", device2: "ipad"
                     ) {
                         // Navigate to your app preview
                         print("Tapped Noel")
+                    }
+                    
+                    customAppRow(
+                        icon: Image(systemName: "questionmark.app.dashed"),
+                        iconColor: .blue,
+                        title: "DocMatic",
+                        subtitle: "Document Scanner", device1: "iphone", device2: ""
+                    ) {
+                        // Navigate to your app preview
+                        print("Tapped DocMatic")
                     }
                 }
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(Text("Settings"))
-            .sheet(isPresented: $isPaywallPresented) {
-                // TODO: add the paywall view...
-            }
+            
         }
     }
 }
@@ -178,6 +184,8 @@ struct customAppRow: View {
     let iconColor: Color
     let title: String
     let subtitle: String
+    let device1: String
+    let device2: String
     let action: () -> Void
     
     var body: some View {
@@ -189,7 +197,7 @@ struct customAppRow: View {
                     .frame(width: 48, height: 48)
                     .foregroundColor(.white)
                     .padding()
-                    .background(iconColor)
+                    .background(iconColor.gradient)
                     .cornerRadius(16)
                 
                 VStack(alignment: .leading, spacing: 4) {
@@ -199,6 +207,13 @@ struct customAppRow: View {
                     Text(subtitle)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
+                    
+                    HStack {
+                        Image(systemName: device1)
+                        Image(systemName: device2)
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
                 }
                 Spacer()
             }
@@ -207,6 +222,7 @@ struct customAppRow: View {
     }
 }
 
+// MARK: WebView
 struct webView: UIViewRepresentable {
     var url: String
     func makeUIView(context: UIViewRepresentableContext<webView>) -> WKWebView {
