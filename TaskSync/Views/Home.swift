@@ -147,7 +147,7 @@ struct Home: View {
                     Label("Sync from Calender", systemImage: "square.and.arrow.down.badge.clock")
                 }
                 
-                Button(action: {}) {
+                Button(action: { showSettings.toggle() }) {
                     Label("Settings", systemImage: "gear")
                 }
                 
@@ -176,6 +176,9 @@ struct Home: View {
                 .interactiveDismissDisabled()
                 .presentationCornerRadius(30)
                 .presentationBackground(.ultraThinMaterial)
+        }
+        .sheet(isPresented: $showSettings) {
+            settingsView()
         }
     }
     

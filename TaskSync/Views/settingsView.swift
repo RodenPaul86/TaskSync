@@ -9,6 +9,7 @@ import SwiftUI
 import WebKit
 
 struct settingsView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var isPaywallPresented: Bool = false
     
     var body: some View {
@@ -25,13 +26,7 @@ struct settingsView: View {
                 }
                 
                 Section(header: Text("Costomization")) {
-                    customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "") {
-                        //showPickerView.toggle()
-                    }
-                    
-                    customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "") {
-                        
-                    }
+                    customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeAppIcons()))
                 }
                 
                 Section(header: Text("IT Support")) {
@@ -39,19 +34,13 @@ struct settingsView: View {
                         
                     }
                     
-                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "") {
-                        
-                    }
+                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
                 }
                 
                 Section(header: Text("Info")) {
-                    customRow(icon: "info", firstLabel: "About", secondLabel: "") {
-                        
-                    }
+                    customRow(icon: "info", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
                     
-                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "") {
-                        
-                    }
+                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "") // TODO: Add the privacy policy link...
                 }
                 
                 Section(header: Text("More Apps")) {
@@ -59,7 +48,7 @@ struct settingsView: View {
                         icon: Image(systemName: "questionmark.app.dashed"),
                         iconColor: .blue,
                         title: "ProLight",
-                        subtitle: "Multi Fuctional Flashlight", device1: "iphone", device2: ""
+                        subtitle: "Multi Fuctional Flashlight", device1: "iphone", device2: "", device3: "", device4: "", device5: ""
                     ) {
                         // Navigate to your app preview
                         print("Tapped ProLight")
@@ -69,7 +58,7 @@ struct settingsView: View {
                         icon: Image(systemName: "questionmark.app.dashed"),
                         iconColor: .blue,
                         title: "Noel",
-                        subtitle: "Christmas Countdown", device1: "iphone", device2: "ipad"
+                        subtitle: "Christmas Countdown", device1: "iphone", device2: "ipad", device3: "macbook", device4: "", device5: ""
                     ) {
                         // Navigate to your app preview
                         print("Tapped Noel")
@@ -79,7 +68,7 @@ struct settingsView: View {
                         icon: Image(systemName: "questionmark.app.dashed"),
                         iconColor: .blue,
                         title: "DocMatic",
-                        subtitle: "Document Scanner", device1: "iphone", device2: ""
+                        subtitle: "Document Scanner", device1: "iphone", device2: "", device3: "", device4: "", device5: ""
                     ) {
                         // Navigate to your app preview
                         print("Tapped DocMatic")
@@ -88,7 +77,14 @@ struct settingsView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(Text("Settings"))
-            
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { dismiss() }) {
+                        Text("Done")
+                    }
+                }
+            }
         }
     }
 }
@@ -186,6 +182,9 @@ struct customAppRow: View {
     let subtitle: String
     let device1: String
     let device2: String
+    let device3: String
+    let device4: String
+    let device5: String
     let action: () -> Void
     
     var body: some View {
@@ -211,6 +210,9 @@ struct customAppRow: View {
                     HStack {
                         Image(systemName: device1)
                         Image(systemName: device2)
+                        Image(systemName: device3)
+                        Image(systemName: device4)
+                        Image(systemName: device5)
                     }
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
