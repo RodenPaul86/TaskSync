@@ -74,7 +74,6 @@ struct Home: View {
                 .presentationDetents([.height(400)])
                 .interactiveDismissDisabled()
                 .presentationCornerRadius(30)
-                .presentationBackground(.ultraThinMaterial)
         }
     }
     
@@ -107,7 +106,7 @@ struct Home: View {
             if !incompleteTasks.isEmpty {
                 Text("You have \(incompleteTasks.count) task\(incompleteTasks.count > 1 ? "s" : "") to tackle today.")
                     .font(.subheadline)
-                    .fontWeight(.medium)
+                    .fontWeight(.bold)
                     .foregroundStyle(.primary)
             }
             
@@ -115,16 +114,8 @@ struct Home: View {
             if !expiredTasks.isEmpty {
                 Text("You have \(expiredTasks.count) expired task\(expiredTasks.count > 1 ? "s" : "").")
                     .font(.subheadline)
-                    .fontWeight(.medium)
+                    .fontWeight(.bold)
                     .foregroundStyle(.red)
-            }
-            
-            // If there are no tasks at all
-            if incompleteTasks.isEmpty && expiredTasks.isEmpty {
-                Text("You're all caught up!")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.green)
             }
             
             /// Week Slider
@@ -175,7 +166,6 @@ struct Home: View {
                 .presentationDetents([.height(400)])
                 .interactiveDismissDisabled()
                 .presentationCornerRadius(30)
-                .presentationBackground(.ultraThinMaterial)
         }
         .sheet(isPresented: $showSettings) {
             settingsView()

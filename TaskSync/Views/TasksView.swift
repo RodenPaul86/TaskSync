@@ -32,28 +32,42 @@ struct TasksView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 35) {
-            ForEach(tasks) { task in
-                TaskRowView(task: task)
-                    .background(alignment: .leading) {
-                        if tasks.last?.id != task.id {
-                            Rectangle()
-                                .frame(width: 1)
-                                .offset(x: 8)
-                                .padding(.bottom, -35)
-                        }
-                    }
-            }
-        }
-        .padding([.vertical, .leading], 15)
-        .padding(.top, 15)
-        .overlay {
-            if tasks.isEmpty {
-                Text("No Task's Found")
-                    .font(.caption)
+        if tasks.isEmpty {
+            VStack(spacing: 20) {
+                Image(systemName: "checkmark.seal")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
                     .foregroundStyle(.secondary)
-                    .frame(width: 150)
+                
+                Text("You're all caught up!")
+                    .font(.title3.bold())
+                    .foregroundStyle(.gray)
+                
+                Text("Add a new task to get started or enjoy the calm while it lasts.")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
             }
+            .padding()
+            
+        } else {
+            VStack(alignment: .leading, spacing: 35) {
+                ForEach(tasks) { task in
+                    TaskRowView(task: task)
+                        .background(alignment: .leading) {
+                            if tasks.last?.id != task.id {
+                                Rectangle()
+                                    .frame(width: 1)
+                                    .offset(x: 8)
+                                    .padding(.bottom, -35)
+                            }
+                        }
+                }
+            }
+            .padding([.vertical, .leading], 15)
+            .padding(.top, 15)
         }
     }
 }

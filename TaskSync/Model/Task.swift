@@ -8,6 +8,13 @@
 import SwiftUI
 import SwiftData
 
+enum TaskPriority: String, Codable, CaseIterable {
+    case none = "None"
+    case basic = "Basic"
+    case important = "Important"
+    case urgent = "Urgent"
+}
+
 @Model
 class Task: Identifiable {
     var id: UUID
@@ -16,14 +23,16 @@ class Task: Identifiable {
     var creationDate: Date
     var isCompleted: Bool
     var tint: String
+    var priority: TaskPriority?
     
-    init(id: UUID = .init(), taskTitle: String, taskDescription: String, creationDate: Date = .init(), isCompleted: Bool = false, tint: String) {
+    init(id: UUID = .init(), taskTitle: String, taskDescription: String, creationDate: Date = .init(), isCompleted: Bool = false, tint: String, priority: TaskPriority = .none) {
         self.id = id
         self.taskTitle = taskTitle
         self.taskDescription = taskDescription
         self.creationDate = creationDate
         self.isCompleted = isCompleted
         self.tint = tint
+        self.priority = priority
     }
     
     var tintColor: Color {

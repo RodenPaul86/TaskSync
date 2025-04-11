@@ -207,7 +207,7 @@ struct customAppRow: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
-                    HStack {
+                    HStack(alignment: .bottom) {
                         Image(systemName: device1)
                         Image(systemName: device2)
                         Image(systemName: device3)

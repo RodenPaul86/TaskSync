@@ -10,7 +10,6 @@ import SwiftUI
 struct TaskRowView: View {
     @Bindable var task: Task
     @Environment(\.modelContext) private var context /// <-- Model Context
-    
     @State private var updateTask: Bool = false
     
     var body: some View {
@@ -46,12 +45,26 @@ struct TaskRowView: View {
                         .foregroundStyle(.primary)
                 }
                 
-                Text(task.taskDescription)
-                    .font(.callout)
-                    .fontWeight(.semibold)
-                    .textScale(.secondary)
-                    .foregroundStyle(.gray)
-                    .lineLimit(2)
+                HStack(alignment: .bottom) {
+                    Text(task.taskDescription)
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                        .textScale(.secondary)
+                        .foregroundStyle(.gray)
+                        .lineLimit(2)
+                    
+                    Spacer()
+                    
+                    if task.priority != TaskPriority.none {
+                        Text(task.priority?.rawValue.capitalized ?? "")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(priorityColor(for: task.priority ?? .none))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(priorityColor(for: task.priority ?? .none).opacity(0.2), in: .capsule)
+                    }
+                }
             }
             .padding(15)
             .hSpacing(.leading)
@@ -95,6 +108,15 @@ struct TaskRowView: View {
         }
         
         return task.creationDate.isSameHour ? .blue : (task.creationDate.isPast ? .red : .black)
+    }
+    
+    func priorityColor(for priority: TaskPriority) -> Color {
+        switch priority {
+        case .none: return .clear
+        case .basic: return .blue
+        case .important: return .orange
+        case .urgent: return .red
+        }
     }
 }
 

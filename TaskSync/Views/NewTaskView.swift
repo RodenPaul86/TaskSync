@@ -22,6 +22,8 @@ struct NewTaskView: View {
     @State private var taskDate: Date = .init()
     @State private var taskColor: String = "taskColor 0"
     
+    @State private var taskPriority: TaskPriority = .none
+    
     init(taskToEdit: Task? = nil) {
         self.taskToEdit = taskToEdit
     }
@@ -38,17 +40,14 @@ struct NewTaskView: View {
                 Button(action: { dismiss() }) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title)
-                        .tint(Color(.systemGray6))
+                        .tint(Color(.lightGray))
+                        .opacity(0.25)
                 }
             }
             .hSpacing(.trailing)
             
             VStack(alignment: .leading, spacing: 8) {
-                Text("Title")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
-                
-                TextField("Going to the store", text: $taskTitle)
+                TextField("Title", text: $taskTitle)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 15)
                     .background(.ultraThinMaterial.shadow(.drop(color: .black.opacity(0.25), radius: 2)), in: .rect(cornerRadius: 10))
@@ -56,11 +55,7 @@ struct NewTaskView: View {
             .padding(.top, 5)
             
             VStack(alignment: .leading, spacing: 8) {
-                Text("Description (Optional)")
-                    .font(.caption)
-                    .foregroundStyle(.gray)
-                
-                TextField("", text: $taskDescription)
+                TextField("Description (Optional)", text: $taskDescription)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 15)
                     .background(.ultraThinMaterial.shadow(.drop(color: .black.opacity(0.25), radius: 2)), in: .rect(cornerRadius: 10))
@@ -113,6 +108,20 @@ struct NewTaskView: View {
             }
             .padding(.top, 5)
             
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Priority")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+                
+                Picker("Priority", selection: $taskPriority) {
+                    ForEach(TaskPriority.allCases, id: \.self) { priority in
+                        Text(priority.rawValue).tag(priority)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+            .padding(.top, 5)
+            
             Spacer(minLength: 0)
             
             Button(action: {
@@ -122,8 +131,10 @@ struct NewTaskView: View {
                     task.taskDescription = taskDescription
                     task.creationDate = taskDate
                     task.tint = taskColor
+                    task.priority = taskPriority
+                    
                 } else {
-                    let task = Task(taskTitle: taskTitle, taskDescription: taskDescription, creationDate: taskDate, tint: taskColor)
+                    let task = Task(taskTitle: taskTitle, taskDescription: taskDescription, creationDate: taskDate, tint: taskColor, priority: taskPriority)
                     context.insert(task)
                 }
                 
@@ -153,6 +164,7 @@ struct NewTaskView: View {
                 taskDescription = task.taskDescription
                 taskDate = task.creationDate
                 taskColor = task.tint
+                taskPriority = task.priority ?? .none
             }
         }
     }
