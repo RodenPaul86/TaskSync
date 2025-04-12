@@ -13,7 +13,7 @@ struct infoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Colors Guide")
+                Text("Color Guide")
                     .font(.title2.bold())
                     .padding(.bottom, 5)
                 
@@ -22,7 +22,8 @@ struct infoView: View {
                 Button(action: { dismiss() }) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.title)
-                        .tint(Color(.systemGray6))
+                        .tint(Color(.lightGray))
+                        .opacity(0.25)
                 }
             }
             .hSpacing(.trailing)

@@ -50,7 +50,7 @@ struct Home: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
                     .frame(width: 55, height: 55)
-                    .background(.blue.shadow(.drop(color: .black.opacity(0.25), radius: 5, x: 10, y: 10)), in: Circle())
+                    .background(.blue.gradient.shadow(.drop(color: .black.opacity(0.25), radius: 5, x: 10, y: 10)), in: Circle())
             }
             .padding(15)
         }
@@ -116,6 +116,13 @@ struct Home: View {
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundStyle(.red)
+            }
+            
+            if incompleteTasks.isEmpty && expiredTasks.isEmpty {
+                Text("There's nothing to do today!")
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.green)
             }
             
             /// Week Slider
@@ -196,7 +203,7 @@ struct Home: View {
                         .background {
                             if isSameDate(day.date, currentDate) {
                                 Circle()
-                                    .fill(.blue)
+                                    .fill(.blue.gradient)
                                     .matchedGeometryEffect(id: "TABINDICATOR", in: animation)
                             }
                             

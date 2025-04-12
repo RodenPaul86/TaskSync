@@ -79,32 +79,32 @@ struct NewTaskView: View {
                         .font(.caption)
                         .foregroundStyle(.gray)
                     
-                    let color: [String] = (0...4).compactMap { index -> String in
+                    let color: [String] = (0...6).compactMap { index -> String in
                         return "taskColor \(index)"
                     }
                     
-                    HStack(spacing: 0) {
-                        ForEach(color, id: \.self) { color in
-                            Circle()
-                                .fill(Color(color))
-                                .frame(width: 20, height: 20)
-                                .background {
-                                    Circle()
-                                        .stroke(lineWidth: 2)
-                                        .opacity(taskColor == color ? 1 : 0)
-                                }
-                                .hSpacing(.center)
-                                .contentShape(.rect)
-                                .onTapGesture {
-                                    withAnimation(.snappy) {
-                                        taskColor = color
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(color, id: \.self) { color in
+                                Circle()
+                                    .fill(Color(color))
+                                    .frame(width: 20, height: 20)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(lineWidth: 2)
+                                            .opacity(taskColor == color ? 1 : 0)
+                                    )
+                                    .contentShape(.rect)
+                                    .onTapGesture {
+                                        withAnimation(.snappy) {
+                                            taskColor = color
+                                        }
                                     }
-                                }
+                            }
                         }
+                        .padding([.vertical, .horizontal], 4)
                     }
                 }
-                
-                
             }
             .padding(.top, 5)
             
@@ -149,13 +149,17 @@ struct NewTaskView: View {
                     .font(.title3)
                     .fontWeight(.semibold)
                     .textScale(.secondary)
-                    .foregroundStyle(.black)
+                    .foregroundStyle(taskTitle.isEmpty ? .gray : .white)
                     .hSpacing(.center)
                     .padding(.vertical, 12)
-                    .background(Color(taskColor), in: .rect(cornerRadius: 10))
+                    .background(Color(taskColor).gradient, in: .rect(cornerRadius: 10))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(taskTitle.isEmpty ? .gray : .white, lineWidth: 0.5)
+                    }
             }
-            .disabled(taskTitle == "")
-            .opacity(taskTitle == "" ? 0.5 : 1)
+            .disabled(taskTitle.isEmpty)
+            .opacity(taskTitle.isEmpty ? 0.5 : 1)
         }
         .padding(15)
         .onAppear {
