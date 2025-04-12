@@ -15,6 +15,13 @@
 		3A6F35A22DA9593600D09368 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F35A12DA9593600D09368 /* UIDevice.swift */; };
 		3A6F35A42DA9597A00D09368 /* CGSize+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F35A32DA9597A00D09368 /* CGSize+Extensions.swift */; };
 		3A6F35A62DA9828100D09368 /* aboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F35A52DA9827000D09368 /* aboutView.swift */; };
+		3AA7D2B32DAAF35A009E0F1D /* apiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA7D2B22DAAF355009E0F1D /* apiKeys.swift */; };
+		3AA7D2B62DAAF3CF009E0F1D /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3AA7D2B52DAAF3CF009E0F1D /* RevenueCat */; };
+		3AA7D2B82DAAF3CF009E0F1D /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3AA7D2B72DAAF3CF009E0F1D /* RevenueCatUI */; };
+		3AA7D2BA2DAAF445009E0F1D /* appSubscriptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA7D2B92DAAF441009E0F1D /* appSubscriptionModel.swift */; };
+		3AA7D2BC2DAAF474009E0F1D /* PricingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA7D2BB2DAAF470009E0F1D /* PricingView.swift */; };
+		3AA7D2BE2DAAF4D2009E0F1D /* SubscriptionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA7D2BD2DAAF4CE009E0F1D /* SubscriptionButton.swift */; };
+		3AA7D2C02DAAF4FC009E0F1D /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA7D2BF2DAAF4F8009E0F1D /* SubscriptionView.swift */; };
 		3AA93EEF2D92036200BDD73D /* TabModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EEE2D92036100BDD73D /* TabModel.swift */; };
 		3AA93EF62D98652F00BDD73D /* TextFieldClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EF52D98652B00BDD73D /* TextFieldClearButton.swift */; };
 		3AA93EF82D99EA3800BDD73D /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EF72D99EA3400BDD73D /* Task.swift */; };
@@ -40,6 +47,11 @@
 		3A6F35A32DA9597A00D09368 /* CGSize+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+Extensions.swift"; sourceTree = "<group>"; };
 		3A6F35A52DA9827000D09368 /* aboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = aboutView.swift; sourceTree = "<group>"; };
 		3AA041B02CD7E73D006B734E /* TaskSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AA7D2B22DAAF355009E0F1D /* apiKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = apiKeys.swift; sourceTree = "<group>"; };
+		3AA7D2B92DAAF441009E0F1D /* appSubscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appSubscriptionModel.swift; sourceTree = "<group>"; };
+		3AA7D2BB2DAAF470009E0F1D /* PricingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricingView.swift; sourceTree = "<group>"; };
+		3AA7D2BD2DAAF4CE009E0F1D /* SubscriptionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionButton.swift; sourceTree = "<group>"; };
+		3AA7D2BF2DAAF4F8009E0F1D /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionView.swift; sourceTree = "<group>"; };
 		3AA93EEE2D92036100BDD73D /* TabModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabModel.swift; sourceTree = "<group>"; };
 		3AA93EF52D98652B00BDD73D /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldClearButton.swift; sourceTree = "<group>"; };
 		3AA93EF72D99EA3400BDD73D /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
@@ -62,6 +74,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AA7D2B82DAAF3CF009E0F1D /* RevenueCatUI in Frameworks */,
+				3AA7D2B62DAAF3CF009E0F1D /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +106,18 @@
 				3AA041B02CD7E73D006B734E /* TaskSync.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		3AA7D2B12DAAF332009E0F1D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				3AA7D2BF2DAAF4F8009E0F1D /* SubscriptionView.swift */,
+				3AA7D2BD2DAAF4CE009E0F1D /* SubscriptionButton.swift */,
+				3AA7D2BB2DAAF470009E0F1D /* PricingView.swift */,
+				3AA7D2B92DAAF441009E0F1D /* appSubscriptionModel.swift */,
+				3AA7D2B22DAAF355009E0F1D /* apiKeys.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		3AA93EED2D92035600BDD73D /* Model */ = {
@@ -148,6 +174,7 @@
 		3AED6ACE2D7CFD0C00140414 /* TaskSync */ = {
 			isa = PBXGroup;
 			children = (
+				3AA7D2B12DAAF332009E0F1D /* Services */,
 				3AA93EF92D99ECFC00BDD73D /* Helper */,
 				3AA93EF42D98651100BDD73D /* Components */,
 				3AA93EED2D92035600BDD73D /* Model */,
@@ -187,6 +214,8 @@
 			);
 			name = TaskSync;
 			packageProductDependencies = (
+				3AA7D2B52DAAF3CF009E0F1D /* RevenueCat */,
+				3AA7D2B72DAAF3CF009E0F1D /* RevenueCatUI */,
 			);
 			productName = TaskSync;
 			productReference = 3AA041B02CD7E73D006B734E /* TaskSync.app */;
@@ -216,6 +245,9 @@
 			);
 			mainGroup = 3AA041A72CD7E73C006B734E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3AA7D2B42DAAF3CF009E0F1D /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3AA041B12CD7E73D006B734E /* Products */;
 			projectDirPath = "";
@@ -243,19 +275,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AA7D2BE2DAAF4D2009E0F1D /* SubscriptionButton.swift in Sources */,
 				3AA93F012D9A648000BDD73D /* offsetKey.swift in Sources */,
+				3AA7D2BA2DAAF445009E0F1D /* appSubscriptionModel.swift in Sources */,
 				3A6F35A22DA9593600D09368 /* UIDevice.swift in Sources */,
 				3AA93EEF2D92036200BDD73D /* TabModel.swift in Sources */,
 				3AA93F032D9A6BBE00BDD73D /* TaskRowView.swift in Sources */,
 				3A6F35A42DA9597A00D09368 /* CGSize+Extensions.swift in Sources */,
 				3A130A9E2D9D9AFD00978BF8 /* TasksView.swift in Sources */,
+				3AA7D2B32DAAF35A009E0F1D /* apiKeys.swift in Sources */,
 				3AA93EF82D99EA3800BDD73D /* Task.swift in Sources */,
+				3AA7D2BC2DAAF474009E0F1D /* PricingView.swift in Sources */,
 				3AED6AD42D7CFD0C00140414 /* ContentView.swift in Sources */,
 				3A130A9C2D9D7A5D00978BF8 /* infoView.swift in Sources */,
 				3AA93F052D9B3DB500BDD73D /* NewTaskView.swift in Sources */,
 				3A6F359E2DA9589C00D09368 /* alternativeAppIcons.swift in Sources */,
 				3AA93EFF2D99EF2F00BDD73D /* Home.swift in Sources */,
 				3AA93EFB2D99ED1A00BDD73D /* View+Extenstions.swift in Sources */,
+				3AA7D2C02DAAF4FC009E0F1D /* SubscriptionView.swift in Sources */,
 				3AA93EF62D98652F00BDD73D /* TextFieldClearButton.swift in Sources */,
 				3A6F35A62DA9828100D09368 /* aboutView.swift in Sources */,
 				3AA93EFD2D99EDAF00BDD73D /* Date+Extentsions.swift in Sources */,
@@ -297,7 +334,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.studio4design.TaskSync;
+				PRODUCT_BUNDLE_IDENTIFIER = com.studio4design.TaskSync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -339,7 +376,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.studio4design.TaskSync;
+				PRODUCT_BUNDLE_IDENTIFIER = com.studio4design.TaskSync;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -488,6 +525,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3AA7D2B42DAAF3CF009E0F1D /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.21.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3AA7D2B52DAAF3CF009E0F1D /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3AA7D2B42DAAF3CF009E0F1D /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		3AA7D2B72DAAF3CF009E0F1D /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3AA7D2B42DAAF3CF009E0F1D /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3AA041A82CD7E73C006B734E /* Project object */;
 }
