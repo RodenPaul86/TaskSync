@@ -15,14 +15,14 @@ enum TaskPriority: String, Codable, CaseIterable {
     case urgent = "Urgent"
 }
 
-@Model
+@Model /// <-- SwiftData Model
 class Task: Identifiable {
-    var id: UUID
-    var taskTitle: String
-    var taskDescription: String
-    var creationDate: Date
-    var isCompleted: Bool
-    var tint: String
+    var id: UUID?
+    var taskTitle: String = ""
+    var taskDescription: String = ""
+    var creationDate: Date = Date.now
+    var isCompleted: Bool = false
+    var tint: String = "taskColor 0"
     var priority: TaskPriority?
     
     init(id: UUID = .init(), taskTitle: String, taskDescription: String, creationDate: Date = .init(), isCompleted: Bool = false, tint: String, priority: TaskPriority = .none) {
