@@ -167,7 +167,7 @@ struct NewTaskView: View {
                     .font(.title3)
                     .fontWeight(.semibold)
                     .textScale(.secondary)
-                    .foregroundStyle(taskTitle.isEmpty ? .gray : .white)
+                    .foregroundStyle(taskTitle.isEmpty ? .gray : .primary)
                     .hSpacing(.center)
                     .padding(.vertical, 12)
                     .background(Color(taskColor).gradient, in: .rect(cornerRadius: 10))
