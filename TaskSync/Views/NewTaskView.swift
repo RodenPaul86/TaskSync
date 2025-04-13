@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct NewTaskView: View {
+    // MARK: Paywall Properties
+    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @State private var isPaywallPresented: Bool = false
+    
     /// View Properties
     @Environment(\.dismiss) private var dismiss
     
@@ -85,10 +89,19 @@ struct NewTaskView: View {
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
-                            ForEach(color, id: \.self) { color in
+                            ForEach(Array(color.enumerated()), id: \.element) { index, color in
                                 Circle()
                                     .fill(Color(color))
                                     .frame(width: 20, height: 20)
+                                    .overlay(
+                                        Group {
+                                            if !appSubModel.isSubscriptionActive && index != 0 {
+                                                Image(systemName: "lock.fill")
+                                                    .foregroundColor(.gray)
+                                                    .font(.system(size: 10))
+                                            }
+                                        }
+                                    )
                                     .overlay(
                                         Circle()
                                             .stroke(lineWidth: 2)
@@ -96,8 +109,13 @@ struct NewTaskView: View {
                                     )
                                     .contentShape(.rect)
                                     .onTapGesture {
-                                        withAnimation(.snappy) {
-                                            taskColor = color
+                                        if appSubModel.isSubscriptionActive || index == 0 {
+                                            withAnimation(.snappy) {
+                                                taskColor = color
+                                            }
+                                        } else {
+                                            // Optionally trigger your paywall here
+                                            isPaywallPresented = true
                                         }
                                     }
                             }

@@ -8,7 +8,11 @@
 import SwiftUI
 import SwiftData
 
-struct Home: View {
+struct HomeView: View {
+    // MARK: Paywall Properties
+    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @State private var isPaywallPresented: Bool = false
+    
     // MARK: Properties
     @State private var currentDate: Date = .init()
     @State private var weekSlider: [[Date.WeekDay]] = []
@@ -68,12 +72,20 @@ struct Home: View {
                     weekSlider.append(lastDate.currentNextWeek())
                 }
             }
+            
+            if appSubModel.isSubscriptionActive {
+                isPaywallPresented = true
+            }
         }
         .sheet(isPresented: $createTask) {
             NewTaskView()
                 .presentationDetents([.height(400)])
                 .interactiveDismissDisabled()
                 .presentationCornerRadius(30)
+        }
+        .fullScreenCover(isPresented: $isPaywallPresented) {
+            SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                .preferredColorScheme(.dark)
         }
     }
     
@@ -142,8 +154,9 @@ struct Home: View {
         .overlay(alignment: .topTrailing) {
             Menu {
                 Button(action: {}) {
-                    Label("Sync from Calender", systemImage: "square.and.arrow.down.badge.clock")
+                    Label("Sync Calender", systemImage: "square.and.arrow.down.badge.clock")
                 }
+                .disabled(appSubModel.isSubscriptionActive ? false : true)
                 
                 Button(action: { showSettings.toggle() }) {
                     Label("Settings", systemImage: "gear")

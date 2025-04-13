@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Home()
+        HomeView()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

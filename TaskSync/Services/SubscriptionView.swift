@@ -100,8 +100,6 @@ struct SubscriptionView: View {
                     }
                     .frame(height: 100)
                     
-                    SubscriptionButton(plan: .lifetime, selectedPlan: $selectedPlan, offering: currentOffering)
-                    
                     // MARK: Subscribe Button (Full Width)
                     Button(action: {
                         purchase(selectedPlan)

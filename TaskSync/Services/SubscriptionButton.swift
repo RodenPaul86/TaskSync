@@ -125,3 +125,8 @@ struct SubscriptionButton: View {
         }
     }
 }
+
+#Preview {
+    SubscriptionView(isPaywallPresented: .constant(false))
+        .preferredColorScheme(.dark)
+}

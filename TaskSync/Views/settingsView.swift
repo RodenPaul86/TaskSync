@@ -10,16 +10,26 @@ import WebKit
 
 struct settingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var isPaywallPresented: Bool = false
     
     var body: some View {
         NavigationStack {
             List {
-                Section(header: Text("")) {
-                    customPremiumBanner {
-                        isPaywallPresented = true
+                if appSubModel.isSubscriptionActive {
+                    Section("") {
+                        customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
+                            
+                        }
                     }
-                    .listRowInsets(EdgeInsets())
+                    
+                } else {
+                    Section("") {
+                        customPremiumBanner {
+                            isPaywallPresented = true
+                        }
+                        .listRowInsets(EdgeInsets())
+                    }
                 }
                 
                 Section(header: Text("Costomization")) {
