@@ -59,6 +59,12 @@ struct HomeView: View {
             .padding(15)
         }
         .onAppear {
+            if appSubModel.isSubscriptionActive {
+                isPaywallPresented = false
+            } else {
+                isPaywallPresented = true
+            }
+            
             if weekSlider.isEmpty {
                 let currentWeek = Date().fetchWeek()
                 
@@ -71,10 +77,6 @@ struct HomeView: View {
                 if let lastDate = currentWeek.last?.date {
                     weekSlider.append(lastDate.currentNextWeek())
                 }
-            }
-            
-            if appSubModel.isSubscriptionActive {
-                isPaywallPresented = true
             }
         }
         .sheet(isPresented: $createTask) {
