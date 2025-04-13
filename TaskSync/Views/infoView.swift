@@ -13,7 +13,7 @@ struct infoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Color Guide")
+                Text("Task Color Guide")
                     .font(.title2.bold())
                     .padding(.bottom, 5)
                 
@@ -29,22 +29,22 @@ struct infoView: View {
             .hSpacing(.trailing)
             
             VStack(alignment: .leading, spacing: 8) {
-                InfoRow(color: .red, title: "Past Hour Tasks", description: "Tasks that were scheduled in the past hour.")
+                InfoRow(color: .red, title: "Past Hour", description: "Tasks that were scheduled in the past hour.")
             }
             .padding([.top, .horizontal], 5)
             
             VStack(alignment: .leading, spacing: 8) {
-                InfoRow(color: .blue, title: "Current Hour Task", description: "The task that is scheduled for the current hour.")
+                InfoRow(color: .blue, title: "Current Hour", description: "The task that is scheduled for the current hour.")
             }
             .padding([.top, .horizontal], 5)
             
             VStack(alignment: .leading, spacing: 8) {
-                InfoRow(color: .green, title: "Completed Task", description: "Tasks that have been marked as completed.")
+                InfoRow(color: .green, title: "Completed", description: "Tasks that have been marked as completed.")
             }
             .padding([.top, .horizontal], 5)
             
             VStack(alignment: .leading, spacing: 8) {
-                InfoRow(color: .black, title: "Upcoming Tasks", description: "Tasks scheduled for future hours.")
+                InfoRow(color: .black, title: "Upcoming", description: "Tasks scheduled for future hours.")
             }
             .padding([.top, .horizontal], 5)
             
