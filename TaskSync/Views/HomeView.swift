@@ -12,6 +12,7 @@ struct HomeView: View {
     // MARK: Paywall Properties
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var isPaywallPresented: Bool = false
+    @State private var hasCheckedSubscription = false
     
     // MARK: Properties
     @State private var currentDate: Date = .init()
@@ -59,12 +60,6 @@ struct HomeView: View {
             .padding(15)
         }
         .onAppear {
-            if appSubModel.isSubscriptionActive {
-                isPaywallPresented = false
-            } else {
-                isPaywallPresented = true
-            }
-            
             if weekSlider.isEmpty {
                 let currentWeek = Date().fetchWeek()
                 
@@ -77,6 +72,10 @@ struct HomeView: View {
                 if let lastDate = currentWeek.last?.date {
                     weekSlider.append(lastDate.currentNextWeek())
                 }
+            }
+            
+            if !hasCheckedSubscription {
+                checkSubscription()
             }
         }
         .sheet(isPresented: $createTask) {
@@ -156,7 +155,7 @@ struct HomeView: View {
         .overlay(alignment: .topTrailing) {
             Menu {
                 Button(action: {}) {
-                    Label("Sync Calender", systemImage: "square.and.arrow.down.badge.clock")
+                    Label("Sync from Calender", systemImage: "square.and.arrow.down.badge.clock")
                 }
                 .disabled(appSubModel.isSubscriptionActive ? false : true)
                 
@@ -282,6 +281,18 @@ struct HomeView: View {
         }
         
         print(weekSlider.count)
+    }
+    
+    func checkSubscription() {
+        // Wait a tick if subscription state is loading
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            if appSubModel.isSubscriptionActive {
+                isPaywallPresented = false
+            } else {
+                isPaywallPresented = true
+            }
+            hasCheckedSubscription = true
+        }
     }
 }
 

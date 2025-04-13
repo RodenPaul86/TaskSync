@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import RevenueCat
 import WebKit
 
 struct settingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var isPaywallPresented: Bool = false
+    @State private var isPresentedManageSubscription = false
+    @State private var showDebug: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -19,7 +22,7 @@ struct settingsView: View {
                 if appSubModel.isSubscriptionActive {
                     Section("") {
                         customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
-                            
+                            isPresentedManageSubscription = true
                         }
                     }
                     
@@ -81,6 +84,13 @@ struct settingsView: View {
                         print("Tapped DocMatic")
                     }
                 }
+#if DEBUG
+                Section(header: Text("Development Tools")) {
+                    customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
+                        showDebug = true
+                    }
+                }
+#endif
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(Text("Settings"))
@@ -96,6 +106,8 @@ struct settingsView: View {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
                     .preferredColorScheme(.dark)
             }
+            .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
+            .debugRevenueCatOverlay(isPresented: $showDebug)
         }
     }
 }

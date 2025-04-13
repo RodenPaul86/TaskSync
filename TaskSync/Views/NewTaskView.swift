@@ -118,6 +118,10 @@ struct NewTaskView: View {
                                             isPaywallPresented = true
                                         }
                                     }
+                                    .fullScreenCover(isPresented: $isPaywallPresented) {
+                                        SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                                            .preferredColorScheme(.dark)
+                                    }
                             }
                         }
                         .padding([.vertical, .horizontal], 4)

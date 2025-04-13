@@ -108,7 +108,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3AA7D2B12DAAF332009E0F1D /* Services */ = {
+		3AA7D2B12DAAF332009E0F1D /* Subscripion Service */ = {
 			isa = PBXGroup;
 			children = (
 				3AA7D2BF2DAAF4F8009E0F1D /* SubscriptionView.swift */,
@@ -117,7 +117,7 @@
 				3AA7D2B92DAAF441009E0F1D /* appSubscriptionModel.swift */,
 				3AA7D2B22DAAF355009E0F1D /* apiKeys.swift */,
 			);
-			path = Services;
+			path = "Subscripion Service";
 			sourceTree = "<group>";
 		};
 		3AA93EED2D92035600BDD73D /* Model */ = {
@@ -174,7 +174,7 @@
 		3AED6ACE2D7CFD0C00140414 /* TaskSync */ = {
 			isa = PBXGroup;
 			children = (
-				3AA7D2B12DAAF332009E0F1D /* Services */,
+				3AA7D2B12DAAF332009E0F1D /* Subscripion Service */,
 				3AA93EF92D99ECFC00BDD73D /* Helper */,
 				3AA93EF42D98651100BDD73D /* Components */,
 				3AA93EED2D92035600BDD73D /* Model */,
