@@ -9,9 +9,10 @@ import SwiftUI
 
 struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
-        ("Document Scans", "5", .infinity, true),
+        ("Task Background Color", nil, .checkmark, false),
+        ("Syncing from Calendar", nil, .checkmark, false),
         ("Alternate App Icons", nil, .checkmark, false),
-        ("Remove Paywall", nil, .checkmark, false)
+        ("Remove Annoying Paywall", nil, .checkmark, false)
     ]
     
     enum ProFeatureType {
@@ -34,7 +35,7 @@ struct PricingView: View {
                 
                 Text("Pro")
                     .font(.headline)
-                    .foregroundColor(.purple)
+                    .foregroundColor(.blue)
                     .frame(width: 50) /// <-- Fixed width for alignment
             }
             
@@ -56,18 +57,19 @@ struct PricingView: View {
                             .foregroundStyle(.gray)
                     } else {
                         Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundColor(feature.freeHasAccess ? .purple : .red)
+                            .foregroundColor(feature.freeHasAccess ? .blue : .red)
                             .frame(width: 50)
                     }
                     
                     // Pro Version Column
                     Image(systemName: feature.proType == .infinity ? "infinity" : "checkmark.circle.fill")
-                        .foregroundColor(.purple)
+                        .foregroundColor(.blue)
                         .frame(width: 50)
                 }
                 .padding(.vertical, 5)
             }
         }
+        .font(.subheadline)
         .padding()
         .background(Color.gray.opacity(0.2))
         .cornerRadius(15)
@@ -75,6 +77,6 @@ struct PricingView: View {
 }
 
 #Preview {
-    PricingView()
+    SubscriptionView(isPaywallPresented: .constant(false))
         .preferredColorScheme(.dark)
 }

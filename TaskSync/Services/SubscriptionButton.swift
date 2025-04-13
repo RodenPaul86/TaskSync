@@ -8,10 +8,11 @@
 import SwiftUI
 import RevenueCat
 
-// Enum for Subscription Plans
+// MARK: Subscription Plans
 enum SubscriptionPlan: String {
     case annual = "Annually"
     case monthly = "Monthly"
+    case weekly = "Weekly"
     case lifetime = "Lifetime"
 }
 
@@ -21,37 +22,38 @@ struct SubscriptionButton: View {
     var offering: Offering?
     
     @State private var currentOffering: Offering?
+    @State private var originalYearlyPrice: Double = 259.48
     
     var isSelected: Bool {
         selectedPlan == plan
     }
     
-    // Helper to extract price value
+    // MARK: Helper to extract price value
     func priceValue(for package: Package?) -> Double? {
         guard let price = package?.storeProduct.price as? NSDecimalNumber else { return nil }
         return price.doubleValue
     }
     
-    // Helper to extract price
+    // MARK: Helper to extract price
     func priceString(for plan: SubscriptionPlan) -> String {
         switch plan {
         case .annual:
             return offering?.annual?.localizedPriceString ?? "N/A"
         case .monthly:
             return offering?.monthly?.localizedPriceString ?? "N/A"
+        case .weekly:
+            return offering?.weekly?.localizedPriceString ?? "N/A"
         case .lifetime:
             return offering?.lifetime?.localizedPriceString ?? "N/A"
         }
     }
     
-    // Calculate the dynamic discount for the Annual Plan
+    // MARK: Calculate the dynamic discount for the Annual Plan
     func annualDiscount() -> Int? {
-        guard let monthlyPrice = priceValue(for: offering?.monthly),
-              let annualPrice = priceValue(for: offering?.annual) else { return nil }
-        
-        let monthlyEquivalent = annualPrice / 12
-        let discount = (1 - (monthlyEquivalent / monthlyPrice)) * 100
-        return Int(discount.rounded()) // Rounds to the nearest whole number
+        let originalAnnualPrice: Double = originalYearlyPrice
+        guard let discountedAnnualPrice = priceValue(for: offering?.annual) else { return nil }
+        let discount = (1 - (discountedAnnualPrice / originalAnnualPrice)) * 100
+        return Int(discount.rounded())
     }
     
     var body: some View {
@@ -68,7 +70,7 @@ struct SubscriptionButton: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color.purple)
+                        .background(.blue.gradient)
                         .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
             }
@@ -78,13 +80,28 @@ struct SubscriptionButton: View {
             // Use helper function for price display
             let price = priceString(for: plan)
             
-            // Display the appropriate price
+            // MARK: Display the appropriate price
             if plan == .annual {
+                let originalPrice = String(originalYearlyPrice)
+                
+                Text("$\(originalPrice)")
+                    .foregroundStyle(.blue)
+                    .bold()
+                    .strikethrough()
+                
                 Text("\(price) / yr")
                     .foregroundColor(.white)
                     .bold()
             } else if plan == .monthly {
                 Text("\(price) / mo")
+                    .foregroundColor(.white)
+                    .bold()
+            } else if plan == .weekly {
+                Text("3-Day Trial")
+                    .foregroundStyle(.blue)
+                    .bold()
+                
+                Text("\(price) / wk")
                     .foregroundColor(.white)
                     .bold()
             } else if plan == .lifetime {
@@ -94,14 +111,14 @@ struct SubscriptionButton: View {
             }
         }
         .padding()
-        .frame(maxWidth: .infinity, minHeight: plan == .lifetime ? 50 : 100, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: plan == .lifetime ? 100 : 100, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color.gray.opacity(0.2)) /// <-- Dark gray background
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isSelected ? Color.purple : Color.gray, lineWidth: 2)
+                .stroke(isSelected ? .blue : .gray, lineWidth: 2)
         )
         .onTapGesture {
             selectedPlan = plan

@@ -20,9 +20,6 @@ struct settingsView: View {
                         isPaywallPresented = true
                     }
                     .listRowInsets(EdgeInsets())
-                    .sheet(isPresented: $isPaywallPresented) {
-                        // TODO: add the paywall view...
-                    }
                 }
                 
                 Section(header: Text("Costomization")) {
@@ -84,6 +81,10 @@ struct settingsView: View {
                         Text("Done")
                     }
                 }
+            }
+            .fullScreenCover(isPresented: $isPaywallPresented) {
+                SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                    .preferredColorScheme(.dark)
             }
         }
     }

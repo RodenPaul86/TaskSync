@@ -12,7 +12,7 @@ struct SubscriptionView: View {
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.presentationMode) var presentationMode
     @Binding var isPaywallPresented: Bool
-    @State private var selectedPlan: SubscriptionPlan = .annual
+    @State private var selectedPlan: SubscriptionPlan = .weekly
     @State private var currentOffering: Offering?
     @State private var isLoading = true
     
@@ -33,17 +33,17 @@ struct SubscriptionView: View {
                 
                 Spacer()
                 
-                // MARK: Title: DocMatic
-                Text("DocMatic")
+                // MARK: Title: TaskSync
+                Text("TaskSync")
                     .font(.headline)
                     .foregroundColor(.white)
                 
                 Text("Pro")
                     .font(.caption.italic().bold())
-                    .foregroundColor(.black)
+                    .foregroundColor(.white)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Color.purple)
+                    .background(.blue.gradient)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                 
                 Spacer()
@@ -85,31 +85,33 @@ struct SubscriptionView: View {
                 // MARK: Subscription Options
                 VStack(spacing: 15) {
                     // MARK: Feature List
-                    PricingView()
+                    ScrollView(.vertical, showsIndicators: false) {
+                        PricingView()
+                            .padding(.top)
+                    }
                     
                     Spacer()
                     
                     // Annual & Monthly Buttons
                     HStack(spacing: 15) {
                         SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
-                        SubscriptionButton(plan: .monthly, selectedPlan: $selectedPlan, offering: currentOffering)
+                        
+                        SubscriptionButton(plan: .weekly, selectedPlan: $selectedPlan, offering: currentOffering)
                     }
                     .frame(height: 100)
                     
-                    // MARK: Lifetime Button (Half Height)
                     SubscriptionButton(plan: .lifetime, selectedPlan: $selectedPlan, offering: currentOffering)
-                        .frame(height: 70) // Half the height of the others
                     
                     // MARK: Subscribe Button (Full Width)
                     Button(action: {
                         purchase(selectedPlan)
                     }) {
-                        Text("Subscribe")
+                        Text(hasIntroOffer(for: selectedPlan) ? "Try for Free!" : "Subscribe")
                             .foregroundColor(.white)
                             .bold()
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.purple)
+                            .background(.blue.gradient)
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                     }
                     .padding(.top)
@@ -182,6 +184,8 @@ struct SubscriptionView: View {
             product = offering.annual
         case .monthly:
             product = offering.monthly
+        case .weekly:
+            product = offering.weekly
         case .lifetime:
             product = offering.lifetime
         }
@@ -208,8 +212,29 @@ struct SubscriptionView: View {
             }
         }
     }
+    
+    func hasIntroOffer(for plan: SubscriptionPlan) -> Bool {
+        guard let package = getPackage(for: plan) else { return false }
+        return package.storeProduct.introductoryDiscount != nil
+    }
+    
+    func getPackage(for plan: SubscriptionPlan) -> Package? {
+        guard let offering = currentOffering else { return nil }
+        
+        switch plan {
+        case .annual:
+            return offering.annual
+        case .monthly:
+            return offering.monthly
+        case .weekly:
+            return offering.weekly
+        case .lifetime:
+            return offering.lifetime
+        }
+    }
 }
 
 #Preview {
     SubscriptionView(isPaywallPresented: .constant(false))
+        .preferredColorScheme(.dark)
 }
