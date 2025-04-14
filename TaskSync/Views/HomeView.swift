@@ -164,7 +164,7 @@ struct HomeView: View {
                 }
                 
                 Button(action: { showInfo.toggle() }) {
-                    Label("Color Guide", systemImage: "info.circle")
+                    Label("Indicator Color", systemImage: "info.circle")
                 }
                 
             } label: {

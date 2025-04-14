@@ -25,7 +25,6 @@ struct settingsView: View {
                             isPresentedManageSubscription = true
                         }
                     }
-                    
                 } else {
                     Section("") {
                         customPremiumBanner {
@@ -39,7 +38,7 @@ struct settingsView: View {
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeAppIcons()))
                 }
                 
-                Section(header: Text("IT Support")) {
+                Section(header: Text("Support")) {
                     customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "") {
                         
                     }
