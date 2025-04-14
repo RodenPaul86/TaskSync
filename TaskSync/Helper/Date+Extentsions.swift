@@ -71,15 +71,8 @@ extension Date {
         return fetchWeek(previousDate)
     }
     
-    
-    
-    
-    
     struct WeekDay: Identifiable {
         var id: UUID = .init()
         var date: Date
     }
-    
-    
-    
 }

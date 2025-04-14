@@ -79,7 +79,7 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $createTask) {
-            NewTaskView()
+            NewTaskView(defaultDate: currentDate)
                 .presentationDetents([.height(400)])
                 .interactiveDismissDisabled()
                 .presentationCornerRadius(30)

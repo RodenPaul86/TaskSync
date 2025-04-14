@@ -23,13 +23,14 @@ struct NewTaskView: View {
     
     @State private var taskTitle: String = ""
     @State private var taskDescription: String = ""
-    @State private var taskDate: Date = .init()
+    @State private var taskDate: Date
     @State private var taskColor: String = "taskColor 0"
     
     @State private var taskPriority: TaskPriority = .none
     
-    init(taskToEdit: Task? = nil) {
+    init(taskToEdit: Task? = nil, defaultDate: Date = .now) {
         self.taskToEdit = taskToEdit
+        _taskDate = State(initialValue: taskToEdit?.creationDate ?? defaultDate)
     }
     
     var body: some View {
