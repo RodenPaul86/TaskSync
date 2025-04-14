@@ -212,7 +212,7 @@ struct HomeView: View {
                         .font(.callout)
                         .fontWeight(.bold)
                         .textScale(.secondary)
-                        .foregroundStyle(isSameDate(day.date, currentDate) ? .white : .gray)
+                        .foregroundStyle(isSameDate(day.date, currentDate) ? .white : day.date.isToday ? .blue : .gray)
                         .frame(width: 35, height: 35)
                         .background {
                             if isSameDate(day.date, currentDate) {
@@ -230,11 +230,15 @@ struct HomeView: View {
                                     .offset(y: 12)
                                 
                             } else {
-                                Circle()
-                                    .fill(taskTintColor)
-                                    .frame(width: 5, height: 5)
-                                    .vSpacing(.bottom)
-                                    .offset(y: 12)
+                                HStack(spacing: 3) {
+                                    ForEach(tasksForDay.prefix(3).indices, id: \.self) { index in
+                                        Circle()
+                                            .fill(tasksForDay[index].tintColor)
+                                            .frame(width: 5, height: 5)
+                                    }
+                                }
+                                .vSpacing(.bottom)
+                                .offset(y: 12)
                             }
                         }
                         .background(Color(.systemGray6).shadow(.drop(radius: 1)), in: .circle)
