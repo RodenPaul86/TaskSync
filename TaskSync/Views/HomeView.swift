@@ -22,10 +22,11 @@ struct HomeView: View {
     @State private var createTask: Bool = false
     @State private var showInfo: Bool = false
     @State private var showSettings: Bool = false
+    @State private var showCalendarImport = false
     @Namespace private var animation
     
     @Query var tasks: [Task] /// <-- Ensure this fetches all tasks
-
+    
     var tasksForSelectedDate: [Task] {
         tasks.filter {
             Calendar.current.isDate($0.creationDate, inSameDayAs: currentDate) &&
@@ -154,8 +155,13 @@ struct HomeView: View {
         .hSpacing(.leading)
         .overlay(alignment: .topTrailing) {
             Menu {
-                Button(action: {}) {
-                    Label("Sync from Calender", systemImage: "square.and.arrow.down.badge.clock")
+                Button(action: { showCalendarImport.toggle() }) {
+                    Label("Import from Calender", systemImage: "square.and.arrow.down.badge.clock")
+                }
+                .disabled(appSubModel.isSubscriptionActive ? false : true)
+                
+                Button(action: {  }) {
+                    Label("Export to Calender", systemImage: "square.and.arrow.up.badge.clock")
                 }
                 .disabled(appSubModel.isSubscriptionActive ? false : true)
                 
@@ -172,6 +178,7 @@ struct HomeView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 30, height: 30)
+                    .rotationEffect(.degrees(90))
                     .clipShape(.circle)
             }
         }
@@ -190,6 +197,9 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showSettings) {
             settingsView()
+        }
+        .fullScreenCover(isPresented: $showCalendarImport) {
+            CalendarImportView()
         }
     }
     
