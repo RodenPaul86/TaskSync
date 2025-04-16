@@ -140,7 +140,7 @@ struct feedbackView: View {
                         MailView(
                             isShowing: $isShowingMailView,
                             recipient: "support@docmatic.app",
-                            subject: "DocMatic: \(selectedTopic)",
+                            subject: "TaskSync: \(selectedTopic)",
                             body: generateEmailBody(),
                             imageData: imageData
                         ) {
