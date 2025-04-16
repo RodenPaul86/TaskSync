@@ -13,7 +13,7 @@ struct infoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Indicator Color")
+                Text("Indicator Colors Guide")
                     .font(.title2.bold())
                     .padding(.bottom, 5)
                 
