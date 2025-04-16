@@ -160,17 +160,14 @@ struct HomeView: View {
                 }
                 .disabled(appSubModel.isSubscriptionActive ? false : true)
                 
-                Button(action: {  }) {
-                    Label("Export to Calender", systemImage: "square.and.arrow.up.badge.clock")
-                }
-                .disabled(appSubModel.isSubscriptionActive ? false : true)
-                
                 Button(action: { showSettings.toggle() }) {
                     Label("Settings", systemImage: "gear")
                 }
                 
-                Button(action: { showInfo.toggle() }) {
-                    Label("Indicator Colors Guide", systemImage: "info.circle")
+                if !tasks.isEmpty {
+                    Button(action: { showInfo.toggle() }) {
+                        Label("Indicator Colors Guide", systemImage: "info.circle")
+                    }
                 }
                 
             } label: {
@@ -209,7 +206,6 @@ struct HomeView: View {
         HStack(spacing: 0) {
             ForEach(week) { day in
                 let tasksForDay = tasks.filter { Calendar.current.isDate($0.creationDate, inSameDayAs: day.date) }
-                let taskTintColor = tasksForDay.first?.tintColor ?? .clear // Use first task's color
                 
                 VStack(spacing: 8) {
                     Text(day.date.format("E"))
