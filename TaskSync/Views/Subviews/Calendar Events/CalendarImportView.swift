@@ -71,8 +71,15 @@ struct CalendarImportView: View {
                         ForEach(groupedEvents[monthDate] ?? [], id: \.eventIdentifier) { event in
                             HStack {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(event.title)
-                                        .font(.headline)
+                                    HStack {
+                                        Text(event.title)
+                                            .font(.headline)
+                                        
+                                        if let rules = event.recurrenceRules, !rules.isEmpty {
+                                            Image(systemName: "arrow.trianglehead.2.clockwise")
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
                                     
                                     HStack(spacing: 6) {
                                         Text(event.startDate, style: .date)
@@ -93,14 +100,31 @@ struct CalendarImportView: View {
                                 
                                 Spacer()
                                 
-                                Button(action: {
-                                    toggleSelection(for: event)
-                                }) {
-                                    Image(systemName: selectedEvents.contains(event.eventIdentifier) ? "checkmark.circle.fill" : "circle")
-                                        .foregroundColor(selectedEvents.contains(event.eventIdentifier) ? .blue : .gray)
-                                        .imageScale(.large)
+                                Button {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                        if selectedEvents.contains(event.eventIdentifier) {
+                                            selectedEvents.remove(event.eventIdentifier)
+                                        } else {
+                                            selectedEvents.insert(event.eventIdentifier)
+                                        }
+                                    }
+                                } label: {
+                                    ZStack {
+                                        Circle()
+                                            .stroke(selectedEvents.contains(event.eventIdentifier) ? Color.accentColor : Color.gray.opacity(0.3), lineWidth: 2)
+                                            .frame(width: 28, height: 28)
+                                            .overlay {
+                                                if selectedEvents.contains(event.eventIdentifier) {
+                                                    Circle()
+                                                        .fill(Color.accentColor)
+                                                        .frame(width: 16, height: 16)
+                                                        .transition(.scale)
+                                                }
+                                            }
+                                    }
+                                    .contentShape(Circle()) // for larger tap target
                                 }
-                                .buttonStyle(PlainButtonStyle())
+                                .buttonStyle(.plain)
                             }
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -126,8 +150,13 @@ struct CalendarImportView: View {
                         importSelectedEvents(events: upcomingEvents)
                         dismiss()
                     }) {
-                        Text("Import")
-                            .fontWeight(.bold)
+                        if selectedEvents.isEmpty {
+                            Text("Import")
+                                .fontWeight(.medium)
+                        } else {
+                            Text("Import (\(selectedEvents.count))")
+                                .fontWeight(.medium)
+                        }
                     }
                     .disabled(selectedEvents.isEmpty)
                 }
@@ -151,7 +180,7 @@ struct CalendarImportView: View {
                 taskDescription: event.notes ?? "",
                 creationDate: event.startDate,
                 tint: "taskColor 0",
-                priority: .none
+                priority: .basic
             )
             modelContext.insert(newTask)
         }
