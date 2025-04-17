@@ -21,7 +21,7 @@ struct TextFieldClearButton: ViewModifier {
                     Image(systemName: "multiply.circle.fill")
                         .foregroundStyle(.gray)
                 }
-                .offset(x: 25)
+                .offset(x: 35)
             }
         }
     }

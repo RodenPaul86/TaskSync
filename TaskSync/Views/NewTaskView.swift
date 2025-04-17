@@ -26,7 +26,7 @@ struct NewTaskView: View {
     @State private var taskDate: Date
     @State private var taskColor: String = "taskColor 0"
     
-    @State private var taskPriority: TaskPriority = .none
+    @State private var taskPriority: TaskPriority = .basic
     
     init(taskToEdit: Task? = nil, defaultDate: Date = .now) {
         self.taskToEdit = taskToEdit
@@ -53,6 +53,7 @@ struct NewTaskView: View {
             
             VStack(alignment: .leading, spacing: 8) {
                 TextField("Title", text: $taskTitle)
+                    .clearButton(text: $taskTitle)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 15)
                     .background(.ultraThinMaterial.shadow(.drop(color: .black.opacity(0.25), radius: 2)), in: .rect(cornerRadius: 10))
@@ -61,6 +62,7 @@ struct NewTaskView: View {
             
             VStack(alignment: .leading, spacing: 8) {
                 TextField("Description (Optional)", text: $taskDescription)
+                    .clearButton(text: $taskDescription)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 15)
                     .background(.ultraThinMaterial.shadow(.drop(color: .black.opacity(0.25), radius: 2)), in: .rect(cornerRadius: 10))

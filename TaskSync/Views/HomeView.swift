@@ -96,8 +96,26 @@ struct HomeView: View {
     func HeaderView() -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 5) {
-                Text(currentDate.format("MMMM"))
-                    .foregroundStyle(.blue)
+                Button(action: {
+                    let today = Date()
+                    
+                    if let todayIndex = indexOfCurrentWeek() {
+                        withAnimation {
+                            currentDate = today
+                            currentWeekIndex = todayIndex
+                        }
+                    } else {
+                        let todayWeek = generateWeek(for: today)
+                        weekSlider.insert(todayWeek, at: 0)
+                        
+                        withAnimation {
+                            currentDate = today
+                            currentWeekIndex = 0
+                        }
+                    }
+                }) {
+                    Text(currentDate.format("MMMM"))
+                }
                 
                 Text(currentDate.format("YYYY"))
                     .foregroundStyle(.gray)
@@ -304,6 +322,32 @@ struct HomeView: View {
             hasCheckedSubscription = true
         }
     }
+    
+    func generateWeek(for date: Date) -> [Date.WeekDay] {
+        var week: [Date.WeekDay] = []
+        let calendar = Calendar.current
+        let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)?.start ?? date
+        
+        for i in 0..<7 {
+            if let day = calendar.date(byAdding: .day, value: i, to: startOfWeek) {
+                week.append(Date.WeekDay(date: day))
+            }
+        }
+        return week
+    }
+    
+    func indexOfCurrentWeek() -> Int? {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        return weekSlider.firstIndex(where: { week in
+            week.contains(where: { day in
+                calendar.isDate(day.date, equalTo: today, toGranularity: .weekOfYear)
+            })
+        })
+    }
+    
+    
 }
 
 #Preview {

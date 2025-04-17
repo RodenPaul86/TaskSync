@@ -25,7 +25,7 @@ class Task: Identifiable {
     var tint: String = "taskColor 0"
     var priority: TaskPriority?
     
-    init(id: UUID = .init(), taskTitle: String, taskDescription: String, creationDate: Date = .init(), isCompleted: Bool = false, tint: String, priority: TaskPriority = .none) {
+    init(id: UUID = .init(), taskTitle: String, taskDescription: String, creationDate: Date = .init(), isCompleted: Bool = false, tint: String, priority: TaskPriority = .basic) {
         self.id = id
         self.taskTitle = taskTitle
         self.taskDescription = taskDescription

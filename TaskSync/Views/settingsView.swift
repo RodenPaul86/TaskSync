@@ -263,8 +263,8 @@ struct customPremiumBanner: View {
     var onTap: () -> Void
     
     let features = [
-        "Unlimited Tasks",
-        "And 87 More Features"
+        "Syncing from Calendar",
+        "And 4 More Features"
     ]
     
     var body: some View {

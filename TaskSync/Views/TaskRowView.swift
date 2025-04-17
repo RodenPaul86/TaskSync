@@ -37,12 +37,13 @@ struct TaskRowView: View {
                         .font(.title3.bold())
                         .foregroundStyle(task.isCompleted ? .gray : .primary)
                         .lineLimit(1)
+                        .strikethrough(task.isCompleted, pattern: .solid, color: .primary)
                     
                     Spacer()
                     
                     Text(task.creationDate.format("hh:mm a"))
-                        .font(.caption)
-                        .foregroundStyle(.primary)
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
                 }
                 
                 HStack(alignment: .bottom) {
@@ -52,6 +53,7 @@ struct TaskRowView: View {
                         .textScale(.secondary)
                         .foregroundStyle(.gray)
                         .lineLimit(2)
+                        .strikethrough(task.isCompleted, pattern: .solid, color: .primary)
                     
                     Spacer()
                     
@@ -69,7 +71,6 @@ struct TaskRowView: View {
             .padding(15)
             .hSpacing(.leading)
             .background(task.tintColor, in: .rect(topLeadingRadius: 15, bottomLeadingRadius: 15))
-            .strikethrough(task.isCompleted, pattern: .solid, color: .black)
             .contentShape(.contextMenuPreview, .rect(cornerRadius: 15))
             .contextMenu {
                 Button(action: { updateTask.toggle() }) {
