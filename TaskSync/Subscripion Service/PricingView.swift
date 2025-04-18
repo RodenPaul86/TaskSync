@@ -10,7 +10,7 @@ import SwiftUI
 struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
         ("Syncing from Calendar", nil, .checkmark, false),
-        ("Task Background Color", nil, .checkmark, false),
+        ("Background Task Color", nil, .checkmark, false),
         ("Sync Across Devices", nil, .checkmark, true),
         ("Remove Annoying Paywalls", nil, .checkmark, false)
     ]
