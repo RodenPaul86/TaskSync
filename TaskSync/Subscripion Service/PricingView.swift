@@ -12,8 +12,7 @@ struct PricingView: View {
         ("Syncing from Calendar", nil, .checkmark, false),
         ("Task Background Color", nil, .checkmark, false),
         ("Sync Across Devices", nil, .checkmark, true),
-        ("Alternate App Icons", nil, .checkmark, false),
-        ("Remove Annoying Paywall", nil, .checkmark, false)
+        ("Remove Annoying Paywalls", nil, .checkmark, false)
     ]
     
     enum ProFeatureType {

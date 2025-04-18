@@ -34,10 +34,6 @@ struct settingsView: View {
                     }
                 }
                 
-                Section(header: Text("Costomization")) {
-                    customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeAppIcons()))
-                }
-                
                 Section(header: Text("Support")) {
                     customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "") {
                         
