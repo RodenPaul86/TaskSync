@@ -47,11 +47,11 @@ struct settingsView: View {
                     
                     customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "") // TODO: Add the privacy policy link...
                 }
-                
+                /*
                 Section(header: Text("More Apps")) {
                     customAppRow(
                         icon: Image(systemName: "questionmark.app.dashed"),
-                        iconColor: .blue,
+                        iconColor: .blue, bgColor: .blue,
                         title: "ProLight",
                         subtitle: "Multi Fuctional Flashlight", device1: "iphone", device2: "", device3: "", device4: "", device5: ""
                     ) {
@@ -61,7 +61,7 @@ struct settingsView: View {
                     
                     customAppRow(
                         icon: Image(systemName: "questionmark.app.dashed"),
-                        iconColor: .blue,
+                        iconColor: .blue, bgColor: .blue,
                         title: "Noel",
                         subtitle: "Christmas Countdown", device1: "iphone", device2: "ipad", device3: "macbook", device4: "", device5: ""
                     ) {
@@ -71,7 +71,7 @@ struct settingsView: View {
                     
                     customAppRow(
                         icon: Image(systemName: "questionmark.app.dashed"),
-                        iconColor: .blue,
+                        iconColor: .blue, bgColor: .blue,
                         title: "DocMatic",
                         subtitle: "Document Scanner", device1: "iphone", device2: "", device3: "", device4: "", device5: ""
                     ) {
@@ -79,6 +79,7 @@ struct settingsView: View {
                         print("Tapped DocMatic")
                     }
                 }
+                 */
 #if DEBUG
                 Section(header: Text("Development Tools")) {
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
@@ -149,7 +150,7 @@ struct customRow: View {
             } label: {
                 rowContent(showChevron: false)
             }
-            .buttonStyle(.plain) // Keeps it looking like a row
+            .buttonStyle(.plain) /// <-- Keeps it looking like a row
         } else {
             rowContent(showChevron: action != nil)
                 .onTapGesture {
@@ -188,7 +189,7 @@ struct customRow: View {
     }
     
     private func isWebsite(_ urlString: String) -> Bool {
-        return urlString.hasPrefix("http") // Simple check for URLs
+        return urlString.hasPrefix("http") /// <-- Simple check for URLs
     }
 }
 
@@ -196,6 +197,7 @@ struct customRow: View {
 struct customAppRow: View {
     let icon: Image
     let iconColor: Color
+    let bgColor: Color
     let title: String
     let subtitle: String
     let device1: String
@@ -209,12 +211,13 @@ struct customAppRow: View {
         Button(action: action) {
             HStack(alignment: .center, spacing: 16) {
                 icon
-                    .resizable()
+                    .renderingMode(.template)
                     .scaledToFit()
+                    .font(.system(size: 55, weight: .regular))
                     .frame(width: 48, height: 48)
-                    .foregroundColor(.white)
+                    .foregroundColor(iconColor)
                     .padding()
-                    .background(iconColor.gradient)
+                    .background(bgColor.gradient)
                     .cornerRadius(16)
                 
                 VStack(alignment: .leading, spacing: 4) {
@@ -245,9 +248,14 @@ struct customAppRow: View {
 // MARK: WebView
 struct webView: UIViewRepresentable {
     var url: String
-    func makeUIView(context: UIViewRepresentableContext<webView>) -> WKWebView {
+    func makeUIView(context: Context) -> WKWebView {
         let view = WKWebView()
-        view.load(URLRequest(url: URL(string: url)!))
+        if let safeURL = URL(string: url) {
+            let request = URLRequest(url: safeURL)
+            view.load(request)
+        } else {
+            print("Invalid URL: \(url)")
+        }
         return view
     }
     func updateUIView(_ uiView: WKWebView, context: UIViewRepresentableContext<webView>) {
@@ -309,5 +317,26 @@ struct customPremiumBanner: View {
             )
         }
         .buttonStyle(PlainButtonStyle()) /// <-- Prevents default blue button style
+    }
+}
+
+struct webViewScreen: View {
+    let urlString: String
+    let firstLabel: String
+    
+    var body: some View {
+        webView(url: urlString)
+            .edgesIgnoringSafeArea(.all)
+            .navigationTitle(firstLabel)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if let link = URL(string: urlString) {
+                        Link(destination: link) {
+                            Image(systemName: "safari")
+                        }
+                    }
+                }
+            }
     }
 }
