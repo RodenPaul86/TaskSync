@@ -30,6 +30,6 @@ struct TaskSyncApp: App {
                     ])
                 }
         }
-        .modelContainer(for: Task.self)
+        .modelContainer(for: TaskData.self)
     }
 }

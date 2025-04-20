@@ -11,7 +11,7 @@ import SwiftData
 struct TasksView: View {
     @Binding var currentDate: Date
     
-    @Query private var tasks: [Task]
+    @Query private var tasks: [TaskData]
     
     init(currentDate: Binding<Date>) {
         self._currentDate = currentDate
@@ -20,12 +20,12 @@ struct TasksView: View {
         let calendar = Calendar.current
         let startOfDate = calendar.startOfDay(for: currentDate.wrappedValue)
         let endOfDate = calendar.date(byAdding: .day, value: 1, to: startOfDate)!
-        let predicate = #Predicate<Task> {
+        let predicate = #Predicate<TaskData> {
             return $0.creationDate >= startOfDate && $0.creationDate < endOfDate
         }
         /// Sorting
         let sortDescriptor = [
-            SortDescriptor(\Task.creationDate, order: .forward)
+            SortDescriptor(\TaskData.creationDate, order: .forward)
         ]
         
         self._tasks = Query(filter: predicate, sort: sortDescriptor, animation: .snappy)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TaskRowView: View {
-    @Bindable var task: Task
+    @Bindable var task: TaskData
     @Environment(\.modelContext) private var context /// <-- Model Context
     @State private var updateTask: Bool = false
     

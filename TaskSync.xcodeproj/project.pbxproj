@@ -11,6 +11,7 @@
 		3A130A9E2D9D9AFD00978BF8 /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A130A9D2D9D9AF800978BF8 /* TasksView.swift */; };
 		3A1DEFA72DB431120009193A /* helpFAQView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFA62DB4310D0009193A /* helpFAQView.swift */; };
 		3A1DEFA92DB4883E0009193A /* reviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFA82DB488370009193A /* reviewManager.swift */; };
+		3A1DEFAB2DB536C50009193A /* AppReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFAA2DB536B20009193A /* AppReviewRequest.swift */; };
 		3A6F35502DA47DA000D09368 /* settingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F354F2DA47D9100D09368 /* settingsView.swift */; };
 		3A6F359E2DA9589C00D09368 /* alternativeAppIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F359D2DA9589000D09368 /* alternativeAppIcons.swift */; };
 		3A6F35A02DA958F100D09368 /* feedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F359F2DA958ED00D09368 /* feedbackView.swift */; };
@@ -26,7 +27,7 @@
 		3AA7D2C02DAAF4FC009E0F1D /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA7D2BF2DAAF4F8009E0F1D /* SubscriptionView.swift */; };
 		3AA93EEF2D92036200BDD73D /* TabModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EEE2D92036100BDD73D /* TabModel.swift */; };
 		3AA93EF62D98652F00BDD73D /* TextFieldClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EF52D98652B00BDD73D /* TextFieldClearButton.swift */; };
-		3AA93EF82D99EA3800BDD73D /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EF72D99EA3400BDD73D /* Task.swift */; };
+		3AA93EF82D99EA3800BDD73D /* TaskData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EF72D99EA3400BDD73D /* TaskData.swift */; };
 		3AA93EFB2D99ED1A00BDD73D /* View+Extenstions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EFA2D99ED0500BDD73D /* View+Extenstions.swift */; };
 		3AA93EFD2D99EDAF00BDD73D /* Date+Extentsions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EFC2D99EDA100BDD73D /* Date+Extentsions.swift */; };
 		3AA93EFF2D99EF2F00BDD73D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA93EFE2D99EF2B00BDD73D /* HomeView.swift */; };
@@ -45,6 +46,7 @@
 		3A130A9D2D9D9AF800978BF8 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
 		3A1DEFA62DB4310D0009193A /* helpFAQView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helpFAQView.swift; sourceTree = "<group>"; };
 		3A1DEFA82DB488370009193A /* reviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = reviewManager.swift; sourceTree = "<group>"; };
+		3A1DEFAA2DB536B20009193A /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
 		3A6F354F2DA47D9100D09368 /* settingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsView.swift; sourceTree = "<group>"; };
 		3A6F359D2DA9589000D09368 /* alternativeAppIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alternativeAppIcons.swift; sourceTree = "<group>"; };
 		3A6F359F2DA958ED00D09368 /* feedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = feedbackView.swift; sourceTree = "<group>"; };
@@ -59,7 +61,7 @@
 		3AA7D2BF2DAAF4F8009E0F1D /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionView.swift; sourceTree = "<group>"; };
 		3AA93EEE2D92036100BDD73D /* TabModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabModel.swift; sourceTree = "<group>"; };
 		3AA93EF52D98652B00BDD73D /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldClearButton.swift; sourceTree = "<group>"; };
-		3AA93EF72D99EA3400BDD73D /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		3AA93EF72D99EA3400BDD73D /* TaskData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskData.swift; sourceTree = "<group>"; };
 		3AA93EFA2D99ED0500BDD73D /* View+Extenstions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extenstions.swift"; sourceTree = "<group>"; };
 		3AA93EFC2D99EDA100BDD73D /* Date+Extentsions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extentsions.swift"; sourceTree = "<group>"; };
 		3AA93EFE2D99EF2B00BDD73D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -131,7 +133,7 @@
 		3AA93EED2D92035600BDD73D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				3AA93EF72D99EA3400BDD73D /* Task.swift */,
+				3AA93EF72D99EA3400BDD73D /* TaskData.swift */,
 				3AA93EEE2D92036100BDD73D /* TabModel.swift */,
 			);
 			path = Model;
@@ -148,6 +150,7 @@
 		3AA93EF92D99ECFC00BDD73D /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				3A1DEFAA2DB536B20009193A /* AppReviewRequest.swift */,
 				3A1DEFA82DB488370009193A /* reviewManager.swift */,
 				3AA93F002D9A647500BDD73D /* offsetKey.swift */,
 				3AA93EFA2D99ED0500BDD73D /* View+Extenstions.swift */,
@@ -286,7 +289,7 @@
 				3A6F35A42DA9597A00D09368 /* CGSize+Extensions.swift in Sources */,
 				3A130A9E2D9D9AFD00978BF8 /* TasksView.swift in Sources */,
 				3AA7D2B32DAAF35A009E0F1D /* apiKeys.swift in Sources */,
-				3AA93EF82D99EA3800BDD73D /* Task.swift in Sources */,
+				3AA93EF82D99EA3800BDD73D /* TaskData.swift in Sources */,
 				3A1DEFA92DB4883E0009193A /* reviewManager.swift in Sources */,
 				3AA7D2BC2DAAF474009E0F1D /* PricingView.swift in Sources */,
 				3A1DEFA72DB431120009193A /* helpFAQView.swift in Sources */,
@@ -297,6 +300,7 @@
 				3AA93EFF2D99EF2F00BDD73D /* HomeView.swift in Sources */,
 				3AA93EFB2D99ED1A00BDD73D /* View+Extenstions.swift in Sources */,
 				3AA7D2C02DAAF4FC009E0F1D /* SubscriptionView.swift in Sources */,
+				3A1DEFAB2DB536C50009193A /* AppReviewRequest.swift in Sources */,
 				3AA93EF62D98652F00BDD73D /* TextFieldClearButton.swift in Sources */,
 				3A6F35A62DA9828100D09368 /* aboutView.swift in Sources */,
 				3AA93EFD2D99EDAF00BDD73D /* Date+Extentsions.swift in Sources */,

@@ -175,7 +175,7 @@ struct calendarImportView: View {
     private func importSelectedEvents(events: [EKEvent]) {
         let eventsToImport = events.filter { selectedEvents.contains($0.eventIdentifier) }
         for event in eventsToImport {
-            let newTask = Task(
+            let newTask = TaskData(
                 taskTitle: event.title,
                 taskDescription: event.notes ?? "",
                 creationDate: event.startDate,

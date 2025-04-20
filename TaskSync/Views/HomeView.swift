@@ -7,10 +7,12 @@
 
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct HomeView: View {
     // MARK: Paywall Properties
     @EnvironmentObject var appSubModel: appSubscriptionModel
+    @Environment(\.requestReview) var requestReview
     @State private var isPaywallPresented: Bool = false
     @State private var hasCheckedSubscription = false
     
@@ -25,9 +27,9 @@ struct HomeView: View {
     @State private var showCalendarImport = false
     @Namespace private var animation
     
-    @Query var tasks: [Task] /// <-- Ensure this fetches all tasks
+    @Query var tasks: [TaskData] /// <-- Ensure this fetches all tasks
     
-    var tasksForSelectedDate: [Task] {
+    var tasksForSelectedDate: [TaskData] {
         tasks.filter {
             Calendar.current.isDate($0.creationDate, inSameDayAs: currentDate) &&
             !$0.isCompleted &&
@@ -79,7 +81,18 @@ struct HomeView: View {
                 checkSubscription()
             }
         }
-        .sheet(isPresented: $createTask) {
+        .sheet(isPresented: $createTask, onDismiss: {
+            if AppReviewRequest.requestAvailable {
+                Task {
+                    try await Task.sleep(
+                        until: .now + .seconds(1),
+                        tolerance: .seconds(0.5),
+                        clock: .suspending
+                    )
+                    requestReview()
+                }
+            }
+        }) {
             NewTaskView(defaultDate: currentDate)
                 .presentationDetents([.height(400)])
                 .interactiveDismissDisabled()

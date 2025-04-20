@@ -19,7 +19,7 @@ struct NewTaskView: View {
     @Environment(\.modelContext) private var context
     
     /// Optional task for editing
-    var taskToEdit: Task?
+    var taskToEdit: TaskData?
     
     @State private var taskTitle: String = ""
     @State private var taskDescription: String = ""
@@ -28,7 +28,7 @@ struct NewTaskView: View {
     
     @State private var taskPriority: TaskPriority = .basic
     
-    init(taskToEdit: Task? = nil, defaultDate: Date = .now) {
+    init(taskToEdit: TaskData? = nil, defaultDate: Date = .now) {
         self.taskToEdit = taskToEdit
         _taskDate = State(initialValue: taskToEdit?.creationDate ?? defaultDate)
     }
@@ -159,7 +159,7 @@ struct NewTaskView: View {
                     task.priority = taskPriority
                     
                 } else {
-                    let task = Task(taskTitle: taskTitle,
+                    let task = TaskData(taskTitle: taskTitle,
                                     taskDescription: taskDescription,
                                     creationDate: taskDate,
                                     tint: taskColor,
