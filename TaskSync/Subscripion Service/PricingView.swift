@@ -25,17 +25,17 @@ struct PricingView: View {
             HStack {
                 Text("Features")
                     .font(.headline)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Text("Free")
                     .font(.headline)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .frame(width: 50) /// <-- Fixed width for alignment
                 
                 Text("Pro")
                     .font(.headline)
-                    .foregroundColor(.blue)
+                    .foregroundStyle(Color.blue.gradient)
                     .frame(width: 50) /// <-- Fixed width for alignment
             }
             
@@ -57,13 +57,13 @@ struct PricingView: View {
                             .foregroundStyle(.gray)
                     } else {
                         Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundColor(feature.freeHasAccess ? .blue : .red)
+                            .foregroundStyle(feature.freeHasAccess ? Color.blue.gradient : Color.red.gradient)
                             .frame(width: 50)
                     }
                     
                     // Pro Version Column
                     Image(systemName: feature.proType == .infinity ? "infinity" : "checkmark.circle.fill")
-                        .foregroundColor(.blue)
+                        .foregroundStyle(Color.blue.gradient)
                         .frame(width: 50)
                 }
                 .padding(.vertical, 5)

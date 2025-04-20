@@ -209,6 +209,7 @@ struct SchemePickerView: View {
             
             ZStack {
                 Image(systemName: "circle")
+                    .foregroundStyle(Color.gray.gradient)
                 
                 if localSchemeState.rawValue == text {
                     Image(systemName: "checkmark.circle.fill")

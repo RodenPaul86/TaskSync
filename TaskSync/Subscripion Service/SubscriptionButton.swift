@@ -85,28 +85,28 @@ struct SubscriptionButton: View {
                 let originalPrice = String(originalYearlyPrice)
                 
                 Text("$\(originalPrice)")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.blue.gradient)
                     .bold()
                     .strikethrough()
                 
                 Text("\(price) / yr")
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .bold()
             } else if plan == .monthly {
                 Text("\(price) / mo")
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .bold()
             } else if plan == .weekly {
                 Text("3-Day Trial")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Color.blue.gradient)
                     .bold()
                 
                 Text("\(price) / wk")
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .bold()
             } else if plan == .lifetime {
                 Text("\(price) / one-time")
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .bold()
             }
         }
@@ -118,7 +118,7 @@ struct SubscriptionButton: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isSelected ? .blue : .gray, lineWidth: 2)
+                .stroke(isSelected ? Color.blue.gradient : Color.gray.gradient, lineWidth: 2)
         )
         .onTapGesture {
             selectedPlan = plan

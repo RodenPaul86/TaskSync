@@ -278,7 +278,7 @@ struct HomeView: View {
                             /// Indicator to show, which is today's date
                             if day.date.isToday {
                                 Circle()
-                                    .fill(.blue)
+                                    .fill(.blue.gradient)
                                     .frame(width: 5, height: 5)
                                     .vSpacing(.bottom)
                                     .offset(y: 12)

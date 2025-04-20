@@ -36,7 +36,6 @@ struct settingsView: View {
                 
                 Section(header: Text("Coutomization")) {
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "")
-                    customRow(icon: "", firstLabel: "Start of Week", secondLabel: "")
                 }
                 
                 Section(header: Text("Support")) {
