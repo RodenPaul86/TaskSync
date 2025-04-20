@@ -35,9 +35,7 @@ struct settingsView: View {
                 }
                 
                 Section(header: Text("Support")) {
-                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "") {
-                        
-                    }
+                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView()))
                     
                     customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
                 }
