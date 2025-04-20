@@ -12,6 +12,21 @@ enum AppReviewRequest {
     @AppStorage("runSinceLastRequest") static var runSinceLastRequest: Int = 0
     @AppStorage("storedVersion") static var storedVersion: String = ""
     
+    // https://apps.apple.com/us/app/noel-christmas-countdown/id1161557247
+    
+    static func appURL(id: String) -> URL? {
+        guard let writeReviewURL = URL(string: "https://apps.apple.com/app/id\(id)?action=write-review") else {
+            print("Invalid URL")
+            return nil
+        }
+        return writeReviewURL
+    }
+    
+    static var showReviewButton: Bool {
+        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        return appVersion == storedVersion
+    }
+    
     static var requestAvailable: Bool {
         let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         runSinceLastRequest += 1

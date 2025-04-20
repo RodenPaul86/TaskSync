@@ -42,43 +42,40 @@ struct settingsView: View {
                 
                 Section(header: Text("Info")) {
                     customRow(icon: "info", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
-                    
+#if DEBUG
+                    if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "") {
+                        customRow(icon: "star.bubble", firstLabel: "Rate & Review TaskSync", secondLabel: "") {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+#endif
                     customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "") // TODO: Add the privacy policy link...
                 }
-                /*
+#if DEBUG
                 Section(header: Text("More Apps")) {
                     customAppRow(
-                        icon: Image(systemName: "questionmark.app.dashed"),
-                        iconColor: .blue, bgColor: .blue,
+                        icon: Image(systemName: "power"),
+                        iconColor: .green, bgColor: .black,
                         title: "ProLight",
                         subtitle: "Multi Fuctional Flashlight", device1: "iphone", device2: "", device3: "", device4: "", device5: ""
                     ) {
-                        // Navigate to your app preview
-                        print("Tapped ProLight")
+                        if let url = URL(string: "https://apps.apple.com/app/prolight/id1173567157") {
+                            UIApplication.shared.open(url)
+                        }
                     }
                     
                     customAppRow(
-                        icon: Image(systemName: "questionmark.app.dashed"),
-                        iconColor: .blue, bgColor: .blue,
-                        title: "Noel",
-                        subtitle: "Christmas Countdown", device1: "iphone", device2: "ipad", device3: "macbook", device4: "", device5: ""
-                    ) {
-                        // Navigate to your app preview
-                        print("Tapped Noel")
-                    }
-                    
-                    customAppRow(
-                        icon: Image(systemName: "questionmark.app.dashed"),
-                        iconColor: .blue, bgColor: .blue,
+                        icon: Image(systemName: "document.viewfinder"),
+                        iconColor: .white, bgColor: .purple,
                         title: "DocMatic",
                         subtitle: "Document Scanner", device1: "iphone", device2: "", device3: "", device4: "", device5: ""
                     ) {
-                        // Navigate to your app preview
-                        print("Tapped DocMatic")
+                        if let url = URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012") {
+                            UIApplication.shared.open(url)
+                        }
                     }
                 }
-                 */
-#if DEBUG
+
                 Section(header: Text("Development Tools")) {
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
                         showDebug = true
