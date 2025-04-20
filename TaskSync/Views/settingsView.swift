@@ -211,8 +211,8 @@ struct customAppRow: View {
                 icon
                     .renderingMode(.template)
                     .scaledToFit()
-                    .font(.system(size: 55, weight: .regular))
-                    .frame(width: 48, height: 48)
+                    .font(.system(size: 48, weight: .regular))
+                    .frame(width: 40, height: 40)
                     .foregroundColor(iconColor)
                     .padding()
                     .background(bgColor.gradient)
