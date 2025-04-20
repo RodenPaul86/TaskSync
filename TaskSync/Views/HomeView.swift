@@ -16,6 +16,10 @@ struct HomeView: View {
     @State private var isPaywallPresented: Bool = false
     @State private var hasCheckedSubscription = false
     
+    // Appearance Properties
+    @AppStorage("AppScheme") private var appScheme: AppScheme = .device
+    @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
+    
     // MARK: Properties
     @State private var currentDate: Date = .init()
     @State private var weekSlider: [[Date.WeekDay]] = []
@@ -102,6 +106,7 @@ struct HomeView: View {
             SubscriptionView(isPaywallPresented: $isPaywallPresented)
                 .preferredColorScheme(.dark)
         }
+        .animation(.easeInOut, value: appScheme)
     }
     
     // MARK: Header View
@@ -185,29 +190,39 @@ struct HomeView: View {
         }
         .hSpacing(.leading)
         .overlay(alignment: .topTrailing) {
-            Menu {
-                Button(action: { showCalendarImport.toggle() }) {
-                    Label("Import from Calender", systemImage: "square.and.arrow.down.badge.clock")
+            HStack {
+                Button(action: { showPickerView.toggle() }) {
+                    Image(systemName: appScheme == .dark ? "sun.max.circle" : "moon.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 30, height: 30)
+                        .clipShape(.circle)
                 }
-                .disabled(appSubModel.isSubscriptionActive ? false : true)
                 
-                Button(action: { showSettings.toggle() }) {
-                    Label("Settings", systemImage: "gear")
-                }
-                
-                if !tasks.isEmpty {
-                    Button(action: { showInfo.toggle() }) {
-                        Label("Indicator Colors Guide", systemImage: "info.circle")
+                Menu {
+                    Button(action: { showCalendarImport.toggle() }) {
+                        Label("Import from Calender", systemImage: "square.and.arrow.down.badge.clock")
                     }
+                    .disabled(appSubModel.isSubscriptionActive ? false : true)
+                    
+                    Button(action: { showSettings.toggle() }) {
+                        Label("Settings", systemImage: "gear")
+                    }
+                    
+                    if !tasks.isEmpty {
+                        Button(action: { showInfo.toggle() }) {
+                            Label("Indicator Colors Guide", systemImage: "info.circle")
+                        }
+                    }
+                    
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 30, height: 30)
+                        .rotationEffect(.degrees(90))
+                        .clipShape(.circle)
                 }
-                
-            } label: {
-                Image(systemName: "ellipsis.circle")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 30, height: 30)
-                    .rotationEffect(.degrees(90))
-                    .clipShape(.circle)
             }
         }
         .padding(15)

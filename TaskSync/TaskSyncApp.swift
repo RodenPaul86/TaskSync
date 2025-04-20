@@ -21,14 +21,16 @@ struct TaskSyncApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(appSubModel)
-                .task {
-                    //try? Tips.resetDatastore()
-                    try? Tips.configure([
-                        .datastoreLocation(.applicationDefault)
-                    ])
-                }
+            SchemeHostView {
+                ContentView()
+                    .environmentObject(appSubModel)
+                    .task {
+                        //try? Tips.resetDatastore()
+                        try? Tips.configure([
+                            .datastoreLocation(.applicationDefault)
+                        ])
+                    }
+            }
         }
         .modelContainer(for: TaskData.self)
     }

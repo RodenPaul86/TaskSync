@@ -34,6 +34,11 @@ struct settingsView: View {
                     }
                 }
                 
+                Section(header: Text("Coutomization")) {
+                    customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "")
+                    customRow(icon: "", firstLabel: "Start of Week", secondLabel: "")
+                }
+                
                 Section(header: Text("Support")) {
                     customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView()))
                     
@@ -176,7 +181,6 @@ struct customRow: View {
                     .foregroundColor(Color.init(uiColor: .systemGray3))
             } else {
                 Text(secondLabel)
-                    .font(.headline)
                     .foregroundStyle((action == nil && destination == nil && url == nil) ? .gray : .primary)
             }
         }
