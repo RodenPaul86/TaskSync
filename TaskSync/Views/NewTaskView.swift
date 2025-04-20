@@ -159,12 +159,18 @@ struct NewTaskView: View {
                     task.priority = taskPriority
                     
                 } else {
-                    let task = Task(taskTitle: taskTitle, taskDescription: taskDescription, creationDate: taskDate, tint: taskColor, priority: taskPriority)
+                    let task = Task(taskTitle: taskTitle,
+                                    taskDescription: taskDescription,
+                                    creationDate: taskDate,
+                                    tint: taskColor,
+                                    priority: taskPriority)
                     context.insert(task)
                 }
                 
                 do {
                     try context.save()
+                    reviewManager.incrementLaunchCount()
+                    reviewManager.checkMajorVersion()
                     dismiss()
                 } catch {
                     print(error.localizedDescription)
