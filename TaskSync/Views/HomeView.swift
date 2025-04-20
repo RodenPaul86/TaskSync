@@ -208,7 +208,6 @@ struct HomeView: View {
                     Button(action: { showInfo.toggle() }) {
                         Label("Indicator Guide", systemImage: "info.circle")
                     }
-                    .disabled(tasks.isEmpty ? true : false)
                     
                 } label: {
                     Image(systemName: "ellipsis.circle")
