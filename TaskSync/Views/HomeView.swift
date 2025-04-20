@@ -211,7 +211,7 @@ struct HomeView: View {
                     
                     if !tasks.isEmpty {
                         Button(action: { showInfo.toggle() }) {
-                            Label("Indicator Colors Guide", systemImage: "info.circle")
+                            Label("Indicator Guide", systemImage: "info.circle")
                         }
                     }
                     
