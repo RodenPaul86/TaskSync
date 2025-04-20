@@ -136,7 +136,7 @@ struct HomeView: View {
             }
             
             if !incompleteTasks.isEmpty {
-                Text("You have \(incompleteTasks.count) task\(incompleteTasks.count > 1 ? "s" : "") to tackle today.")
+                Text("\(incompleteTasks.count) task\(incompleteTasks.count > 1 ? "s" : "") are still alive and well. Unlike your motivation.")
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundStyle(.primary)
@@ -144,14 +144,14 @@ struct HomeView: View {
             
             // Display expired tasks
             if !expiredTasks.isEmpty {
-                Text("You have \(expiredTasks.count) expired task\(expiredTasks.count > 1 ? "s" : "").")
+                Text("\(expiredTasks.count) task\(expiredTasks.count > 1 ? "s" : "") are overdue. Don’t worry, we told no one… yet.")
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundStyle(.red)
             }
             
             if incompleteTasks.isEmpty && expiredTasks.isEmpty {
-                Text("There's nothing to do today!")
+                Text("No tasks. No chaos. No fun.")
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundStyle(.green)
