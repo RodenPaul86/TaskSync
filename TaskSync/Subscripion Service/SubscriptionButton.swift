@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 import RevenueCat
 
 // MARK: Subscription Plans
@@ -23,6 +24,8 @@ struct SubscriptionButton: View {
     
     @State private var currentOffering: Offering?
     @State private var originalYearlyPrice: Double = 259.48
+    
+    @State private var isTrialEligible: Bool = false
     
     var isSelected: Bool {
         selectedPlan == plan
@@ -58,7 +61,7 @@ struct SubscriptionButton: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
+            HStack { /// <-- Button title
                 Text(plan.rawValue)
                     .foregroundColor(.white)
                     .font(.headline)
@@ -77,38 +80,7 @@ struct SubscriptionButton: View {
             
             Spacer()
             
-            // Use helper function for price display
-            let price = priceString(for: plan)
-            
-            // MARK: Display the appropriate price
-            if plan == .annual {
-                let originalPrice = String(originalYearlyPrice)
-                
-                Text("$\(originalPrice)")
-                    .foregroundStyle(Color.blue.gradient)
-                    .bold()
-                    .strikethrough()
-                
-                Text("\(price) / yr")
-                    .foregroundStyle(.white)
-                    .bold()
-            } else if plan == .monthly {
-                Text("\(price) / mo")
-                    .foregroundStyle(.white)
-                    .bold()
-            } else if plan == .weekly {
-                Text("3-Day Trial")
-                    .foregroundStyle(Color.blue.gradient)
-                    .bold()
-                
-                Text("\(price) / wk")
-                    .foregroundStyle(.white)
-                    .bold()
-            } else if plan == .lifetime {
-                Text("\(price) / one-time")
-                    .foregroundStyle(.white)
-                    .bold()
-            }
+            pricingView(for: plan)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: plan == .lifetime ? 100 : 100, alignment: .leading)
@@ -122,6 +94,66 @@ struct SubscriptionButton: View {
         )
         .onTapGesture {
             selectedPlan = plan
+        }
+        .onAppear {
+            checkTrialEligibilityIfNeeded()
+        }
+    }
+    
+    
+    @ViewBuilder
+    private func pricingView(for plan: SubscriptionPlan) -> some View {
+        let price = priceString(for: plan)
+        
+        switch plan {
+        case .annual:
+            let originalPrice = String(originalYearlyPrice)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("$\(originalPrice)")
+                    .foregroundStyle(Color.blue.gradient)
+                    .bold()
+                    .strikethrough()
+                Text("\(price) / yr")
+                    .foregroundStyle(.white)
+                    .bold()
+            }
+            
+        case .monthly:
+            Text("\(price) / mo")
+                .foregroundStyle(.white)
+                .bold()
+            
+        case .weekly:
+            VStack(alignment: .leading, spacing: 4) {
+                if isTrialEligible {
+                    Text("3-Day Trial")
+                        .foregroundStyle(Color.blue.gradient)
+                        .bold()
+                }
+                Text("\(price) / wk")
+                    .foregroundStyle(.white)
+                    .bold()
+            }
+            
+        case .lifetime:
+            Text("\(price) / one-time")
+                .foregroundStyle(.white)
+                .bold()
+        }
+    }
+    
+    private func checkTrialEligibilityIfNeeded() {
+        guard plan == .weekly, let product = offering?.weekly?.storeProduct else { return }
+        
+        Purchases.shared.checkTrialOrIntroDiscountEligibility(productIdentifiers: [product.productIdentifier]) { eligibilityMap in
+            if let eligibility = eligibilityMap[product.productIdentifier] {
+                switch eligibility.status {
+                case .eligible:
+                    isTrialEligible = true
+                default:
+                    isTrialEligible = false
+                }
+            }
         }
     }
 }
