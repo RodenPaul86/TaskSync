@@ -13,7 +13,7 @@ struct HomeView: View {
     // MARK: Paywall Properties
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.requestReview) var requestReview
-    @State private var isPaywallPresented: Bool = false
+    @AppStorage("isSubscribed") var isPaywallPresented: Bool = false
     @State private var hasCheckedSubscription = false
     
     // Appearance Properties
@@ -79,10 +79,6 @@ struct HomeView: View {
                 if let lastDate = currentWeek.last?.date {
                     weekSlider.append(lastDate.currentNextWeek())
                 }
-            }
-            
-            if !hasCheckedSubscription {
-                checkSubscription()
             }
         }
         .sheet(isPresented: $createTask, onDismiss: {
@@ -338,18 +334,6 @@ struct HomeView: View {
         }
         
         print(weekSlider.count)
-    }
-    
-    func checkSubscription() {
-        // Wait a tick if subscription state is loading
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            if appSubModel.isSubscriptionActive {
-                isPaywallPresented = false
-            } else {
-                isPaywallPresented = true
-            }
-            hasCheckedSubscription = true
-        }
     }
     
     func generateWeek(for date: Date) -> [Date.WeekDay] {
