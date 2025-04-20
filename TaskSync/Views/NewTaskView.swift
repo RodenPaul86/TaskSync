@@ -169,8 +169,6 @@ struct NewTaskView: View {
                 
                 do {
                     try context.save()
-                    reviewManager.incrementLaunchCount()
-                    reviewManager.checkMajorVersion()
                     dismiss()
                 } catch {
                     print(error.localizedDescription)
