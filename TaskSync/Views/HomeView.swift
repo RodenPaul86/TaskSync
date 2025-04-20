@@ -212,9 +212,11 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showSettings) {
             settingsView()
+                .interactiveDismissDisabled()
         }
         .fullScreenCover(isPresented: $showCalendarImport) {
-            CalendarImportView()
+            calendarImportView()
+                .interactiveDismissDisabled()
         }
     }
     

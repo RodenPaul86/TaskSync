@@ -127,7 +127,7 @@ struct feedbackView: View {
                     }
                 }
             }
-            .navigationBarTitle("Feedback")
+            .navigationBarTitle("Support")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
