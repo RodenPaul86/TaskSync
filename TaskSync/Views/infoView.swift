@@ -13,7 +13,7 @@ struct infoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Indicator Colors Guide")
+                Text("Indicator Guide")
                     .font(.title2.bold())
                     .padding(.bottom, 5)
                 
@@ -45,6 +45,25 @@ struct infoView: View {
             
             VStack(alignment: .leading, spacing: 8) {
                 InfoRow(color: .black, title: "Upcoming", description: "Tasks scheduled for future hours.")
+            }
+            .padding([.top, .horizontal], 5)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .top) {
+                    Image(systemName: "arrow.trianglehead.2.clockwise")
+                        .foregroundStyle(.gray)
+                        .frame(width: 10, height: 10)
+                        .padding(4)
+                    
+                    VStack(alignment: .leading) {
+                        Text("Recurring Events")
+                            .font(.headline)
+                        
+                        Text("This icon indicates that the event repeats on a regular schedule, such as daily, weekly, or monthly.")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
             .padding([.top, .horizontal], 5)
             
