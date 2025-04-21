@@ -63,34 +63,42 @@ struct settingsView: View {
                     }
                     
                     customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "") // TODO: Add the privacy policy link...
-                    
-                    customRow(icon: "link", firstLabel: "Other Apps", secondLabel: "", url: "https://apps.apple.com/us/developer/paul-roden-ii/id693041126")
                 }
-#if DEBUG
-                Section(header: Text("More Apps")) {
-                    customAppRow(
-                        icon: Image(systemName: "power"),
-                        iconColor: .green, bgColor: .black,
-                        title: "ProLight",
-                        subtitle: "Multi Fuctional Flashlight", device1: "iphone", device2: "", device3: "", device4: "", device5: ""
-                    ) {
+
+                Section(header: Text("Other Apps")) {
+                    CustomAppRow(icon: Image(systemName: "power"),
+                                 iconColor: .green,
+                                 bgColor: .black,
+                                 title: "ProLight",
+                                 subtitle: "Multi Fuctional Flashlight",
+                                 device1: "iphone",
+                                 device2: "",
+                                 device3: "",
+                                 device4: "",
+                                 device5: ""
+                    ){
                         if let url = URL(string: "https://apps.apple.com/app/prolight/id1173567157") {
                             UIApplication.shared.open(url)
                         }
                     }
                     
-                    customAppRow(
-                        icon: Image(systemName: "document.viewfinder"),
-                        iconColor: .white, bgColor: .purple,
-                        title: "DocMatic",
-                        subtitle: "Document Scanner", device1: "iphone", device2: "", device3: "", device4: "", device5: ""
-                    ) {
+                    CustomAppRow(icon: Image(systemName: "document.viewfinder"),
+                                 iconColor: .white,
+                                 bgColor: Color("DocMaticColor"),
+                                 title: "DocMatic",
+                                 subtitle: "Document Scanner",
+                                 device1: "iphone",
+                                 device2: "",
+                                 device3: "",
+                                 device4: "",
+                                 device5: ""
+                    ){
                         if let url = URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012") {
                             UIApplication.shared.open(url)
                         }
                     }
                 }
-
+#if DEBUG
                 Section(header: Text("Development Tools")) {
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
                         showDebug = true
@@ -210,46 +218,49 @@ struct customRow: View {
 }
 
 // MARK: Custom App Row
-struct customAppRow: View {
-    let icon: Image
+struct CustomAppRow: View {
+    let icon: Image?
     let iconColor: Color
     let bgColor: Color
     let title: String
     let subtitle: String
-    let device1: String
-    let device2: String
-    let device3: String
-    let device4: String
-    let device5: String
+    let device1: String?
+    let device2: String?
+    let device3: String?
+    let device4: String?
+    let device5: String?
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
             HStack(alignment: .center, spacing: 16) {
-                icon
-                    .renderingMode(.template)
-                    .scaledToFit()
-                    .font(.system(size: 48, weight: .regular))
-                    .frame(width: 40, height: 40)
-                    .foregroundColor(iconColor)
-                    .padding()
-                    .background(bgColor.gradient)
-                    .cornerRadius(16)
+                if let icon = icon {
+                    icon
+                        .renderingMode(.template)
+                        .scaledToFit()
+                        .font(.system(size: 50, weight: .medium))
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(iconColor)
+                        .padding()
+                        .background(bgColor.gradient)
+                        .cornerRadius(16)
+                }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
                         .font(.headline)
                         .foregroundColor(.primary)
+                    
                     Text(subtitle)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
-                    HStack(alignment: .bottom) {
-                        Image(systemName: device1)
-                        Image(systemName: device2)
-                        Image(systemName: device3)
-                        Image(systemName: device4)
-                        Image(systemName: device5)
+                    HStack(alignment: .bottom, spacing: 4) {
+                        ForEach([device1, device2, device3, device4, device5], id: \.self) { device in
+                            if let device = device {
+                                Image(systemName: device)
+                            }
+                        }
                     }
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

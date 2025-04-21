@@ -45,7 +45,8 @@ struct TaskRowView: View {
                     Spacer()
                     
                     Text(task.creationDate.format("hh:mm a"))
-                        .font(.caption.bold())
+                        .font(.callout)
+                        .fontWeight(.semibold)
                         .foregroundStyle(.secondary)
                 }
                 
@@ -54,7 +55,7 @@ struct TaskRowView: View {
                         .font(.callout)
                         .fontWeight(.semibold)
                         .textScale(.secondary)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(.secondary)
                         .lineLimit(2)
                         .strikethrough(task.isCompleted, pattern: .solid, color: .primary)
                     
@@ -85,9 +86,9 @@ struct TaskRowView: View {
                     task.isCompleted.toggle()
                 }) {
                     if !task.isCompleted {
-                        Label("Mark as complete", systemImage: "checkmark.circle")
+                        Label("Mark as Complete", systemImage: "checkmark.circle")
                     } else {
-                        Label("Unmark as complete", systemImage: "xmark.circle")
+                        Label("Mark as Incomplete", systemImage: "xmark.circle")
                     }
                 }
                 

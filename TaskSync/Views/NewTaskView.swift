@@ -87,7 +87,7 @@ struct NewTaskView: View {
                         .font(.caption)
                         .foregroundStyle(.gray)
                     
-                    let color: [String] = (0...6).compactMap { index -> String in
+                    let color: [String] = (0...8).compactMap { index -> String in
                         return "taskColor \(index)"
                     }
                     

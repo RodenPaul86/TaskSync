@@ -160,7 +160,7 @@ struct SubscriptionView: View {
         Purchases.shared.restorePurchases { (completed, error) in
             if (completed != nil) {
                 print("Purchases restored successfully")
-                appSubModel.isSubscriptionActive = completed?.entitlements.all["premium"]?.isActive == true
+                appSubModel.refreshSubscriptionStatus()
                 isPaywallPresented = false
                 isLoading = false
                 
