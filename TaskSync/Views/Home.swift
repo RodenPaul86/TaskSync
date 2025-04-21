@@ -149,26 +149,34 @@ struct Home: View {
                 $0.creationDate.isPast
             }
             
-            if !incompleteTasks.isEmpty {
-                Text("\(incompleteTasks.count) task\(incompleteTasks.count > 1 ? "s" : "") are still alive and well. Unlike your motivation.")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-            }
-            
-            // Display expired tasks
-            if !expiredTasks.isEmpty {
-                Text("\(expiredTasks.count) task\(expiredTasks.count > 1 ? "s" : "") are overdue. Don’t worry, we told no one… yet.")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.red)
-            }
-            
-            if incompleteTasks.isEmpty && expiredTasks.isEmpty {
-                Text("No tasks. No chaos. No fun.")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.green)
+            HStack(spacing: 5) {
+                if !incompleteTasks.isEmpty {
+                    Text("\(incompleteTasks.count) current task\(incompleteTasks.count > 1 ? "s" : "")")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.primary)
+                }
+                
+                if !incompleteTasks.isEmpty && !expiredTasks.isEmpty {
+                    Text("and")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.secondary)
+                }
+                
+                if !expiredTasks.isEmpty {
+                    Text("\(expiredTasks.count) overdue task\(expiredTasks.count > 1 ? "s" : "")")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.red)
+                }
+                
+                if incompleteTasks.isEmpty && expiredTasks.isEmpty {
+                    Text("No new tasks")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.green)
+                }
             }
             
             /// Week Slider

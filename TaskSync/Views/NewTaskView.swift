@@ -23,7 +23,7 @@ struct NewTaskView: View {
     
     @State private var taskTitle: String = ""
     @State private var taskDescription: String = ""
-    @State private var taskDate: Date
+    @State private var taskDate: Date = Date.now
     @State private var taskColor: String = "taskColor 0"
     
     @State private var taskPriority: TaskPriority = .basic
