@@ -34,7 +34,7 @@ struct SubscriptionView: View {
                 Spacer()
                 
                 // MARK: Title: TaskSync
-                Text("TaskSync")
+                Text(Bundle.main.appName)
                     .font(.headline)
                     .foregroundColor(.white)
                 

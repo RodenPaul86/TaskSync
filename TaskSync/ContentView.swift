@@ -15,7 +15,7 @@ struct ContentView: View {
     @State private var showPaywall: Bool = false
     
     var body: some View {
-        HomeView()
+        Home()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onAppear {
                 if !hasSeenIntro {
