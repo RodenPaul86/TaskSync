@@ -34,6 +34,7 @@ struct feedbackView: View {
                         ForEach(topics, id: \.self) { topic in
                             Button(action: {
                                 selectedTopic = topic
+                                HapticManager.shared.notify(.impact(.light))
                             }) {
                                 Text(topic)
                             }
@@ -133,6 +134,7 @@ struct feedbackView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         isShowingMailView.toggle()
+                        HapticManager.shared.notify(.impact(.light))
                     }) {
                         Text("Send")
                     }

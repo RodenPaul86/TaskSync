@@ -25,6 +25,7 @@ struct settingsView: View {
                 if !appSubModel.isSubscriptionActive {
                     customPremiumBanner {
                         isPaywallPresented = true
+                        HapticManager.shared.notify(.notification(.success))
                     }
                     .listRowInsets(EdgeInsets())
                 }

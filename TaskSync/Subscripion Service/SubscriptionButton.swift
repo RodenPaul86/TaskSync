@@ -94,6 +94,7 @@ struct SubscriptionButton: View {
         )
         .onTapGesture {
             selectedPlan = plan
+            HapticManager.shared.notify(.impact(.light))
         }
         .onAppear {
             checkTrialEligibilityIfNeeded()

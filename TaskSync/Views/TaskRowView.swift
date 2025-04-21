@@ -29,7 +29,7 @@ struct TaskRowView: View {
                             withAnimation(.snappy) {
                                 removeNotification(for: task)
                                 task.isCompleted.toggle()
-                                HapticManager.shared.notify(.success)
+                                HapticManager.shared.notify(.notification(.success))
                             }
                         }
                 }

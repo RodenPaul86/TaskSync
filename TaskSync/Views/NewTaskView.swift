@@ -172,6 +172,7 @@ struct NewTaskView: View {
                 
                 do {
                     try context.save()
+                    HapticManager.shared.notify(.impact(.light))
                     dismiss()
                 } catch {
                     print(error.localizedDescription)

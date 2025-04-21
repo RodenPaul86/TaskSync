@@ -58,6 +58,7 @@ struct Home: View {
         .overlay(alignment: .bottomTrailing) {
             Button(action: {
                 createTask.toggle()
+                HapticManager.shared.notify(.impact(.light))
             }) {
                 Image(systemName: "plus")
                     .fontWeight(.semibold)
@@ -128,6 +129,7 @@ struct Home: View {
                             currentWeekIndex = 0
                         }
                     }
+                    HapticManager.shared.notify(.impact(.light))
                 }) {
                     Text(currentDate.format("MMMM"))
                 }
@@ -304,9 +306,10 @@ struct Home: View {
                 .hSpacing(.center)
                 .contentShape(.rect)
                 .onTapGesture {
-                    /// Updating current date
+                    // MARK: Updating current date
                     withAnimation(.snappy) {
                         currentDate = day.date
+                        HapticManager.shared.notify(.impact(.light))
                     }
                 }
             }
