@@ -14,7 +14,6 @@ struct Home: View {
     // MARK: Paywall Properties
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.requestReview) var requestReview
-    @AppStorage("isSubscribed") var isPaywallPresented: Bool = false
     @State private var hasCheckedSubscription = false
     
     // MARK: Appearance Properties
@@ -99,10 +98,6 @@ struct Home: View {
                 .presentationDetents([.height(400)])
                 .interactiveDismissDisabled()
                 .presentationCornerRadius(30)
-        }
-        .fullScreenCover(isPresented: $isPaywallPresented) {
-            SubscriptionView(isPaywallPresented: $isPaywallPresented)
-                .preferredColorScheme(.dark)
         }
         .animation(.easeInOut, value: appScheme)
     }
