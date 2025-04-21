@@ -36,9 +36,15 @@ class CalendarManager: ObservableObject {
     
     func fetchEvents() {
         let calendars = eventStore.calendars(for: .event)
-        let oneMonthAgo = Date().addingTimeInterval(-30 * 24 * 60 * 60)
-        let oneMonthAfter = Date().addingTimeInterval(30 * 24 * 60 * 60)
-        let predicate = eventStore.predicateForEvents(withStart: oneMonthAgo, end: oneMonthAfter, calendars: calendars)
+        
+        let startOfToday = Calendar.current.startOfDay(for: Date())
+        let endOfYear = Calendar.current.date(from: DateComponents(
+            year: Calendar.current.component(.year, from: Date()),
+            month: 12,
+            day: 31
+        )) ?? Date().addingTimeInterval(60 * 60 * 24 * 180)
+        
+        let predicate = eventStore.predicateForEvents(withStart: startOfToday, end: endOfYear, calendars: calendars)
         
         DispatchQueue.main.async {
             self.events = self.eventStore.events(matching: predicate)
@@ -117,8 +123,8 @@ struct calendarImportView: View {
                                             .frame(width: 28, height: 28)
                                             .overlay {
                                                 if selectedEvents.contains(event.eventIdentifier) {
-                                                    Circle()
-                                                        .fill(Color.accentColor)
+                                                    Image(systemName: "checkmark.circle.fill")
+                                                        .foregroundStyle(.blue.gradient)
                                                         .frame(width: 16, height: 16)
                                                         .transition(.scale)
                                                 }
