@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct TaskRowView: View {
     @Bindable var task: TaskData
@@ -26,7 +27,9 @@ struct TaskRowView: View {
                         .frame(width: 50, height: 50)
                         .onTapGesture {
                             withAnimation(.snappy) {
+                                removeNotification(for: task)
                                 task.isCompleted.toggle()
+                                HapticManager.shared.notify(.success)
                             }
                         }
                 }
@@ -77,7 +80,10 @@ struct TaskRowView: View {
                     Label("Edit Task", systemImage: "square.and.pencil")
                 }
                 
-                Button(action: { task.isCompleted.toggle() }) {
+                Button(action: {
+                    removeNotification(for: task)
+                    task.isCompleted.toggle()
+                }) {
                     if !task.isCompleted {
                         Label("Mark as complete", systemImage: "checkmark.circle")
                     } else {
@@ -86,6 +92,7 @@ struct TaskRowView: View {
                 }
                 
                 Button(role: .destructive, action: {
+                    removeNotification(for: task)
                     context.delete(task)
                     try? context.save()
                 }) {
@@ -117,6 +124,11 @@ struct TaskRowView: View {
         case .important: return .orange
         case .urgent: return .red
         }
+    }
+    
+    func removeNotification(for task: TaskData) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [task.id!.uuidString])
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [task.id!.uuidString])
     }
 }
 

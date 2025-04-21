@@ -8,6 +8,7 @@
 import SwiftUI
 import RevenueCat
 import WebKit
+import UserNotifications
 
 struct settingsView: View {
     @Environment(\.dismiss) private var dismiss
@@ -16,22 +17,27 @@ struct settingsView: View {
     @State private var isPresentedManageSubscription = false
     @State private var showDebug: Bool = false
     
+    @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = true
+    
     var body: some View {
         NavigationStack {
             List {
-                if appSubModel.isSubscriptionActive {
-                    Section("") {
-                        customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
-                            isPresentedManageSubscription = true
-                        }
+                if !appSubModel.isSubscriptionActive {
+                    customPremiumBanner {
+                        isPaywallPresented = true
                     }
-                } else {
-                    Section("") {
-                        customPremiumBanner {
-                            isPaywallPresented = true
+                    .listRowInsets(EdgeInsets())
+                }
+                
+                Section(header: Text("Notifications & Alerts"), footer: Text("Use this setting to turn off notifications on specific devices")) {
+                    customRow(icon: "bell.badge", firstLabel: "Enabled on this device", secondLabel: "", showToggle: true, toggleValue: $notificationsEnabled)
+                        .onChange(of: notificationsEnabled) { oldValue, newValue in
+                            if !newValue {
+                                UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+                                UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+                                print("All notifications removed.")
+                            }
                         }
-                        .listRowInsets(EdgeInsets())
-                    }
                 }
                 
                 Section(header: Text("Support")) {
@@ -49,6 +55,12 @@ struct settingsView: View {
                         }
                     }
 #endif
+                    if appSubModel.isSubscriptionActive {
+                        customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
+                            isPresentedManageSubscription = true
+                        }
+                    }
+                    
                     customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "") // TODO: Add the privacy policy link...
                     
                     customRow(icon: "link", firstLabel: "Other Apps", secondLabel: "", url: "https://apps.apple.com/us/developer/paul-roden-ii/id693041126")
@@ -118,6 +130,8 @@ struct customRow: View {
     var action: (() -> Void)? = nil  /// <-- Optional action
     var destination: AnyView? = nil  /// <-- Optional navigation
     var url: String? = nil           /// <-- Optional URL
+    var showToggle: Bool = false
+    var toggleValue: Binding<Bool>? = nil /// <-- Optional toggle switch
     
     @State private var isNavigating = false
     
@@ -148,6 +162,8 @@ struct customRow: View {
                 rowContent(showChevron: false)
             }
             .buttonStyle(.plain) /// <-- Keeps it looking like a row
+        } else if showToggle {
+            rowContent(showChevron: false)
         } else {
             rowContent(showChevron: action != nil)
                 .onTapGesture {
@@ -171,7 +187,10 @@ struct customRow: View {
             
             Spacer()
             
-            if showChevron {
+            if showToggle, let binding = toggleValue {
+                Toggle("", isOn: binding)
+                    .labelsHidden()
+            } else if showChevron {
                 Image(systemName: "chevron.right")
                     .font(.headline)
                     .imageScale(.small)
@@ -302,7 +321,7 @@ struct customPremiumBanner: View {
             }
             .padding()
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 10)
                     .fill(
                         LinearGradient(
                             gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
