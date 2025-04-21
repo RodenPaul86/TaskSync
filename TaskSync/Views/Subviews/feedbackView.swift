@@ -23,13 +23,13 @@ struct feedbackView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Topic Row
+                // MARK: Topic Row
                 HStack {
                     Text("Topic")
                         .font(.headline)
                     Spacer()
                     
-                    // Menu with Chevron
+                    // MARK: Menu with Chevron
                     Menu {
                         ForEach(topics, id: \.self) { topic in
                             Button(action: {
@@ -48,12 +48,12 @@ struct feedbackView: View {
                     }
                 }
                 
-                // Expanding TextField
+                // MARK: Expanding TextField
                 TextField("Enter text here...", text: $textBody, axis: .vertical)
                     .padding(.vertical, 8)
                     .frame(minHeight: 120, alignment: .top) // Ensures expansion
                 
-                Section(footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
+                Section(header: Text("Additional Info"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
                     HStack {
                         // Image Preview
                         if let image = selectedImage {
@@ -65,7 +65,7 @@ struct feedbackView: View {
                                 .cornerRadius(10)
                         }
                         
-                        // Image section
+                        // MARK: Image section
                         PhotosPicker(selection: $selectedItem, matching: .screenshots) {
                             Text("Select an image to attach...")
                         }
@@ -80,7 +80,7 @@ struct feedbackView: View {
                     }
                 }
                 
-                // Other sections
+                // MARK: Other sections
                 Section(header: Text("Device Info")) {
                     HStack {
                         Text("Device")
@@ -179,18 +179,23 @@ struct feedbackView: View {
     
     private func generateEmailBody() -> String {
         return """
-            \(textBody)
-            
-            
-            Device: \(UIDevice.current.modelName)
-            \(UIDevice.current.deviceOS): \(UIDevice.current.OSVersion)
-            App: \(Bundle.main.appName)
-            Version: \(Bundle.main.appVersion)
-            Build: \(Bundle.main.appBuild)
+            <html>
+                  <body style="font-family: -apple-system; font-size: 16px; color: #ffffff; background-color: #000000;">
+                    <p style="margin-bottom: 20px;">\(textBody)</p><br><br><br>
+
+                    <table style="border-collapse: collapse; font-size: 16px;">
+                      <tr><td><strong>Device:</strong></td><td style="padding-left: 15px;">\(UIDevice.current.modelName)</td></tr>
+                      <tr><td><strong>\(UIDevice.current.deviceOS):</strong></td><td style="padding-left: 15px;">\(UIDevice.current.OSVersion)</td></tr>
+                      <tr><td><strong>App:</strong></td><td style="padding-left: 15px;">\(Bundle.main.appName)</td></tr>
+                      <tr><td><strong>Version:</strong></td><td style="padding-left: 15px;">\(Bundle.main.appVersion)</td></tr>
+                      <tr><td><strong>Build:</strong></td><td style="padding-left: 15px;">\(Bundle.main.appBuild)</td></tr>
+                    </table>
+                  </body>
+                </html>
             """
     }
     
-    // Function to load image from PhotosPicker
+    // MARK: Function to load image from PhotosPicker
     private func loadImage(from item: PhotosPickerItem?) {
         guard let item = item else { return }
         
@@ -230,7 +235,6 @@ struct MailView: UIViewControllerRepresentable {
         
         func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
             controller.dismiss(animated: true)
-            parent.isShowing = false
             parent.onDismiss?()
         }
     }
@@ -243,7 +247,7 @@ struct MailView: UIViewControllerRepresentable {
         let mailComposeVC = MFMailComposeViewController()
         mailComposeVC.setToRecipients([recipient])
         mailComposeVC.setSubject(subject)
-        mailComposeVC.setMessageBody(body, isHTML: false)
+        mailComposeVC.setMessageBody(body, isHTML: true)
         mailComposeVC.mailComposeDelegate = context.coordinator
         
         // Attach the image if available
