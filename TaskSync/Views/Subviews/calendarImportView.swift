@@ -70,6 +70,7 @@ struct calendarImportView: View {
                 ForEach(groupedEvents.keys.sorted(), id: \.self) { monthDate in
                     Section(header: Text(monthDate.formatted(.dateTime.year().month(.wide)))) {
                         ForEach(groupedEvents[monthDate] ?? [], id: \.eventIdentifier) { event in
+                            
                             HStack {
                                 VStack(alignment: .leading, spacing: 4) {
                                     HStack {
