@@ -44,12 +44,14 @@ struct settingsView: View {
                     customRow(icon: "info", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
 #if DEBUG
                     if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "") {
-                        customRow(icon: "star.bubble", firstLabel: "Rate & Review TaskSync", secondLabel: "") {
+                        customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
                             UIApplication.shared.open(url)
                         }
                     }
 #endif
                     customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "") // TODO: Add the privacy policy link...
+                    
+                    customRow(icon: "link", firstLabel: "Other Apps", secondLabel: "", url: "https://apps.apple.com/us/developer/paul-roden-ii/id693041126")
                 }
 #if DEBUG
                 Section(header: Text("More Apps")) {
