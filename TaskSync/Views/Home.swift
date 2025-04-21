@@ -16,7 +16,7 @@ struct Home: View {
     @AppStorage("isSubscribed") var isPaywallPresented: Bool = false
     @State private var hasCheckedSubscription = false
     
-    // Appearance Properties
+    // MARK: Appearance Properties
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     
@@ -37,7 +37,7 @@ struct Home: View {
         tasks.filter {
             Calendar.current.isDate($0.creationDate, inSameDayAs: currentDate) &&
             !$0.isCompleted &&
-            !$0.creationDate.isPast // Only tasks that are incomplete and not expired
+            !$0.creationDate.isPast /// <-- Only tasks that are incomplete and not expired
         }
     }
     
@@ -149,6 +149,7 @@ struct Home: View {
                 $0.creationDate.isPast
             }
             
+            // MARK: Task Count
             HStack(spacing: 5) {
                 if !incompleteTasks.isEmpty {
                     Text("\(incompleteTasks.count) current task\(incompleteTasks.count > 1 ? "s" : "")")
@@ -179,7 +180,7 @@ struct Home: View {
                 }
             }
             
-            /// Week Slider
+            // MARK: Week Slider
             TabView(selection: $currentWeekIndex) {
                 ForEach(weekSlider.indices, id: \.self) { index in
                     let week = weekSlider[index]
@@ -229,7 +230,7 @@ struct Home: View {
         }
         .padding(15)
         .onChange(of: currentWeekIndex, initial: false) { oldValue, newValue in
-            /// Creating when it reaches the first/last page
+            // MARK: Creating when it reaches the first/last page
             if newValue == 0 || newValue == (weekSlider.count - 1) {
                 createWeek = true
             }
@@ -366,8 +367,6 @@ struct Home: View {
             })
         })
     }
-    
-    
 }
 
 #Preview {
