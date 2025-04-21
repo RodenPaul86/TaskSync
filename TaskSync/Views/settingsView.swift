@@ -269,7 +269,7 @@ struct customPremiumBanner: View {
         Button(action: onTap) {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("TaskSync Pro")
+                    Text("\(Bundle.main.appName) Pro")
                         .font(.title3.bold())
                         .foregroundStyle(.white)
                     
