@@ -62,7 +62,7 @@ struct settingsView: View {
                         }
                     }
                     
-                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "") // TODO: Add the privacy policy link...
+                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", destination: AnyView(privacyPolicyView()))
                 }
 
                 Section(header: Text("Other Apps")) {
