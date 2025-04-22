@@ -141,7 +141,7 @@ struct feedbackView: View {
                     .sheet(isPresented: $isShowingMailView) {
                         MailView(
                             isShowing: $isShowingMailView,
-                            recipient: "support@docmatic.app",
+                            recipient: "support@paulrodenjr.org",
                             subject: "TaskSync: \(selectedTopic)",
                             body: generateEmailBody(),
                             imageData: imageData

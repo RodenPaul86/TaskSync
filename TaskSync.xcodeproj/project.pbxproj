@@ -20,6 +20,7 @@
 		3A6F35A42DA9597A00D09368 /* CGSize+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F35A32DA9597A00D09368 /* CGSize+Extensions.swift */; };
 		3A6F35A62DA9828100D09368 /* aboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F35A52DA9827000D09368 /* aboutView.swift */; };
 		3A78FCC62DB69A0600792598 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A78FCC52DB699FC00792598 /* HapticManager.swift */; };
+		3A78FD582DB715B100792598 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3A78FD572DB715B100792598 /* PrivacyInfo.xcprivacy */; };
 		3AA7D2B32DAAF35A009E0F1D /* apiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA7D2B22DAAF355009E0F1D /* apiKeys.swift */; };
 		3AA7D2B62DAAF3CF009E0F1D /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3AA7D2B52DAAF3CF009E0F1D /* RevenueCat */; };
 		3AA7D2B82DAAF3CF009E0F1D /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3AA7D2B72DAAF3CF009E0F1D /* RevenueCatUI */; };
@@ -57,6 +58,7 @@
 		3A6F35A32DA9597A00D09368 /* CGSize+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+Extensions.swift"; sourceTree = "<group>"; };
 		3A6F35A52DA9827000D09368 /* aboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = aboutView.swift; sourceTree = "<group>"; };
 		3A78FCC52DB699FC00792598 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
+		3A78FD572DB715B100792598 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3AA041B02CD7E73D006B734E /* TaskSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AA7D2B22DAAF355009E0F1D /* apiKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = apiKeys.swift; sourceTree = "<group>"; };
 		3AA7D2B92DAAF441009E0F1D /* appSubscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appSubscriptionModel.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				3AED6AC92D7CFD0C00140414 /* Info.plist */,
 				3AED6ACB2D7CFD0C00140414 /* TaskSync.entitlements */,
 				3AED6ACD2D7CFD0C00140414 /* TaskSyncApp.swift */,
+				3A78FD572DB715B100792598 /* PrivacyInfo.xcprivacy */,
 			);
 			path = TaskSync;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A78FD582DB715B100792598 /* PrivacyInfo.xcprivacy in Resources */,
 				3AED6AD02D7CFD0C00140414 /* Preview Assets.xcassets in Resources */,
 				3AED6AD12D7CFD0C00140414 /* Assets.xcassets in Resources */,
 			);
@@ -328,13 +332,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TaskSync/TaskSync.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2025.1;
+				CURRENT_PROJECT_VERSION = 25.04.01;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TaskSync/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TaskSync/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "We need access to your calendar to import events into TaskSync.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -371,13 +376,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TaskSync/TaskSync.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2025.1;
+				CURRENT_PROJECT_VERSION = 25.04.01;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TaskSync/Preview Content\"";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TaskSync/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "We need access to your calendar to import events into TaskSync.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
