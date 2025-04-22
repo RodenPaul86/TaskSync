@@ -121,7 +121,7 @@ struct settingsView: View {
                     .preferredColorScheme(.dark)
             }
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
-            .debugRevenueCatOverlay(isPresented: $showDebug)
+            //.debugRevenueCatOverlay(isPresented: $showDebug)
         }
     }
 }

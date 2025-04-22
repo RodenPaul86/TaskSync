@@ -59,7 +59,7 @@ struct helpFAQView: View {
                 answer: "Currently, no. Once deleted, a task is permanently removed. We’re working on adding a trash or undo feature."),
         
         FAQItem(question: "I found a bug / have feedback. What should I do?",
-                answer: "We’d love to hear from you! Reach out via the “Contact Support” button in Settings or email us at [your support email].")
+                answer: "We’d love to hear from you! Reach out via the “Contact Support” button in Settings or email us at support@paulrodenjr.org.")
     ]
     
     // MARK: Main View
