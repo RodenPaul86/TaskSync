@@ -21,8 +21,6 @@
 		3A6F35A62DA9828100D09368 /* aboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F35A52DA9827000D09368 /* aboutView.swift */; };
 		3A78FCC62DB69A0600792598 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A78FCC52DB699FC00792598 /* HapticManager.swift */; };
 		3A78FD582DB715B100792598 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3A78FD572DB715B100792598 /* PrivacyInfo.xcprivacy */; };
-		3AA1BF442DB8127300916C29 /* privacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA1BF432DB8126300916C29 /* privacyPolicyView.swift */; };
-		3AA1BF462DB8150200916C29 /* legalHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA1BF452DB814E700916C29 /* legalHelper.swift */; };
 		3AA7D2B32DAAF35A009E0F1D /* apiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA7D2B22DAAF355009E0F1D /* apiKeys.swift */; };
 		3AA7D2B62DAAF3CF009E0F1D /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3AA7D2B52DAAF3CF009E0F1D /* RevenueCat */; };
 		3AA7D2B82DAAF3CF009E0F1D /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3AA7D2B72DAAF3CF009E0F1D /* RevenueCatUI */; };
@@ -62,8 +60,6 @@
 		3A78FCC52DB699FC00792598 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		3A78FD572DB715B100792598 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3AA041B02CD7E73D006B734E /* TaskSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3AA1BF432DB8126300916C29 /* privacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = privacyPolicyView.swift; sourceTree = "<group>"; };
-		3AA1BF452DB814E700916C29 /* legalHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = legalHelper.swift; sourceTree = "<group>"; };
 		3AA7D2B22DAAF355009E0F1D /* apiKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = apiKeys.swift; sourceTree = "<group>"; };
 		3AA7D2B92DAAF441009E0F1D /* appSubscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appSubscriptionModel.swift; sourceTree = "<group>"; };
 		3AA7D2BB2DAAF470009E0F1D /* PricingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PricingView.swift; sourceTree = "<group>"; };
@@ -103,7 +99,6 @@
 		3A6F359B2DA957D800D09368 /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
-				3AA1BF432DB8126300916C29 /* privacyPolicyView.swift */,
 				3A1DEFA62DB4310D0009193A /* helpFAQView.swift */,
 				3AAF191C2DB0137E00142D5D /* calendarImportView.swift */,
 				3A6F35A52DA9827000D09368 /* aboutView.swift */,
@@ -161,7 +156,6 @@
 		3AA93EF92D99ECFC00BDD73D /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				3AA1BF452DB814E700916C29 /* legalHelper.swift */,
 				3A78FCC52DB699FC00792598 /* HapticManager.swift */,
 				3A1DEFF42DB565530009193A /* SchemePickerView.swift */,
 				3A1DEFAA2DB536B20009193A /* AppReviewRequest.swift */,
@@ -311,8 +305,6 @@
 				3AED6AD42D7CFD0C00140414 /* ContentView.swift in Sources */,
 				3A130A9C2D9D7A5D00978BF8 /* infoView.swift in Sources */,
 				3AA93F052D9B3DB500BDD73D /* NewTaskView.swift in Sources */,
-				3AA1BF442DB8127300916C29 /* privacyPolicyView.swift in Sources */,
-				3AA1BF462DB8150200916C29 /* legalHelper.swift in Sources */,
 				3A78FCC62DB69A0600792598 /* HapticManager.swift in Sources */,
 				3A6F359E2DA9589C00D09368 /* alternativeAppIcons.swift in Sources */,
 				3AA93EFF2D99EF2F00BDD73D /* Home.swift in Sources */,

@@ -62,7 +62,9 @@ struct settingsView: View {
                         }
                     }
                     
-                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", destination: AnyView(privacyPolicyView()))
+                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "https://paulrodenjr.org/taskSyncPrivacy")
+                    
+                    customRow(icon: "link", firstLabel: "Terms of Use (EULA)", secondLabel: "", url: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
                 }
 
                 Section(header: Text("Other Apps")) {
