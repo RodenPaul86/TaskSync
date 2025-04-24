@@ -62,9 +62,11 @@ struct settingsView: View {
                         }
                     }
                     
-                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "https://paulrodenjr.org/taskSyncPrivacy")
+                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "https://paulrodenjr.org/tasksyncprivacypolicy")
                     
-                    customRow(icon: "link", firstLabel: "Terms of Use (EULA)", secondLabel: "", url: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
+                    customRow(icon: "link", firstLabel: "Terms of Service", secondLabel: "", url: "https://paulrodenjr.org/tasksynctermsofservice")
+                    
+                    customRow(icon: "link", firstLabel: "EULA", secondLabel: "", url: "https://paulrodenjr.org/tasksynceula")
                 }
 
                 Section(header: Text("Other Apps")) {
@@ -123,7 +125,7 @@ struct settingsView: View {
                     .preferredColorScheme(.dark)
             }
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
-            //.debugRevenueCatOverlay(isPresented: $showDebug)
+            .debugRevenueCatOverlay(isPresented: $showDebug)
         }
     }
 }
@@ -277,14 +279,9 @@ struct CustomAppRow: View {
 // MARK: WebView
 struct webView: UIViewRepresentable {
     var url: String
-    func makeUIView(context: Context) -> WKWebView {
+    func makeUIView(context: UIViewRepresentableContext<webView>) -> WKWebView {
         let view = WKWebView()
-        if let safeURL = URL(string: url) {
-            let request = URLRequest(url: safeURL)
-            view.load(request)
-        } else {
-            print("Invalid URL: \(url)")
-        }
+        view.load(URLRequest(url: URL(string: url)!))
         return view
     }
     func updateUIView(_ uiView: WKWebView, context: UIViewRepresentableContext<webView>) {
