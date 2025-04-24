@@ -41,9 +41,11 @@ struct IntroScreen: View {
                 Text("Continue")
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
-                    .hSpacing(.center)
-                    .padding(.vertical, 12)
-                    .background(.blue.gradient, in: .capsule)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color("Default").gradient, in: .capsule)
+                    .foregroundColor(.white)
+                    .cornerRadius(14)
             }
         }
         .padding(15)
