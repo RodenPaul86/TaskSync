@@ -105,12 +105,13 @@ struct SubscriptionView: View {
                         HapticManager.shared.notify(.impact(.light))
                     }) {
                         Text(hasIntroOffer(for: selectedPlan) ? "Try for Free!" : "Subscribe")
-                            .foregroundColor(.white)
-                            .bold()
+                            .fontWeight(.bold)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(.blue.gradient)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .background(.blue.gradient, in: .capsule)
+                            .foregroundColor(.white)
+                            .cornerRadius(14)
                     }
                     .padding(.top)
                     /*
