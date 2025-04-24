@@ -137,7 +137,7 @@ struct SubscriptionButton: View {
             }
             
         case .lifetime:
-            Text("\(price) / one-time")
+            Text("\(price) / once")
                 .foregroundStyle(.white)
                 .bold()
         }
