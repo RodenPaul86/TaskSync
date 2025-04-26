@@ -294,7 +294,7 @@ struct customPremiumBanner: View {
     
     let features = [
         "Syncing from calendar",
-        "And more"
+        "and more"
     ]
     
     var body: some View {
