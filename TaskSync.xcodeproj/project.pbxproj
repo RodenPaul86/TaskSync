@@ -44,7 +44,22 @@
 		3AED6AD72D7CFD0C00140414 /* TaskSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AED6ACD2D7CFD0C00140414 /* TaskSyncApp.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3A069CC62DBC9FB700F73194 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		3A069CB72DBC9FB400F73194 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		3A069CB92DBC9FB400F73194 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		3A130A9B2D9D7A5300978BF8 /* infoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = infoView.swift; sourceTree = "<group>"; };
 		3A130A9D2D9D9AF800978BF8 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
 		3A1DEFA62DB4310D0009193A /* helpFAQView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helpFAQView.swift; sourceTree = "<group>"; };
@@ -96,6 +111,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3A069CB62DBC9FB400F73194 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3A069CB72DBC9FB400F73194 /* WidgetKit.framework */,
+				3A069CB92DBC9FB400F73194 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3A6F359B2DA957D800D09368 /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
@@ -112,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				3AED6ACE2D7CFD0C00140414 /* TaskSync */,
+				3A069CB62DBC9FB400F73194 /* Frameworks */,
 				3AA041B12CD7E73D006B734E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -220,6 +245,7 @@
 				3AA041AC2CD7E73C006B734E /* Sources */,
 				3AA041AD2CD7E73C006B734E /* Frameworks */,
 				3AA041AE2CD7E73C006B734E /* Resources */,
+				3A069CC62DBC9FB700F73194 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -241,7 +267,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					3AA041AF2CD7E73C006B734E = {
