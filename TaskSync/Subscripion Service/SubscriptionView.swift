@@ -23,9 +23,7 @@ struct SubscriptionView: View {
             // MARK: Custom Navigation Bar
             HStack {
                 // Restore Button
-                Button(action: {
-                    restorePurchases()
-                }) {
+                Button(action: { restorePurchases() }) {
                     Text("Restore")
                         .foregroundColor(.gray)
                         .bold()
@@ -52,15 +50,13 @@ struct SubscriptionView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Image(systemName: "xmark")
-                        .font(.caption.bold())
-                        .foregroundColor(.black)
-                        .frame(width: 25, height: 25)
-                        .background(Color.gray)
-                        .clipShape(Circle())
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .tint(Color(.lightGray))
+                        .opacity(0.25)
                 }
             }
-            .padding()
+            .padding(.horizontal)
             
             Spacer()
             
@@ -115,24 +111,32 @@ struct SubscriptionView: View {
                     }
                     .padding(.top)
                     /*
-                     HStack {
-                     Button(action: {
-                     // Handle Policy action
-                     }) {
-                     Text("Privacy Policy")
-                     }
-                     
-                     Text("-")
-                     
-                     Button(action: {
-                     // Handle Terms action
-                     }) {
-                     Text("Terms of Service")
-                     }
-                     }
-                     .font(.caption)
-                     .foregroundStyle(.gray)
-                     */
+                    HStack {
+                        Button(action: {
+                            // Handle Policy action
+                        }) {
+                            Text("Privacy Policy")
+                        }
+                        
+                        Text("-")
+                        
+                        Button(action: {
+                            // Handle Terms action
+                        }) {
+                            Text("Terms of Service")
+                        }
+                        
+                        Text("-")
+                        
+                        Button(action: {
+                            // Handle Terms action
+                        }) {
+                            Text("EULA")
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+                    */
                 }
                 .padding(.horizontal)
                 .padding(.vertical)
