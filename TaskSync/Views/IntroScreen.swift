@@ -43,7 +43,7 @@ struct IntroScreen: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color("Default").gradient, in: .capsule)
+                    .background(.blue.gradient, in: .capsule)
                     .foregroundColor(.white)
                     .cornerRadius(14)
             }
@@ -51,6 +51,7 @@ struct IntroScreen: View {
         .padding(15)
     }
     
+    // MARK: Key Points
     @ViewBuilder
     private func keyPoints(image: String, title: String, description: String) -> some View {
         HStack(spacing: 15) {
