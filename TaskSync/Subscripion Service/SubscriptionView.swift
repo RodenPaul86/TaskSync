@@ -56,7 +56,7 @@ struct SubscriptionView: View {
                         .opacity(0.25)
                 }
             }
-            .padding(.horizontal)
+            .padding([.top, .horizontal])
             
             Spacer()
             
