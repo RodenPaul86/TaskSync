@@ -90,7 +90,7 @@ struct SubscriptionButton: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isSelected ? Color.blue.gradient : Color.gray.gradient, lineWidth: 2)
+                .stroke(isSelected ? Color.blue.gradient : Color(.systemGray6).gradient, lineWidth: 2)
         )
         .onTapGesture {
             selectedPlan = plan
