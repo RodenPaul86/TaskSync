@@ -38,19 +38,17 @@ struct TasksView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .foregroundStyle(.secondary)
                 
                 Text("You're all caught up!")
                     .font(.title3.bold())
-                    .foregroundStyle(.gray)
                 
                 Text("Add a new task to get started or enjoy the calm while it lasts.")
                     .font(.body)
                     .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
                     .padding(.horizontal)
             }
             .padding()
+            .foregroundStyle(.secondary.opacity(0.5))
             
         } else {
             VStack(alignment: .leading, spacing: 35) {

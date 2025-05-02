@@ -49,13 +49,13 @@ struct settingsView: View {
                 
                 Section(header: Text("Info")) {
                     customRow(icon: "info", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
-#if DEBUG
-                    if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "") {
+                    
+                    if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "id6737742961") {
                         customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
                             UIApplication.shared.open(url)
                         }
                     }
-#endif
+                    
                     if appSubModel.isSubscriptionActive {
                         customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
                             isPresentedManageSubscription = true
