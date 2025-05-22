@@ -31,6 +31,9 @@ struct Home: View {
     @State private var showCalendarImport = false
     @Namespace private var animation
     
+    @State private var showingDate = false
+    
+    
     @Query var tasks: [TaskData] /// <-- Ensure this fetches all tasks
     
     var tasksForSelectedDate: [TaskData] {
@@ -110,6 +113,8 @@ struct Home: View {
                 Button(action: {
                     let today = Date()
                     
+                    showingDate = true
+                    
                     if let todayIndex = indexOfCurrentWeek() {
                         withAnimation {
                             currentDate = today
@@ -124,21 +129,24 @@ struct Home: View {
                             currentWeekIndex = 0
                         }
                     }
+                    
+                    // After delay, fade back to original text
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            showingDate = false
+                        }
+                    }
+                    
                     HapticManager.shared.notify(.impact(.light))
                 }) {
                     Text(currentDate.format("MMMM"))
+                        .font(.title.bold())
                 }
                 
                 Text(currentDate.format("YYYY"))
+                    .font(.title)
                     .foregroundStyle(.gray)
             }
-            .font(.title.bold())
-            
-            Text(currentDate.formatted(date: .complete, time: .omitted))
-                .font(.callout)
-                .fontWeight(.semibold)
-                .textScale(.secondary)
-                .foregroundStyle(.gray)
             
             let incompleteTasks = tasksForSelectedDate
             let expiredTasks = tasks.filter {
@@ -148,34 +156,33 @@ struct Home: View {
             }
             
             // MARK: Task Count
-            HStack(spacing: 5) {
-                if !incompleteTasks.isEmpty {
-                    Text("\(incompleteTasks.count) current task\(incompleteTasks.count > 1 ? "s" : "")")
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.primary)
-                }
-                
-                if !incompleteTasks.isEmpty && !expiredTasks.isEmpty {
-                    Text("and")
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.secondary)
-                }
-                
+            ZStack(alignment: .leading) {
                 if !expiredTasks.isEmpty {
-                    Text("\(expiredTasks.count) overdue task\(expiredTasks.count > 1 ? "s" : "")")
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.red)
+                    Text("Don't forget to complete your overdue tasks!")
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                        .textScale(.secondary)
+                        .foregroundStyle(.gray)
+                        .opacity(showingDate ? 0 : 1)
+                        .animation(.easeInOut(duration: 0.5), value: showingDate)
+                    
+                } else {
+                    Text("You have \(incompleteTasks.count) task\(incompleteTasks.count == 1 ? "" : "s") for today.")
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                        .textScale(.secondary)
+                        .foregroundStyle(.gray)
+                        .opacity(showingDate ? 0 : 1)
+                        .animation(.easeInOut(duration: 0.5), value: showingDate)
                 }
                 
-                if incompleteTasks.isEmpty && expiredTasks.isEmpty {
-                    Text("No new tasks")
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.green)
-                }
+                Text(currentDate.formatted(date: .complete, time: .omitted))
+                    .font(.callout)
+                    .fontWeight(.semibold)
+                    .textScale(.secondary)
+                    .foregroundStyle(.gray)
+                    .opacity(showingDate ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.5), value: showingDate)
             }
             
             // MARK: Week Slider
