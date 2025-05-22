@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import UserNotifications
 
 struct TaskRowView: View {
     @Bindable var task: TaskData
@@ -27,7 +26,7 @@ struct TaskRowView: View {
                         .frame(width: 50, height: 50)
                         .onTapGesture {
                             withAnimation(.snappy) {
-                                removeNotification(for: task)
+                                NotificationManager.shared.cancelNotification(for: task.id!)
                                 task.isCompleted.toggle()
                                 HapticManager.shared.notify(.notification(.success))
                             }
@@ -83,7 +82,7 @@ struct TaskRowView: View {
                 }
                 
                 Button(action: {
-                    removeNotification(for: task)
+                    NotificationManager.shared.cancelNotification(for: task.id!)
                     task.isCompleted.toggle()
                 }) {
                     if !task.isCompleted {
@@ -94,7 +93,7 @@ struct TaskRowView: View {
                 }
                 
                 Button(role: .destructive, action: {
-                    removeNotification(for: task)
+                    NotificationManager.shared.cancelNotification(for: task.id!)
                     context.delete(task)
                     try? context.save()
                 }) {
@@ -126,11 +125,6 @@ struct TaskRowView: View {
         case .important: return .orange
         case .urgent: return .red
         }
-    }
-    
-    func removeNotification(for task: TaskData) {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [task.id!.uuidString])
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [task.id!.uuidString])
     }
 }
 

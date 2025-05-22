@@ -8,7 +8,6 @@
 import SwiftUI
 import EventKit
 import SwiftData
-import UserNotifications
 
 class CalendarManager: ObservableObject {
     private let eventStore = EKEventStore()
@@ -144,6 +143,7 @@ struct calendarImportView: View {
             }
             .onAppear {
                 calendarManager.requestAccess()
+                NotificationManager.shared.requestAuthorization()
             }
             .navigationTitle("Import Events")
             .toolbar {
@@ -191,7 +191,7 @@ struct calendarImportView: View {
                 priority: .basic
             )
             modelContext.insert(newTask)
-            scheduleNotification(for: newTask)
+            NotificationManager.shared.scheduleNotification(for: newTask)
         }
     }
 }
@@ -199,32 +199,5 @@ struct calendarImportView: View {
 extension Color {
     init(cgColor: CGColor) {
         self.init(UIColor(cgColor: cgColor))
-    }
-}
-
-extension calendarImportView {
-    func scheduleNotification(for task: TaskData) {
-        guard UserDefaults.standard.bool(forKey: "notificationsEnabled") else {
-            print("Notifications are disabled in settings.")
-            return
-        }
-        
-        let content = UNMutableNotificationContent()
-        content.title = task.taskTitle
-        content.body = task.taskDescription.isEmpty ? "You have a task due!" : task.taskDescription
-        content.sound = .default
-        
-        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: task.creationDate)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-        
-        let request = UNNotificationRequest(identifier: task.id!.uuidString, content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Failed to schedule notification: \(error.localizedDescription)")
-            } else {
-                print("Notification scheduled for task: \(task.taskTitle)")
-            }
-        }
     }
 }

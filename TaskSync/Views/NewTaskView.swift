@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import UserNotifications
 
 struct NewTaskView: View {
     // MARK: Paywall Properties
@@ -150,8 +149,8 @@ struct NewTaskView: View {
             
             Spacer(minLength: 0)
             
+            // MARK: Saving Task
             Button(action: {
-                /// Saving Task
                 if let task = taskToEdit {
                     task.taskTitle = taskTitle
                     task.taskDescription = taskDescription
@@ -159,7 +158,7 @@ struct NewTaskView: View {
                     task.tint = taskColor
                     task.priority = taskPriority
                     
-                    scheduleNotification(for: task)
+                    NotificationManager.shared.scheduleNotification(for: task)
                 } else {
                     let task = TaskData(taskTitle: taskTitle,
                                     taskDescription: taskDescription,
@@ -167,7 +166,7 @@ struct NewTaskView: View {
                                     tint: taskColor,
                                     priority: taskPriority)
                     context.insert(task)
-                    scheduleNotification(for: task)
+                    NotificationManager.shared.scheduleNotification(for: task)
                 }
                 
                 do {
@@ -206,7 +205,7 @@ struct NewTaskView: View {
             
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
                 if let error = error {
-                    print("❌ Notification permission error: \(error)")
+                    print("Notification permission error: \(error)")
                 }
             }
         }
@@ -216,30 +215,4 @@ struct NewTaskView: View {
 #Preview {
     NewTaskView()
         .vSpacing(.bottom)
-}
-extension NewTaskView {
-    func scheduleNotification(for task: TaskData) {
-        guard UserDefaults.standard.bool(forKey: "notificationsEnabled") else {
-            print("Notifications are disabled in settings.")
-            return
-        }
-        
-        let content = UNMutableNotificationContent()
-        content.title = task.taskTitle
-        content.body = task.taskDescription.isEmpty ? "You have a task due!" : task.taskDescription
-        content.sound = .default
-        
-        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: task.creationDate)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-        
-        let request = UNNotificationRequest(identifier: task.id!.uuidString, content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Failed to schedule notification: \(error.localizedDescription)")
-            } else {
-                print("Notification scheduled for task: \(task.taskTitle)")
-            }
-        }
-    }
 }
