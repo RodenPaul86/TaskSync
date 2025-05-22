@@ -210,7 +210,7 @@ struct Home: View {
                     Button(action: { showCalendarImport.toggle() }) {
                         Label("Import from Calender", systemImage: "square.and.arrow.down.badge.clock")
                     }
-                    //.disabled(appSubModel.isSubscriptionActive ? false : true)
+                    .disabled(appSubModel.isSubscriptionActive ? false : true)
                     
                     Button(action: { showSettings.toggle() }) {
                         Label("Settings", systemImage: "gear")
