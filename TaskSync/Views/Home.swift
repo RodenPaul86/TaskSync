@@ -28,11 +28,9 @@ struct Home: View {
     @State private var showInfo: Bool = false
     @State private var showSettings: Bool = false
     @State private var showCalendarImport = false
-    @Namespace private var animation
-    
     @State private var showingDate = false
     
-    
+    @Namespace private var animation
     @Query var tasks: [TaskData] /// <-- Ensure this fetches all tasks
     
     var tasksForSelectedDate: [TaskData] {

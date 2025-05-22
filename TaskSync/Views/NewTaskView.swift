@@ -195,18 +195,14 @@ struct NewTaskView: View {
         }
         .padding(15)
         .onAppear {
+            NotificationManager.shared.requestAuthorization()
+            
             if let task = taskToEdit {
                 taskTitle = task.taskTitle
                 taskDescription = task.taskDescription
                 taskDate = task.creationDate
                 taskColor = task.tint
                 taskPriority = task.priority ?? .none
-            }
-            
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-                if let error = error {
-                    print("Notification permission error: \(error)")
-                }
             }
         }
     }
