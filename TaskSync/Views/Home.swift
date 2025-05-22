@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 import StoreKit
-import UserNotifications
 
 struct Home: View {
     // MARK: Paywall Properties

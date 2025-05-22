@@ -65,7 +65,7 @@ struct calendarImportView: View {
                 .filter { $0.endDate >= now }
                 .sorted { $0.startDate < $1.startDate }
             
-            // Group events by month
+            // MARK: Group events by month
             let groupedEvents = Dictionary(grouping: upcomingEvents) { event in
                 let components = Calendar.current.dateComponents([.year, .month], from: event.startDate)
                 return Calendar.current.date(from: components) ?? Date()
@@ -129,7 +129,7 @@ struct calendarImportView: View {
                                                 }
                                             }
                                     }
-                                    .contentShape(Circle()) // for larger tap target
+                                    .contentShape(Circle()) /// <-- for larger tap target
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -183,15 +183,15 @@ struct calendarImportView: View {
     private func importSelectedEvents(events: [EKEvent]) {
         let eventsToImport = events.filter { selectedEvents.contains($0.eventIdentifier) }
         for event in eventsToImport {
-            let newTask = TaskData(
+            let task = TaskData(
                 taskTitle: event.title,
                 taskDescription: event.notes ?? "",
                 creationDate: event.startDate,
                 tint: "taskColor 0",
                 priority: .basic
             )
-            modelContext.insert(newTask)
-            NotificationManager.shared.scheduleNotification(for: newTask)
+            modelContext.insert(task)
+            NotificationManager.shared.scheduleNotification(for: task)
         }
     }
 }
