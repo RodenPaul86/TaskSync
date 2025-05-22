@@ -182,7 +182,17 @@ struct calendarImportView: View {
     
     private func importSelectedEvents(events: [EKEvent]) {
         let eventsToImport = events.filter { selectedEvents.contains($0.eventIdentifier) }
+        
+        // MARK: Fetch existing imported event identifiers
+        let existingTasks = try? modelContext.fetch(FetchDescriptor<TaskData>())
+        let importedEventIDs = Set(existingTasks?.compactMap { $0.eventIdentifier } ?? [])
+        
         for event in eventsToImport {
+            guard !importedEventIDs.contains(event.eventIdentifier) else {
+                print("Skipping duplicate event: \(event.title ?? "")")
+                continue
+            }
+            
             let task = TaskData(
                 taskTitle: event.title,
                 taskDescription: event.notes ?? "",
@@ -190,6 +200,7 @@ struct calendarImportView: View {
                 tint: "taskColor 0",
                 priority: .basic
             )
+            task.eventIdentifier = event.eventIdentifier /// <-- Store it here
             modelContext.insert(task)
             NotificationManager.shared.scheduleNotification(for: task)
         }
