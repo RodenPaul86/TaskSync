@@ -196,7 +196,6 @@ struct NewTaskView: View {
         .padding(15)
         .onAppear {
             NotificationManager.shared.requestAuthorization()
-            
             if let task = taskToEdit {
                 taskTitle = task.taskTitle
                 taskDescription = task.taskDescription
