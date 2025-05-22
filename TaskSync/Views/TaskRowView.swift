@@ -47,6 +47,7 @@ struct TaskRowView: View {
                     Text(task.creationDate.format("hh:mm a"))
                         .font(.callout)
                         .fontWeight(.semibold)
+                        .textScale(.secondary)
                         .foregroundStyle(.secondary)
                 }
                 
@@ -56,7 +57,7 @@ struct TaskRowView: View {
                         .fontWeight(.semibold)
                         .textScale(.secondary)
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                        .lineLimit(3)
                         .strikethrough(task.isCompleted, pattern: .solid, color: .primary)
                     
                     Spacer()
