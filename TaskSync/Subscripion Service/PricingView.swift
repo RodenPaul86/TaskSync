@@ -71,7 +71,7 @@ struct PricingView: View {
             
             Divider()
             
-            Text("Subscribe for $24.99/year or $4.99/week with a 3-day free trial. Weekly plans renew automatically unless canceled 24 hours before the trial ends. All subscriptions auto-renew unless canceled 24 hours before the current period ends. Manage or cancel anytime in your iTunes settings.")
+            Text("Subscribe for $24.99 per year or $4.99 per week, with a 3-day free trial. Subscriptions automatically renew unless canceled at least 24 hours before the end of the current billing period. You can manage or cancel your subscription at any time through the app’s settings or your iTunes account settings.")
                 .font(.caption)
                 .foregroundStyle(.gray)
         }
