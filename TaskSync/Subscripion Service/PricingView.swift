@@ -9,10 +9,12 @@ import SwiftUI
 
 struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
+        ("Tasks per Day", "infinity", .infinity, true),
         ("Syncing from Calendar", nil, .checkmark, false),
-        ("Background Task Color", nil, .checkmark, false),
+        ("Task Colors", nil, .checkmark, false),
         ("Sync Across Devices", nil, .checkmark, true),
-        ("Remove Annoying Paywalls", nil, .checkmark, false)
+        ("Remove Annoying Paywalls", nil, .checkmark, false),
+        ("Support Indie Developers", nil, .checkmark, false)
     ]
     
     enum ProFeatureType {
@@ -52,9 +54,15 @@ struct PricingView: View {
                     
                     // Free Version Column
                     if let freeValue = feature.free {
-                        Text(freeValue)
-                            .frame(width: 50, alignment: .center)
-                            .foregroundStyle(.gray)
+                        if freeValue == "infinity" {
+                            Image(systemName: "infinity")
+                                .foregroundStyle(.gray)
+                                .frame(width: 50, alignment: .center)
+                        } else {
+                            Text(freeValue)
+                                .frame(width: 50, alignment: .center)
+                                .foregroundStyle(.gray)
+                        }
                     } else {
                         Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
                             .foregroundStyle(feature.freeHasAccess ? Color.blue.gradient : Color.red.gradient)
@@ -71,7 +79,7 @@ struct PricingView: View {
             
             Divider()
             
-            Text("Subscribe for $24.99 per year or $4.99 per week, with a 3-day free trial. Subscriptions automatically renew unless canceled at least 24 hours before the end of the current billing period. You can manage or cancel your subscription at any time through the app’s settings or your iTunes account settings.")
+            Text("Subscribe for $24.99 per year or $4.99 per week, with a 3-day free trial. All subscriptions renew automatically unless canceled at least 24 hours before the end of the current period. Manage or cancel anytime in your iTunes settings.")
                 .font(.caption)
                 .foregroundStyle(.gray)
         }
