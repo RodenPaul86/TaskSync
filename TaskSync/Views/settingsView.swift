@@ -51,6 +51,8 @@ struct settingsView: View {
                 Section(header: Text("Info")) {
                     customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
                     
+                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
+                    
                     if appSubModel.isSubscriptionActive {
                         customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
                             isPresentedManageSubscription = true
@@ -61,11 +63,11 @@ struct settingsView: View {
                         customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
                             UIApplication.shared.open(url)
                         }
+                        
+                        customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/P7YJDrsY")
                     }
                     
                     customRow(icon: "square.and.arrow.up", firstLabel: "Share with Friends", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/us/app/tasksync-task-manager/id6737742961"))
-                    
-                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
                     
                     customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps", secondLabel: "") {
                         showStoreView = true
@@ -214,6 +216,7 @@ struct customRow: View {
     }
 }
 
+// MARK: ActivityView
 struct ActivityView: UIViewControllerRepresentable {
     let activityItems: [Any]
     let applicationActivities: [UIActivity]? = nil
