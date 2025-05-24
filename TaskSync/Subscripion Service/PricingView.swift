@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
-        ("Tasks per Day", "infinity", .infinity, true),
         ("Syncing from Calendar", nil, .checkmark, false),
         ("Task Colors", nil, .checkmark, false),
         ("Sync Across Devices", nil, .checkmark, true),
