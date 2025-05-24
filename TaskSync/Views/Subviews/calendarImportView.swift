@@ -101,8 +101,11 @@ struct calendarImportView: View {
                                             .frame(width: 8, height: 8)
                                         Text(event.calendar.title)
                                             .font(.caption)
-                                            .foregroundStyle(.gray)
+                                            .foregroundStyle(Color(cgColor: event.calendar.cgColor ?? UIColor.systemGray.cgColor))
                                     }
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color(cgColor: event.calendar.cgColor ?? UIColor.systemGray.cgColor).opacity(0.2), in: .capsule)
                                 }
                                 
                                 Spacer()
@@ -118,7 +121,7 @@ struct calendarImportView: View {
                                 } label: {
                                     ZStack {
                                         Circle()
-                                            .stroke(selectedEvents.contains(event.eventIdentifier) ? Color.accentColor : Color.gray.opacity(0.3), lineWidth: 2)
+                                            .stroke(selectedEvents.contains(event.eventIdentifier) ? Color.accentColor : Color.gray.opacity(0.3), lineWidth: 1)
                                             .frame(width: 28, height: 28)
                                             .overlay {
                                                 if selectedEvents.contains(event.eventIdentifier) {

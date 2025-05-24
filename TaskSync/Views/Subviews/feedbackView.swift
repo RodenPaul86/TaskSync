@@ -36,23 +36,28 @@ struct feedbackView: View {
                                 selectedTopic = topic
                                 HapticManager.shared.notify(.impact(.light))
                             }) {
-                                Text(topic)
+                                HStack {
+                                    Text(topic)
+                                    if selectedTopic == topic {
+                                        Spacer()
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
                             }
                         }
                     } label: {
                         HStack {
                             Text(selectedTopic)
-                                .foregroundColor(.gray)
-                            Image(systemName: "chevron.right") // Chevron next to text
-                                .foregroundColor(.gray)
+                            Image(systemName: "chevron.up.chevron.down")
                         }
+                        .foregroundStyle(.gray)
                     }
                 }
                 
                 // MARK: Expanding TextField
                 TextField("Enter text here...", text: $textBody, axis: .vertical)
                     .padding(.vertical, 8)
-                    .frame(minHeight: 120, alignment: .top) // Ensures expansion
+                    .frame(minHeight: 120, alignment: .top) /// <-- Ensures expansion
                 
                 Section(header: Text("Additional Info"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
                     HStack {

@@ -13,11 +13,12 @@ import UserNotifications
 struct settingsView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appSubModel: appSubscriptionModel
+    @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = true
+    
     @State private var isPaywallPresented: Bool = false
     @State private var isPresentedManageSubscription = false
     @State private var showDebug: Bool = false
-    
-    @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = true
+    @State private var showStoreView = false
     
     var body: some View {
         NavigationStack {
@@ -48,13 +49,7 @@ struct settingsView: View {
                 }
                 
                 Section(header: Text("Info")) {
-                    customRow(icon: "info", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
-                    
-                    if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "id6737742961") {
-                        customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
-                            UIApplication.shared.open(url)
-                        }
-                    }
+                    customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
                     
                     if appSubModel.isSubscriptionActive {
                         customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
@@ -62,50 +57,32 @@ struct settingsView: View {
                         }
                     }
                     
+                    if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "id6737742961") {
+                        customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    
+                    customRow(icon: "square.and.arrow.up", firstLabel: "Share with Friends", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/us/app/tasksync-task-manager/id6737742961"))
+                    
+                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
+                    
+                    customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps", secondLabel: "") {
+                        showStoreView = true
+                    }
+                }
+                
+                Section(header: Text("Legal")) {
                     customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "https://paulrodenjr.org/tasksyncprivacypolicy")
                     
                     customRow(icon: "link", firstLabel: "Terms of Service", secondLabel: "", url: "https://paulrodenjr.org/tasksynctermsofservice")
                     
                     customRow(icon: "link", firstLabel: "EULA", secondLabel: "", url: "https://paulrodenjr.org/tasksynceula")
                 }
-
-                Section(header: Text("Other Apps")) {
-                    CustomAppRow(icon: Image(systemName: "power"),
-                                 iconColor: .green,
-                                 bgColor: .black,
-                                 title: "ProLight",
-                                 subtitle: "Multi Fuctional Flashlight",
-                                 device1: "iphone",
-                                 device2: "",
-                                 device3: "",
-                                 device4: "",
-                                 device5: ""
-                    ){
-                        if let url = URL(string: "https://apps.apple.com/app/prolight/id1173567157") {
-                            UIApplication.shared.open(url)
-                        }
-                    }
-                    
-                    CustomAppRow(icon: Image(systemName: "document.viewfinder"),
-                                 iconColor: .white,
-                                 bgColor: Color("DocMaticColor"),
-                                 title: "DocMatic",
-                                 subtitle: "Document Scanner",
-                                 device1: "iphone",
-                                 device2: "",
-                                 device3: "",
-                                 device4: "",
-                                 device5: ""
-                    ){
-                        if let url = URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012") {
-                            UIApplication.shared.open(url)
-                        }
-                    }
-                }
 #if DEBUG
-                Section(header: Text("Development Tools")) {
+                Section(header: Text("Debuging Tools")) {
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
-                        showDebug = true
+                        showDebug.toggle()
                     }
                 }
 #endif
@@ -124,6 +101,9 @@ struct settingsView: View {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
                     .preferredColorScheme(.dark)
             }
+            .background(
+                StoreProductPresenter(appStoreID: 693041126, isPresented: $showStoreView)
+            )
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
             .debugRevenueCatOverlay(isPresented: $showDebug)
         }
@@ -145,50 +125,63 @@ struct customRow: View {
     var url: String? = nil           /// <-- Optional URL
     var showToggle: Bool = false
     var toggleValue: Binding<Bool>? = nil /// <-- Optional toggle switch
+    var shareURL: URL? = nil             /// <-- Optional share link
     
     @State private var isNavigating = false
+    @State private var isSharing = false
     
     var body: some View {
-        if let urlString = url {
-            NavigationLink {
-                webView(url: urlString)
-                    .edgesIgnoringSafeArea(.all)
-                    .navigationTitle(firstLabel)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            if let link = URL(string: urlString) {
-                                Link(destination: link) {
-                                    Image(systemName: "safari")
+        Group {
+            if let urlString = url {
+                NavigationLink {
+                    webView(url: urlString)
+                        .edgesIgnoringSafeArea(.all)
+                        .navigationTitle(firstLabel)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                if let link = URL(string: urlString) {
+                                    Link(destination: link) {
+                                        Image(systemName: "safari")
+                                    }
                                 }
                             }
                         }
-                    }
-            } label: {
-                rowContent(showChevron: false)
-            }
-            .buttonStyle(.plain)
-        } else if let destination = destination {
-            NavigationLink {
-                destination
-            } label: {
-                rowContent(showChevron: false)
-            }
-            .buttonStyle(.plain) /// <-- Keeps it looking like a row
-        } else if showToggle {
-            rowContent(showChevron: false)
-        } else {
-            rowContent(showChevron: action != nil)
-                .onTapGesture {
-                    action?()
+                } label: {
+                    rowContent(showChevron: false)
                 }
+                .buttonStyle(.plain)
+            } else if let destination = destination {
+                NavigationLink {
+                    destination
+                } label: {
+                    rowContent(showChevron: false)
+                }
+                .buttonStyle(.plain)
+            } else if showToggle {
+                rowContent(showChevron: false)
+            } else {
+                rowContent(showChevron: action != nil || shareURL != nil)
+                    .onTapGesture {
+                        if shareURL != nil {
+                            isSharing = true
+                        } else {
+                            action?()
+                        }
+                    }
+            }
+        }
+        .sheet(isPresented: $isSharing) {
+            if let shareURL = shareURL {
+                ActivityView(activityItems: [shareURL])
+            }
         }
     }
     
     private func rowContent(showChevron: Bool) -> some View {
         HStack {
             Image(systemName: icon)
-                .font(.title3)
+                .font(.system(size: 18)) /// <-- Fixed size, unaffected by user settings
                 .foregroundColor(.white)
                 .frame(width: 32, height: 32)
                 .background(.blue.gradient)
@@ -210,70 +203,26 @@ struct customRow: View {
                     .foregroundColor(Color.init(uiColor: .systemGray3))
             } else {
                 Text(secondLabel)
-                    .foregroundStyle((action == nil && destination == nil && url == nil) ? .gray : .primary)
+                    .foregroundStyle((action == nil && destination == nil && url == nil && shareURL == nil) ? .gray : .primary)
             }
         }
         .contentShape(Rectangle())
     }
     
     private func isWebsite(_ urlString: String) -> Bool {
-        return urlString.hasPrefix("http") /// <-- Simple check for URLs
+        return urlString.hasPrefix("http")
     }
 }
 
-// MARK: Custom App Row
-struct CustomAppRow: View {
-    let icon: Image?
-    let iconColor: Color
-    let bgColor: Color
-    let title: String
-    let subtitle: String
-    let device1: String?
-    let device2: String?
-    let device3: String?
-    let device4: String?
-    let device5: String?
-    let action: () -> Void
+struct ActivityView: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    let applicationActivities: [UIActivity]? = nil
     
-    var body: some View {
-        Button(action: action) {
-            HStack(alignment: .center, spacing: 16) {
-                if let icon = icon {
-                    icon
-                        .renderingMode(.template)
-                        .scaledToFit()
-                        .font(.system(size: 50, weight: .medium))
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(iconColor)
-                        .padding()
-                        .background(bgColor.gradient)
-                        .cornerRadius(16)
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    
-                    Text(subtitle)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    
-                    HStack(alignment: .bottom, spacing: 4) {
-                        ForEach([device1, device2, device3, device4, device5], id: \.self) { device in
-                            if let device = device {
-                                Image(systemName: device)
-                            }
-                        }
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                }
-                Spacer()
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
     }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 // MARK: WebView
