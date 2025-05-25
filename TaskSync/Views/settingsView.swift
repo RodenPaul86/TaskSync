@@ -11,13 +11,13 @@ import WebKit
 import UserNotifications
 
 struct settingsView: View {
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var appSubModel: appSubscriptionModel
     @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = true
+    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @Environment(\.dismiss) private var dismiss
     
+    @State private var showDebug: Bool = false
     @State private var isPaywallPresented: Bool = false
     @State private var isPresentedManageSubscription = false
-    @State private var showDebug: Bool = false
     @State private var showStoreView = false
     
     var body: some View {
