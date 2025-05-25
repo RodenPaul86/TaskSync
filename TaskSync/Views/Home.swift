@@ -63,7 +63,7 @@ struct Home: View {
                     .fontWeight(.semibold)
                     .foregroundStyle(.white)
                     .frame(width: 55, height: 55)
-                    .background(.blue.gradient.shadow(.drop(color: .black.opacity(0.25), radius: 5, x: 10, y: 10)), in: Circle())
+                    .background(.blue.gradient.shadow(.drop(color: .black.opacity(0.25), radius: 5, x: 5, y: 5)), in: Circle())
             }
             .padding(15)
         }
