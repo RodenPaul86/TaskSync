@@ -48,7 +48,7 @@ struct feedbackView: View {
                     } label: {
                         HStack {
                             Text(selectedTopic)
-                            Image(systemName: "chevron.up.chevron.down")
+                            Image(systemName: "chevron.up.chevron.down") /// <-- Chevron next to text
                         }
                         .foregroundStyle(.gray)
                     }
