@@ -16,18 +16,24 @@ class CalendarManager: ObservableObject {
     func requestAccess() {
         if #available(iOS 17.0, *) {
             eventStore.requestFullAccessToEvents { granted, error in
-                if granted {
-                    self.fetchEvents()
-                } else {
-                    print("Access denied or error: \(String(describing: error))")
+                DispatchQueue.main.async {
+                    if granted {
+                        self.fetchEvents()
+                    } else {
+                        self.events = []
+                        print("Access denied or error: \(String(describing: error))")
+                    }
                 }
             }
         } else {
             eventStore.requestAccess(to: .event) { granted, error in
-                if granted {
-                    self.fetchEvents()
-                } else {
-                    print("Access denied or error: \(String(describing: error))")
+                DispatchQueue.main.async {
+                    if granted {
+                        self.fetchEvents()
+                    } else {
+                        self.events = []
+                        print("Access denied or error: \(String(describing: error))")
+                    }
                 }
             }
         }
@@ -57,6 +63,7 @@ struct calendarImportView: View {
     @StateObject private var calendarManager = CalendarManager()
     
     @State private var selectedEvents: Set<String> = []
+    @State private var hasCalendarAccess: Bool = true
     
     var body: some View {
         NavigationStack {
@@ -71,81 +78,108 @@ struct calendarImportView: View {
                 return Calendar.current.date(from: components) ?? Date()
             }
             
-            List {
-                ForEach(groupedEvents.keys.sorted(), id: \.self) { monthDate in
-                    Section(header: Text(monthDate.formatted(.dateTime.year().month(.wide)))) {
-                        ForEach(groupedEvents[monthDate] ?? [], id: \.eventIdentifier) { event in
-                            
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
+            Group {
+                if hasCalendarAccess {
+                    List {
+                        ForEach(groupedEvents.keys.sorted(), id: \.self) { monthDate in
+                            Section(header: Text(monthDate.formatted(.dateTime.year().month(.wide)))) {
+                                ForEach(groupedEvents[monthDate] ?? [], id: \.eventIdentifier) { event in
+                                    
                                     HStack {
-                                        Text(event.title)
-                                            .font(.headline)
-                                        
-                                        if let rules = event.recurrenceRules, !rules.isEmpty {
-                                            Image(systemName: "arrow.trianglehead.2.clockwise")
-                                                .foregroundStyle(.secondary)
-                                        }
-                                    }
-                                    
-                                    HStack(spacing: 6) {
-                                        Text(event.startDate, style: .date)
-                                        Text(event.startDate, style: .time)
-                                    }
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                                    
-                                    HStack(spacing: 8) {
-                                        Circle()
-                                            .fill(Color(cgColor: event.calendar.cgColor ?? UIColor.systemGray.cgColor))
-                                            .frame(width: 8, height: 8)
-                                        Text(event.calendar.title)
-                                            .font(.caption)
-                                            .foregroundStyle(Color(cgColor: event.calendar.cgColor ?? UIColor.systemGray.cgColor))
-                                    }
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(Color(cgColor: event.calendar.cgColor ?? UIColor.systemGray.cgColor).opacity(0.2), in: .capsule)
-                                }
-                                
-                                Spacer()
-                                
-                                Button {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                        if selectedEvents.contains(event.eventIdentifier) {
-                                            selectedEvents.remove(event.eventIdentifier)
-                                        } else {
-                                            selectedEvents.insert(event.eventIdentifier)
-                                        }
-                                    }
-                                } label: {
-                                    ZStack {
-                                        Circle()
-                                            .stroke(selectedEvents.contains(event.eventIdentifier) ? Color.accentColor : Color.gray.opacity(0.3), lineWidth: 1)
-                                            .frame(width: 28, height: 28)
-                                            .overlay {
-                                                if selectedEvents.contains(event.eventIdentifier) {
-                                                    Image(systemName: "checkmark.circle.fill")
-                                                        .foregroundStyle(.blue.gradient)
-                                                        .frame(width: 16, height: 16)
-                                                        .transition(.scale)
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            HStack {
+                                                Text(event.title)
+                                                    .font(.headline)
+                                                
+                                                if let rules = event.recurrenceRules, !rules.isEmpty {
+                                                    Image(systemName: "arrow.trianglehead.2.clockwise")
+                                                        .foregroundStyle(.secondary)
                                                 }
                                             }
+                                            
+                                            HStack(spacing: 6) {
+                                                Text(event.startDate, style: .date)
+                                                Text(event.startDate, style: .time)
+                                            }
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                            
+                                            HStack(spacing: 8) {
+                                                Circle()
+                                                    .fill(Color(cgColor: event.calendar.cgColor ?? UIColor.systemGray.cgColor))
+                                                    .frame(width: 8, height: 8)
+                                                Text(event.calendar.title)
+                                                    .font(.caption)
+                                                    .foregroundStyle(Color(cgColor: event.calendar.cgColor ?? UIColor.systemGray.cgColor))
+                                            }
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(Color(cgColor: event.calendar.cgColor ?? UIColor.systemGray.cgColor).opacity(0.2), in: .capsule)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Button {
+                                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                                if selectedEvents.contains(event.eventIdentifier) {
+                                                    selectedEvents.remove(event.eventIdentifier)
+                                                } else {
+                                                    selectedEvents.insert(event.eventIdentifier)
+                                                }
+                                            }
+                                        } label: {
+                                            ZStack {
+                                                Circle()
+                                                    .stroke(selectedEvents.contains(event.eventIdentifier) ? Color.accentColor : Color.gray.opacity(0.3), lineWidth: 1)
+                                                    .frame(width: 28, height: 28)
+                                                    .overlay {
+                                                        if selectedEvents.contains(event.eventIdentifier) {
+                                                            Image(systemName: "checkmark.circle.fill")
+                                                                .foregroundStyle(.blue.gradient)
+                                                                .frame(width: 16, height: 16)
+                                                                .transition(.scale)
+                                                        }
+                                                    }
+                                            }
+                                            .contentShape(Circle()) /// <-- for larger tap target
+                                        }
+                                        .buttonStyle(.plain)
                                     }
-                                    .contentShape(Circle()) /// <-- for larger tap target
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        toggleSelection(for: event)
+                                    }
                                 }
-                                .buttonStyle(.plain)
-                            }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                toggleSelection(for: event)
                             }
                         }
+                    }
+                } else {
+                    List {
+                        VStack(spacing: 16) {
+                            Image(systemName: "calendar.badge.exclamationmark")
+                                .font(.system(size: 48))
+                                .foregroundColor(.red)
+                            
+                            Text("TaskSync needs ''Full Access'' to your calendar to import events.")
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                            
+                            Button("Open Settings") {
+                                if let url = URL(string: UIApplication.openSettingsURLString),
+                                   UIApplication.shared.canOpenURL(url) {
+                                    UIApplication.shared.open(url)
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
             }
             .onAppear {
                 calendarManager.requestAccess()
+                checkCalendarAuthorization()
                 NotificationManager.shared.requestAuthorization()
             }
             .navigationTitle("Import Events")
@@ -206,6 +240,15 @@ struct calendarImportView: View {
             task.eventIdentifier = event.eventIdentifier /// <-- Store it here
             modelContext.insert(task)
             NotificationManager.shared.scheduleNotification(for: task)
+        }
+    }
+    
+    private func checkCalendarAuthorization() {
+        let status = EKEventStore.authorizationStatus(for: .event)
+        if #available(iOS 17.0, *) {
+            hasCalendarAccess = status == .fullAccess
+        } else {
+            hasCalendarAccess = status == .authorized
         }
     }
 }
