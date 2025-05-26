@@ -29,7 +29,7 @@
     •    
     <a href="#screenshots">Screenshots</a>
     •
-    <a href="#support">Dependencies</a>
+    <a href="#dependencies">Dependencies</a>
     •
     <a href="#support">Support</a>
     •    
