@@ -118,3 +118,4 @@ Thank you!
 
 ## License
 TaskSync is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/TaskSync/blob/main/LICENSE) (Version 2.0).
+
