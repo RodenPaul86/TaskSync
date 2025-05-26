@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="Images/appicon.png" alt="Appicon" width="100" style="border-radius: 25px"/>
+    <img src="TaskSync/Images/Icon1024.png" alt="Appicon" width="100" style="border-radius: 25px"/>
     <br />
     <b>TaskSync</b>
 </h1>
