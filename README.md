@@ -1,7 +1,7 @@
 <h1 align="center">
-    <img src="TaskSync/Images/Icon1024.png" alt="Appicon" width="100" style="border-radius: 25px"/>
+    <img src="Images/github1024.png" alt="Icon" width="150" style="border-radius: 25px"/>
     <br />
-    <b>TaskSync</b>
+    <b>TaskSync: Task Manager</b>
 </h1>
 
 <div align="center">
@@ -21,16 +21,18 @@
 <p align="center">
     <a href="#download">Download</a>
     •
+    <a href="#features">Motivation</a>
+    •    
     <a href="#features">Features</a>
-    •
+    •    
     <a href="#requirements">Requirements</a>
     •    
     <a href="#screenshots">Screenshots</a>
-    •    
-    <a href="#cocoapods">Cocoapods</a>
+    •
+    <a href="#support">Dependencies</a>
     •
     <a href="#support">Support</a>
-    •
+    •    
     <a href="#license">License</a>
 </p>
 
@@ -47,6 +49,15 @@
     <a href="https://github.com/RodenPaul86/ProLight/releases/tag/3.3.6">
         <img src="Images/Badges/get-it-on-github.png" alt="Get it from GitHub" height="80" />
 </div>
+
+## Motivation
+
+<p>
+There are plenty of task management apps out there, but only a few strike the right balance—TaskSync is one of them.
+Built to be fast, intuitive, and minimal, TaskSync focuses on what matters: helping you stay organized without getting in your way. No clutter, no distractions—just a clean, thoughtful experience designed around your daily workflow.
+
+Part of my [portfolio projects](https://paulrodenjr.org), TaskSync reflects my approach to iOS development—delivering practical tools that feel effortless to use.
+</p>
 
 ## Features
 
