@@ -76,37 +76,20 @@ Part of my [portfolio projects](https://paulrodenjr.org), TaskSync reflects my a
     <div align="left">
     <img src="Images/mainView.png" alt="First Image" width="240" />
     </a>
-    <br/>        
-    <h3><b>WatchOS:</b></h3>
-    <div align="left">
-    <img src="Images/watchView01.png" alt="watchImage01" width="240" />
-    </a>
-    <img src="Images/watchView02.png" alt="watchImage01" width="240" />
-    </a>        
 </div>
 
 ## Cocoapods
-```ruby
-// Podfile
-target 'ProLight' do
-  use_frameworks!
-  pod 'BugShaker'
-  pod 'CTFeedbackSwift'
-  pod 'lottie-ios', '~> 3.4.3'
-  pod 'SwiftAlertView', '~> 2.2.1'
-  pod 'S3SwiftUIAppRater'
-  pod 'KMPlaceholderTextView'
-  pod 'ANActivityIndicator'
-  pod 'BrightnessToggle'
-  pod 'PDFReader'
-end
+```swift
+dependencies: [
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.21.1")
+]
 ```
 
 ## Support
 
-I embarked on my journey as an independent developer, and CalcProX marked one of my initial ventures as I delved into the realm of Software Development almost 10 years ago. Witnessing its remarkable evolution since then has been truly inspiring. Amidst numerous side projects I've undertaken, CalcProX has remained my unwavering focal point.
+I began my journey as an independent developer nearly a decade ago, and TaskSync is the result of years of growth, experimentation, and learning along the way. While I’ve explored many side projects, TaskSync has become a true passion—my way of helping people stay focused, organized, and in control of their day.
 
-As I strive to uphold CalcProX with a continuous stream of innovative features, refinements, and meticulous bug fixes, I am genuinely touched by the unwavering support of my incredible community. Your backing would mean the world to me, ensuring that CalcProX continues to flourish.
+I’m committed to evolving TaskSync with thoughtful updates, new features, and ongoing improvements. The support from users like you means everything—it’s what makes this journey possible and keeps TaskSync moving forward.
 
 <p><a href="https://www.buymeacoffee.com/paulrodenjr"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="paulRoden" /></a></p><br><br>
 <br/>
