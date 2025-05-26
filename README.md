@@ -21,7 +21,7 @@
 <p align="center">
     <a href="#download">Download</a>
     •
-    <a href="#features">Motivation</a>
+    <a href="#motivation">Motivation</a>
     •    
     <a href="#features">Features</a>
     •    
