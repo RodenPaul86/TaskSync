@@ -53,7 +53,7 @@
 There are plenty of task management apps out there, but only a few strike the right balance—TaskSync is one of them.
 Built to be fast, intuitive, and minimal, TaskSync focuses on what matters: helping you stay organized without getting in your way. No clutter, no distractions—just a clean, thoughtful experience designed around your daily workflow.
 
-Part of my [portfolio projects](https://paulrodenjr.org), TaskSync reflects my approach to iOS development—delivering practical tools that feel effortless to use.
+Part of my [portfolio projects](https://paulrodenjr.org/#projects), TaskSync reflects my approach to iOS development—delivering practical tools that feel effortless to use.
 </p>
 
 ## Features
