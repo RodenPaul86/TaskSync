@@ -111,19 +111,10 @@ I embarked on my journey as an independent developer, and CalcProX marked one of
 
 As I strive to uphold CalcProX with a continuous stream of innovative features, refinements, and meticulous bug fixes, I am genuinely touched by the unwavering support of my incredible community. Your backing would mean the world to me, ensuring that CalcProX continues to flourish.
 
-<p><a href="https://www.buymeacoffee.com/paulRoden"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="paulRoden" /></a></p><br><br>
+<p><a href="https://www.buymeacoffee.com/paulrodenjr"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="paulRoden" /></a></p><br><br>
 <br/>
 
 Thank you!
 
 ## License
 TaskSync is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/TaskSync/blob/main/LICENSE) (Version 2.0).
-
-## App Store Notice
-This GitHub repository contains the open-source version of the app, intended for educational and non-commercial purposes.
-
-The version available on the App Store may include additional features, assets, or services that are not part of this repository.
-
-**Do not redistribute this app on the App Store or other platforms using this codebase without written permission.**
-
-Sensitive materials such as API keys, proprietary assets, and commercial features have been removed or excluded from this repository.
