@@ -105,3 +105,12 @@ Thank you!
 ## License
 TaskSync is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/TaskSync/blob/main/LICENSE) (Version 2.0).
 
+## App Store Notice
+
+This GitHub repository contains the open-source version of the app, intended for educational and non-commercial purposes.
+
+The version available on the App Store may include additional features, assets, or services that are not part of this repository.
+
+**Redistribution of this app—modified or unmodified—to any app store or software marketplace (including but not limited to the Apple App Store, Google Play Store, or Microsoft Store) is strictly prohibited without prior written permission.**
+
+Sensitive materials such as API keys, proprietary assets, and commercial features have been removed or excluded from this repository.
