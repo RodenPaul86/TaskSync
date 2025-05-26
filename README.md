@@ -5,13 +5,17 @@
 </h1>
 
 <div align="center">
-    <a href="https://www.buymeacoffee.com/paulrodenjr">
+    <a href="https://developer.apple.com">
+        <img src="Images/Badges/IOS.svg" alt="iOS Dev" />
+    </a>
+    <a href="https://buymeacoffee.com/paulrodenjr">
         <img src="Images/Badges/BMC.svg" alt="Buy Me A Coffee" />
     </a>
     <a href="https://github.com/RodenPaul86/TaskSync/blob/main/LICENSE">
         <img src="Images/Badges/Apache.svg" alt="License" />
     </a>
 </div>
+
 <br />
 
 <p align="center">
