@@ -84,7 +84,7 @@ Part of my [portfolio projects](https://paulrodenjr.org/#projects), TaskSync ref
     </a>
 </div>
 
-## Cocoapods
+## Dependencies
 ```swift
 dependencies: [
     .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.21.1")
