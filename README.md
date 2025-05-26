@@ -59,15 +59,17 @@ Part of my [portfolio projects](https://paulrodenjr.org), TaskSync reflects my a
 ## Features
 
 - Ad-free.
-- Regular, Strobing, and Flashing LED Light.
-- Screen Light: The user uses the screen for light.
-- On-board map with turn-by-turn directions.
-- Morse Code.
+- Smart Daily Planning: Easily view and manage tasks by date
+- Real-Time Syncing: Your tasks stay updated across all your devices
+- Color-Coded Tasks: Organize your workflow with visual clarity
+- Edit with Ease: Modify tasks effortlessly with intuitive controls
+- Light & Dark Mode: A design that adapts to your style
+- No Clutter, Just Clarity: Built for focus and simplicity
 
 ## Requirements
 
-- Xcode 14.3.1
-- iOS 12+
+- Xcode 16.2
+- iOS 18+
 
 ## Screenshots
 
@@ -76,9 +78,9 @@ Part of my [portfolio projects](https://paulrodenjr.org), TaskSync reflects my a
     <div align="left">
     <img src="Images/Screenshots/IMG_iphone_01.PNG" alt="First Image" width="240" />
     </a>
-    <img src="Images/Screenshots/IMG_iphone_02.png" alt="Second Image" width="240" />
+    <img src="Images/Screenshots/IMG_iphone_02.PNG" alt="Second Image" width="240" />
     </a>
-    <img src="Images/Screenshots/IMG_iphone_03.png" alt="Third Image" width="240" />
+    <img src="Images/Screenshots/IMG_iphone_03.PNG" alt="Third Image" width="240" />
     </a>
 </div>
 
