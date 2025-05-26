@@ -102,4 +102,13 @@ As I strive to uphold CalcProX with a continuous stream of innovative features, 
 Thank you!
 
 ## License
-CalcProX is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/ProLight/blob/main/LICENSE) (Version 2.0).
+TaskSync is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/TaskSync/blob/main/LICENSE) (Version 2.0).
+
+## App Store Notice
+This GitHub repository contains the open-source version of the app, intended for educational and non-commercial purposes.
+
+The version available on the App Store may include additional features, assets, or services that are not part of this repository.
+
+**Do not redistribute this app on the App Store or other platforms using this codebase without written permission.**
+
+Sensitive materials such as API keys, proprietary assets, and commercial features have been removed or excluded from this repository.
