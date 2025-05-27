@@ -64,7 +64,7 @@ struct settingsView: View {
                             UIApplication.shared.open(url)
                         }
                         
-                        customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/P7YJDrsY")
+                        customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/P7YJDrsY", showJoinInsteadOfSafari: true)
                     }
                     
                     customRow(icon: "square.and.arrow.up", firstLabel: "Share with Friends", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/us/app/tasksync-task-manager/id6737742961"))
@@ -128,6 +128,7 @@ struct customRow: View {
     var showToggle: Bool = false
     var toggleValue: Binding<Bool>? = nil /// <-- Optional toggle switch
     var shareURL: URL? = nil             /// <-- Optional share link
+    var showJoinInsteadOfSafari: Bool? = nil
     
     @State private var isNavigating = false
     @State private var isSharing = false
@@ -144,7 +145,12 @@ struct customRow: View {
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 if let link = URL(string: urlString) {
                                     Link(destination: link) {
-                                        Image(systemName: "safari")
+                                        if showJoinInsteadOfSafari ?? false {
+                                            Text("Join")
+                                                .fontWeight(.bold)
+                                        } else {
+                                            Image(systemName: "safari")
+                                        }
                                     }
                                 }
                             }
