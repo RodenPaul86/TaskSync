@@ -23,6 +23,8 @@ struct SubscriptionButton: View {
     var offering: Offering?
     
     @State private var currentOffering: Offering?
+    
+    @StateObject private var currency = CurrencyFormatter()
     @State private var originalYearlyPrice: Double = 259.48
     
     @State private var isTrialEligible: Bool = false
@@ -108,9 +110,8 @@ struct SubscriptionButton: View {
         
         switch plan {
         case .annual:
-            let originalPrice = String(originalYearlyPrice)
             VStack(alignment: .leading, spacing: 4) {
-                Text("$\(originalPrice)")
+                Text(currency.format(originalYearlyPrice))
                     .foregroundStyle(Color.blue.gradient)
                     .bold()
                     .strikethrough()
