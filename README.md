@@ -43,7 +43,7 @@
     <a href="https://apps.apple.com/us/app/tasksync-task-manager/id6737742961">
         <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
-    <a href="https://github.com/RodenPaul86/TaskSync/releases/tag/v1.0.0">
+    <a href="https://github.com/RodenPaul86/TaskSync/releases/tag/v1.0.1">
         <img src="Images/Badges/github-badge.png" alt="Get it on GitHub" height="80" />
 </div>
 
