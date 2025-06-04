@@ -63,9 +63,9 @@ struct settingsView: View {
                         customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
                             UIApplication.shared.open(url)
                         }
-                        
-                        customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/P7YJDrsY", showJoinInsteadOfSafari: true)
                     }
+                    
+                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/P7YJDrsY", showJoinInsteadOfSafari: true)
                     
                     customRow(icon: "square.and.arrow.up", firstLabel: "Share with Friends", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/us/app/tasksync-task-manager/id6737742961"))
                     
