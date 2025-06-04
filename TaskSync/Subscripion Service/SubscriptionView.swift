@@ -63,20 +63,20 @@ struct SubscriptionView: View {
             
             if isLoading {
                 ZStack {
-                    Color.black.opacity(0.5).ignoresSafeArea() // Optional background overlay to dim the screen
+                    Color.black.opacity(0.5).ignoresSafeArea() /// <-- Optional background overlay to dim the screen
                     VStack {
                         ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white)) // Circular spinner
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white)) /// <-- Circular spinner
                         
                         Text("Loading...")
                             .font(.headline)
-                            .foregroundColor(.white) // Text color
-                            .padding(.top, 10) // Padding between the spinner and text
+                            .foregroundColor(.white) /// <-- Text color
+                            .padding(.top, 10) /// <-- Padding between the spinner and text
                     }
-                    .frame(width: 120, height: 120) // Increased size
-                    .background(Color.gray.opacity(0.2)) // Background color for ProgressView
-                    .cornerRadius(10) // Rounded corners
-                    .shadow(radius: 5) // Optional shadow for better visibility
+                    .frame(width: 120, height: 120) /// <-- Increased size
+                    .background(Color.gray.opacity(0.2)) /// <-- Background color for ProgressView
+                    .cornerRadius(10) /// <-- Rounded corners
+                    .shadow(radius: 5) /// <-- Optional shadow for better visibility
                 }
             } else {
                 // MARK: Subscription Options
@@ -89,7 +89,7 @@ struct SubscriptionView: View {
                     
                     Spacer()
                     
-                    // Annual & Monthly Buttons
+                    // MARK: Annual & Weekly Buttons
                     HStack(spacing: 15) {
                         SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
                         SubscriptionButton(plan: .weekly, selectedPlan: $selectedPlan, offering: currentOffering)
@@ -216,7 +216,7 @@ struct SubscriptionView: View {
                 } else if let transaction = transaction {
                     print("Purchase successful: \(transaction)")
                     
-                    // Check if the subscription is active
+                    // MARK: Check if the subscription is active
                     if info?.entitlements.all["premium"]?.isActive == true {
                         appSubModel.isSubscriptionActive = true
                         isPaywallPresented = false
