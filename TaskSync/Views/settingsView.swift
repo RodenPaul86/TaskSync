@@ -43,15 +43,15 @@ struct settingsView: View {
                 }
                 
                 Section(header: Text("Support")) {
-                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView()))
+                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView().toolbar(.hidden, for: .tabBar)))
                     
-                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
+                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView().toolbar(.hidden, for: .tabBar)))
                 }
                 
                 Section(header: Text("Info")) {
-                    customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
+                    customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView().toolbar(.hidden, for: .tabBar)))
                     
-                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
+                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView().toolbar(.hidden, for: .tabBar)))
                     
                     if appSubModel.isSubscriptionActive {
                         customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
@@ -91,14 +91,6 @@ struct settingsView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(Text("Settings"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Text("Done")
-                    }
-                }
-            }
             .fullScreenCover(isPresented: $isPaywallPresented) {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
                     .preferredColorScheme(.dark)
@@ -141,6 +133,7 @@ struct customRow: View {
                         .edgesIgnoringSafeArea(.all)
                         .navigationTitle(firstLabel)
                         .navigationBarTitleDisplayMode(.inline)
+                        .toolbar(.hidden, for: .tabBar)
                         .toolbar {
                             ToolbarItem(placement: .navigationBarTrailing) {
                                 if let link = URL(string: urlString) {
