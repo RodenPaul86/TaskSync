@@ -127,7 +127,3 @@ struct TaskRowView: View {
         }
     }
 }
-
-#Preview {
-    ContentView()
-}

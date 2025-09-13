@@ -14,6 +14,7 @@ struct NewTaskView: View {
     
     /// View Properties
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) var requestReview
     
     /// Model Context For Saving Data
     @Environment(\.modelContext) private var context
@@ -173,6 +174,17 @@ struct NewTaskView: View {
                     try context.save()
                     HapticManager.shared.notify(.impact(.light))
                     dismiss()
+                    
+                    if AppReviewRequest.requestAvailable {
+                        Task {
+                            try await Task.sleep(
+                                until: .now + .seconds(1),
+                                tolerance: .seconds(0.5),
+                                clock: .suspending
+                            )
+                            requestReview()
+                        }
+                    }
                 } catch {
                     print(error.localizedDescription)
                 }

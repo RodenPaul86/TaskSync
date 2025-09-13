@@ -8,58 +8,63 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.scenePhase) private var scenePhase
-    @AppStorage("showIntroView") private var hasSeenIntro: Bool = false
-    
-    @State private var showIntro: Bool = false
-    @State private var isPaywallPresented: Bool = false
-    
-    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @Environment(AppRouter.self) var router
+    let tabs: [AppTab] = AppTab.allCases
+    @Binding var showComposeOverlay: Bool
+    var composeNamespace: Namespace.ID /// <-- receive namespace
     
     var body: some View {
-        Home()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onAppear {
-                checkAccessFlow()
-            }
-            .onChange(of: appSubModel.isLoading) { _, newValue in
-                if !newValue {
-                    checkAccessFlow()
-                }
-            }
-            .task {
-                // Refresh subscription when view loads
-                appSubModel.refreshSubscriptionStatus()
-            }
-            .sheet(isPresented: $showIntro) {
-                IntroScreen(showIntroView: $hasSeenIntro) {
-                    hasSeenIntro = true
-                    showIntro = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        if !appSubModel.isSubscriptionActive {
-                            isPaywallPresented = true
+        @Bindable var router = router
+        if #available(iOS 26.0, *) {
+            TabView(selection: $router.selectedTab) {
+                ForEach(AppTab.allCases, id: \.self) { tab in
+                    Tab(value: tab, role: tab == .compose ? .search : nil) {
+                        AppTabRootView(tab: tab)
+                    } label: {
+                        if tab == .compose {
+                            Label(tab.title, systemImage: tab.icon)
+                                .matchedTransitionSource(id: "compose-tab", in: composeNamespace)
+                        } else {
+                            Label(tab.title, systemImage: tab.icon)
                         }
                     }
                 }
-                .interactiveDismissDisabled()
             }
-            .fullScreenCover(isPresented: $isPaywallPresented) {
-                SubscriptionView(isPaywallPresented: $isPaywallPresented)
-                    .preferredColorScheme(.dark)
+            .onChange(of: router.selectedTab) { oldTab, newTab in
+                if newTab == .compose {
+                    withAnimation { showComposeOverlay = true }
+                    router.selectedTab = oldTab
+                }
             }
-    }
-    
-    private func checkAccessFlow() {
-        if appSubModel.isLoading {
-            return /// <-- wait until subscription status is loaded
-        }
-        
-        if !hasSeenIntro {
-            showIntro = true
-        } else if !appSubModel.isSubscriptionActive {
-            isPaywallPresented = true
+            .sheet(isPresented: $showComposeOverlay) {
+                NewTaskView()
+                    .presentationDetents([.height(400)])
+                    .interactiveDismissDisabled()
+                    .presentationCornerRadius(30)
+            }
         } else {
-            isPaywallPresented = false
+            // MARK: iOS 18 fallback
+            TabView(selection: $router.selectedTab) {
+                ForEach(AppTab.allCases, id: \.self) { tab in
+                    AppTabRootView(tab: tab)
+                        .tabItem {
+                            Label(tab.title, systemImage: tab.icon)
+                        }
+                        .tag(tab)
+                }
+            }
+            .onChange(of: router.selectedTab) { oldTab, newTab in
+                if newTab == .compose {
+                    withAnimation { showComposeOverlay = true }
+                    router.selectedTab = oldTab
+                }
+            }
+            .sheet(isPresented: $showComposeOverlay) {
+                NewTaskView()
+                    .presentationDetents([.height(400)])
+                    .interactiveDismissDisabled()
+                    .presentationCornerRadius(30)
+            }
         }
     }
 }

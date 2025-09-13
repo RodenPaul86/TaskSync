@@ -1,5 +1,5 @@
 //
-//  Home.swift
+//  HomeView.swift
 //  TaskSync
 //
 //  Created by Paul  on 3/30/25.
@@ -7,16 +7,14 @@
 
 import SwiftUI
 import SwiftData
-import StoreKit
 
-struct Home: View {
+struct HomeView: View {
     // MARK: Paywall Properties
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.requestReview) var requestReview
-    @AppStorage("isSubscribed") var isPaywallPresented: Bool = false
     @State private var hasCheckedSubscription = false
     
-    // Appearance Properties
+    // MARK: Appearance Properties
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     
@@ -25,19 +23,19 @@ struct Home: View {
     @State private var weekSlider: [[Date.WeekDay]] = []
     @State private var currentWeekIndex: Int = 1
     @State private var createWeek: Bool = false
-    @State private var createTask: Bool = false
     @State private var showInfo: Bool = false
     @State private var showSettings: Bool = false
     @State private var showCalendarImport = false
-    @Namespace private var animation
+    @State private var showingDate = false
     
+    @Namespace private var animation
     @Query var tasks: [TaskData] /// <-- Ensure this fetches all tasks
     
     var tasksForSelectedDate: [TaskData] {
         tasks.filter {
             Calendar.current.isDate($0.creationDate, inSameDayAs: currentDate) &&
             !$0.isCompleted &&
-            !$0.creationDate.isPast // Only tasks that are incomplete and not expired
+            !$0.creationDate.isPast /// <-- Only tasks that are incomplete and not expired
         }
     }
     
@@ -54,18 +52,6 @@ struct Home: View {
             }
         }
         .vSpacing(.top)
-        .overlay(alignment: .bottomTrailing) {
-            Button(action: {
-                createTask.toggle()
-            }) {
-                Image(systemName: "plus")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
-                    .frame(width: 55, height: 55)
-                    .background(.blue.gradient.shadow(.drop(color: .black.opacity(0.25), radius: 5, x: 10, y: 10)), in: Circle())
-            }
-            .padding(15)
-        }
         .onAppear {
             if weekSlider.isEmpty {
                 let currentWeek = Date().fetchWeek()
@@ -81,27 +67,6 @@ struct Home: View {
                 }
             }
         }
-        .sheet(isPresented: $createTask, onDismiss: {
-            if AppReviewRequest.requestAvailable {
-                Task {
-                    try await Task.sleep(
-                        until: .now + .seconds(1),
-                        tolerance: .seconds(0.5),
-                        clock: .suspending
-                    )
-                    requestReview()
-                }
-            }
-        }) {
-            NewTaskView(defaultDate: currentDate)
-                .presentationDetents([.height(400)])
-                .interactiveDismissDisabled()
-                .presentationCornerRadius(30)
-        }
-        .fullScreenCover(isPresented: $isPaywallPresented) {
-            SubscriptionView(isPaywallPresented: $isPaywallPresented)
-                .preferredColorScheme(.dark)
-        }
         .animation(.easeInOut, value: appScheme)
     }
     
@@ -112,6 +77,8 @@ struct Home: View {
             HStack(spacing: 5) {
                 Button(action: {
                     let today = Date()
+                    
+                    showingDate = true
                     
                     if let todayIndex = indexOfCurrentWeek() {
                         withAnimation {
@@ -127,20 +94,24 @@ struct Home: View {
                             currentWeekIndex = 0
                         }
                     }
+                    
+                    // After delay, fade back to original text
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            showingDate = false
+                        }
+                    }
+                    
+                    HapticManager.shared.notify(.impact(.light))
                 }) {
                     Text(currentDate.format("MMMM"))
+                        .font(.title.bold())
                 }
                 
                 Text(currentDate.format("YYYY"))
+                    .font(.title)
                     .foregroundStyle(.gray)
             }
-            .font(.title.bold())
-            
-            Text(currentDate.formatted(date: .complete, time: .omitted))
-                .font(.callout)
-                .fontWeight(.semibold)
-                .textScale(.secondary)
-                .foregroundStyle(.gray)
             
             let incompleteTasks = tasksForSelectedDate
             let expiredTasks = tasks.filter {
@@ -149,29 +120,37 @@ struct Home: View {
                 $0.creationDate.isPast
             }
             
-            if !incompleteTasks.isEmpty {
-                Text("\(incompleteTasks.count) task\(incompleteTasks.count > 1 ? "s" : "") are still alive and well. Unlike your motivation.")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
+            // MARK: Task Count
+            ZStack(alignment: .leading) {
+                if !expiredTasks.isEmpty {
+                    Text("Don't forget to complete your overdue tasks!")
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                        .textScale(.secondary)
+                        .foregroundStyle(.gray)
+                        .opacity(showingDate ? 0 : 1)
+                        .animation(.easeInOut(duration: 0.5), value: showingDate)
+                    
+                } else {
+                    Text("You have \(incompleteTasks.count) task\(incompleteTasks.count == 1 ? "" : "s") for today.")
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                        .textScale(.secondary)
+                        .foregroundStyle(.gray)
+                        .opacity(showingDate ? 0 : 1)
+                        .animation(.easeInOut(duration: 0.5), value: showingDate)
+                }
+                
+                Text(currentDate.formatted(date: .complete, time: .omitted))
+                    .font(.callout)
+                    .fontWeight(.semibold)
+                    .textScale(.secondary)
+                    .foregroundStyle(.gray)
+                    .opacity(showingDate ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.5), value: showingDate)
             }
             
-            // Display expired tasks
-            if !expiredTasks.isEmpty {
-                Text("\(expiredTasks.count) task\(expiredTasks.count > 1 ? "s" : "") are overdue. Don’t worry, we told no one… yet.")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.red)
-            }
-            
-            if incompleteTasks.isEmpty && expiredTasks.isEmpty {
-                Text("No tasks. No chaos. No fun.")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.green)
-            }
-            
-            /// Week Slider
+            // MARK: Week Slider
             TabView(selection: $currentWeekIndex) {
                 ForEach(weekSlider.indices, id: \.self) { index in
                     let week = weekSlider[index]
@@ -221,7 +200,7 @@ struct Home: View {
         }
         .padding(15)
         .onChange(of: currentWeekIndex, initial: false) { oldValue, newValue in
-            /// Creating when it reaches the first/last page
+            // MARK: Creating when it reaches the first/last page
             if newValue == 0 || newValue == (weekSlider.count - 1) {
                 createWeek = true
             }
@@ -294,9 +273,10 @@ struct Home: View {
                 .hSpacing(.center)
                 .contentShape(.rect)
                 .onTapGesture {
-                    /// Updating current date
+                    // MARK: Updating current date
                     withAnimation(.snappy) {
                         currentDate = day.date
+                        HapticManager.shared.notify(.impact(.light))
                     }
                 }
             }
@@ -358,10 +338,4 @@ struct Home: View {
             })
         })
     }
-    
-    
-}
-
-#Preview {
-    ContentView()
 }

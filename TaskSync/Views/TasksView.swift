@@ -69,7 +69,3 @@ struct TasksView: View {
         }
     }
 }
-
-#Preview {
-    ContentView()
-}
