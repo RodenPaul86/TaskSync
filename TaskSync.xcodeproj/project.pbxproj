@@ -13,7 +13,7 @@
 		3A1DEFAB2DB536C50009193A /* AppReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFAA2DB536B20009193A /* AppReviewRequest.swift */; };
 		3A1DEFF52DB565580009193A /* SchemePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFF42DB565530009193A /* SchemePickerView.swift */; };
 		3A1DEFF72DB5A21A0009193A /* IntroScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFF62DB5A2150009193A /* IntroScreen.swift */; };
-		3A6F35502DA47DA000D09368 /* settingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F354F2DA47D9100D09368 /* settingsView.swift */; };
+		3A6F35502DA47DA000D09368 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F354F2DA47D9100D09368 /* SettingsView.swift */; };
 		3A6F359E2DA9589C00D09368 /* alternativeAppIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F359D2DA9589000D09368 /* alternativeAppIcons.swift */; };
 		3A6F35A02DA958F100D09368 /* feedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F359F2DA958ED00D09368 /* feedbackView.swift */; };
 		3A6F35A22DA9593600D09368 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F35A12DA9593600D09368 /* UIDevice.swift */; };
@@ -73,7 +73,7 @@
 		3A1DEFAA2DB536B20009193A /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
 		3A1DEFF42DB565530009193A /* SchemePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemePickerView.swift; sourceTree = "<group>"; };
 		3A1DEFF62DB5A2150009193A /* IntroScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroScreen.swift; sourceTree = "<group>"; };
-		3A6F354F2DA47D9100D09368 /* settingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsView.swift; sourceTree = "<group>"; };
+		3A6F354F2DA47D9100D09368 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3A6F359D2DA9589000D09368 /* alternativeAppIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alternativeAppIcons.swift; sourceTree = "<group>"; };
 		3A6F359F2DA958ED00D09368 /* feedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = feedbackView.swift; sourceTree = "<group>"; };
 		3A6F35A12DA9593600D09368 /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
@@ -235,7 +235,7 @@
 			children = (
 				3A6F359B2DA957D800D09368 /* Subviews */,
 				3A1DEFF62DB5A2150009193A /* IntroScreen.swift */,
-				3A6F354F2DA47D9100D09368 /* settingsView.swift */,
+				3A6F354F2DA47D9100D09368 /* SettingsView.swift */,
 				3A130A9B2D9D7A5300978BF8 /* infoView.swift */,
 				3AA93F042D9B3DB400BDD73D /* NewTaskView.swift */,
 				3AA93EFE2D99EF2B00BDD73D /* HomeView.swift */,
@@ -379,7 +379,7 @@
 				3AA93EFD2D99EDAF00BDD73D /* Date+Extentsions.swift in Sources */,
 				3A6F35A02DA958F100D09368 /* feedbackView.swift in Sources */,
 				3AE0A6F22DEF35E80053A621 /* CurrencyFormatter.swift in Sources */,
-				3A6F35502DA47DA000D09368 /* settingsView.swift in Sources */,
+				3A6F35502DA47DA000D09368 /* SettingsView.swift in Sources */,
 				3AED6AD72D7CFD0C00140414 /* TaskSyncApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

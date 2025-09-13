@@ -10,10 +10,12 @@ import RevenueCat
 import WebKit
 import UserNotifications
 
-struct settingsView: View {
+struct SettingsView: View {
+    @Environment(\.dismiss) private var dismiss
     @AppStorage("notificationsEnabled") private var notificationsEnabled: Bool = true
     @EnvironmentObject var appSubModel: appSubscriptionModel
-    @Environment(\.dismiss) private var dismiss
+    @AppStorage("AppScheme") private var appScheme: AppScheme = .device
+    @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     
     @State private var showDebug: Bool = false
     @State private var isPaywallPresented: Bool = false
@@ -31,6 +33,12 @@ struct settingsView: View {
                     .listRowInsets(EdgeInsets())
                 }
                 
+                Section(header: Text("Customization")) {
+                    customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "") {
+                        showPickerView.toggle()
+                    }
+                }
+                
                 Section(header: Text("Notifications & Alerts"), footer: Text("Use this setting to turn off notifications on specific devices")) {
                     customRow(icon: "bell.badge", firstLabel: "Enabled on this device", secondLabel: "", showToggle: true, toggleValue: $notificationsEnabled)
                         .onChange(of: notificationsEnabled) { oldValue, newValue in
@@ -42,13 +50,7 @@ struct settingsView: View {
                         }
                 }
                 
-                Section(header: Text("Support")) {
-                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView().toolbar(.hidden, for: .tabBar)))
-                    
-                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView().toolbar(.hidden, for: .tabBar)))
-                }
-                
-                Section(header: Text("Info")) {
+                Section(header: Text("Support Us")) {
                     customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView().toolbar(.hidden, for: .tabBar)))
                     
                     customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView().toolbar(.hidden, for: .tabBar)))
@@ -65,13 +67,19 @@ struct settingsView: View {
                         }
                     }
                     
-                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/P7YJDrsY", showJoinInsteadOfSafari: true)
+                    customRow(icon: "square.and.arrow.up", firstLabel: "Share TaskSync with Friends", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/us/app/tasksync-task-manager/id6737742961"))
                     
-                    customRow(icon: "square.and.arrow.up", firstLabel: "Share with Friends", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/us/app/tasksync-task-manager/id6737742961"))
+                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView().toolbar(.hidden, for: .tabBar)))
                     
+                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView().toolbar(.hidden, for: .tabBar)))
+                }
+                
+                Section(header: Text("Other"), footer: Text("Shape what’s next for TaskSync! Your feedback makes a real difference.")) {
                     customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps", secondLabel: "") {
                         showStoreView = true
                     }
+                    
+                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/P7YJDrsY", showJoinInsteadOfSafari: true)
                 }
                 
                 Section(header: Text("Legal")) {
@@ -105,7 +113,7 @@ struct settingsView: View {
 }
 
 #Preview {
-    settingsView()
+    SettingsView()
 }
 
 // MARK: Custom Row
@@ -175,6 +183,7 @@ struct customRow: View {
         .sheet(isPresented: $isSharing) {
             if let shareURL = shareURL {
                 ActivityView(activityItems: [shareURL])
+                    .presentationDetents([.medium])
             }
         }
     }

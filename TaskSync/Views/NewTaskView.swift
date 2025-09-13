@@ -189,21 +189,34 @@ struct NewTaskView: View {
                     print(error.localizedDescription)
                 }
             }) {
-                Text(taskToEdit != nil ? "Update Task" : "Create Task")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .textScale(.secondary)
-                    .foregroundStyle(taskTitle.isEmpty ? .gray : .primary)
-                    .hSpacing(.center)
-                    .padding(.vertical, 12)
-                    .background(Color(taskColor).gradient, in: .rect(cornerRadius: 10))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(taskTitle.isEmpty ? .gray : .white, lineWidth: 0.5)
-                    }
+                if #available(iOS 26.0, *) {
+                    Text(taskToEdit != nil ? "Update Task" : "Create Task")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .textScale(.secondary)
+                        .foregroundStyle(taskTitle.isEmpty ? .gray : .primary)
+                        .hSpacing(.center)
+                        .padding(.vertical, 12)
+                        .background(Color(taskColor).gradient, in: .capsule)
+                        .glassEffect(.regular.interactive(), in: .capsule)
+                } else {
+                    Text(taskToEdit != nil ? "Update Task" : "Create Task")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .textScale(.secondary)
+                        .foregroundStyle(taskTitle.isEmpty ? .gray : .primary)
+                        .hSpacing(.center)
+                        .padding(.vertical, 12)
+                        .background(Color(taskColor).gradient, in: .rect(cornerRadius: 10))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(taskTitle.isEmpty ? .gray : .white, lineWidth: 0.5)
+                        }
+                }
             }
             .disabled(taskTitle.isEmpty)
             .opacity(taskTitle.isEmpty ? 0.5 : 1)
+            .padding(.bottom, 10)
         }
         .padding(15)
         .onAppear {
@@ -216,6 +229,7 @@ struct NewTaskView: View {
                 taskPriority = task.priority ?? .none
             }
         }
+        .ignoresSafeArea()
     }
 }
 

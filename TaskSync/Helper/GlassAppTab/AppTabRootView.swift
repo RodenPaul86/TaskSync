@@ -52,7 +52,7 @@ struct AppTabRootView: View {
                         .preferredColorScheme(.dark)
                 }
         case .settings:
-            settingsView()
+            SettingsView()
         case .compose:
             Color.clear
         }
