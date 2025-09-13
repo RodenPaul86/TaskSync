@@ -41,14 +41,32 @@ struct HomeView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HeaderView()
-            
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
                     TasksView(currentDate: $currentDate) /// <-- View of tasks
                 }
                 .hSpacing(.center)
                 .vSpacing(.center)
+            }
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if #available(iOS 26.0, *) {
+                    HeaderView()
+                        .background {
+                            Rectangle()
+                                .fill(Color.clear)
+                                .glassEffect(.regular, in: Rectangle())
+                                .clipShape(BottomRoundedShape(radius: 40))
+                                .ignoresSafeArea(edges: .top)
+                        }
+                } else {
+                    HeaderView()
+                        .background {
+                            Rectangle()
+                                .fill(.ultraThinMaterial)
+                                .clipShape(BottomRoundedShape(radius: 40))
+                                .ignoresSafeArea(edges: .top)
+                        }
+                }
             }
         }
         .vSpacing(.top)
@@ -166,14 +184,6 @@ struct HomeView: View {
         .hSpacing(.leading)
         .overlay(alignment: .topTrailing) {
             HStack {
-                Button(action: { showPickerView.toggle() }) {
-                    Image(systemName: appScheme == .dark ? "sun.max.circle" : "moon.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 30, height: 30)
-                        .clipShape(.circle)
-                }
-                
                 if appSubModel.isSubscriptionActive {
                     Menu {
                         Button("Indicator Guide", systemImage: "info.circle") {
@@ -189,7 +199,6 @@ struct HomeView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 30, height: 30)
-                                .rotationEffect(.degrees(90))
                                 .clipShape(.circle)
                                 .glassEffect(.regular.interactive())
                         } else {
@@ -197,7 +206,6 @@ struct HomeView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 30, height: 30)
-                                .rotationEffect(.degrees(90))
                                 .clipShape(.circle)
                         }
                     }
@@ -235,7 +243,7 @@ struct HomeView: View {
                 .presentationCornerRadius(30)
         }
         .sheet(isPresented: $showSettings) {
-            settingsView()
+            SettingsView()
                 .interactiveDismissDisabled()
         }
         .fullScreenCover(isPresented: $showCalendarImport) {
@@ -360,5 +368,18 @@ struct HomeView: View {
                 calendar.isDate(day.date, equalTo: today, toGranularity: .weekOfYear)
             })
         })
+    }
+}
+
+struct BottomRoundedShape: Shape {
+    var radius: CGFloat = 30
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(
+            roundedRect: rect,
+            byRoundingCorners: [.bottomLeft, .bottomRight],
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
+        return Path(path.cgPath)
     }
 }
