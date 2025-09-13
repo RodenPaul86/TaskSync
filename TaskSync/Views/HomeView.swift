@@ -174,27 +174,50 @@ struct HomeView: View {
                         .clipShape(.circle)
                 }
                 
-                Menu {
-                    Button(action: { showCalendarImport.toggle() }) {
-                        Label("Import from Calender", systemImage: "square.and.arrow.down.badge.clock")
+                if appSubModel.isSubscriptionActive {
+                    Menu {
+                        Button("Indicator Guide", systemImage: "info.circle") {
+                            showInfo.toggle()
+                        }
+                        
+                        Button("Import from Calender", systemImage: "square.and.arrow.down.badge.clock") {
+                            showCalendarImport.toggle()
+                        }
+                    } label: {
+                        if #available(iOS 26.0, *) {
+                            Image(systemName: "ellipsis.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                                .rotationEffect(.degrees(90))
+                                .clipShape(.circle)
+                                .glassEffect(.regular.interactive())
+                        } else {
+                            Image(systemName: "ellipsis.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                                .rotationEffect(.degrees(90))
+                                .clipShape(.circle)
+                        }
                     }
-                    .disabled(appSubModel.isSubscriptionActive ? false : true)
-                    
-                    Button(action: { showSettings.toggle() }) {
-                        Label("Settings", systemImage: "gear")
-                    }
-                    
+                } else {
                     Button(action: { showInfo.toggle() }) {
-                        Label("Indicator Guide", systemImage: "info.circle")
+                        if #available(iOS 26.0, *) {
+                            Image(systemName: "info.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                                .clipShape(.circle)
+                                .glassEffect(.regular.interactive())
+                        } else {
+                            Image(systemName: "info.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                                .clipShape(.circle)
+                        }
                     }
-                    
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 30, height: 30)
-                        .rotationEffect(.degrees(90))
-                        .clipShape(.circle)
                 }
             }
         }

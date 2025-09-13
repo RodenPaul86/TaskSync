@@ -40,7 +40,19 @@ struct ContentView: View {
                 NewTaskView()
                     .presentationDetents([.height(400)])
                     .interactiveDismissDisabled()
-                    .presentationCornerRadius(30)
+                    .presentationBackground {
+                        VStack(spacing: 0) {
+                            // MARK: Touch indicator
+                            Capsule()
+                                .fill(Color.secondary.opacity(0.5))
+                                .frame(width: 40, height: 5)
+                                .padding(.top, 8)
+                                .padding(.bottom, 4)
+                            
+                            Spacer()
+                        }
+                        .ignoresSafeArea()
+                    }
             }
         } else {
             // MARK: iOS 18 fallback
