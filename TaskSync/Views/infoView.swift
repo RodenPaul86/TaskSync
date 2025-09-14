@@ -16,16 +16,8 @@ struct infoView: View {
             HStack {
                 Text("Indicator Guide")
                     .font(.title2.bold())
-                    .padding(.bottom, 5)
-                
+                    .padding([.horizontal, .bottom], 5)
                 Spacer()
-                
-                Button(action: { dismiss() }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title)
-                        .tint(Color(.lightGray))
-                        .opacity(0.25)
-                }
             }
             .hSpacing(.trailing)
             
@@ -69,8 +61,23 @@ struct infoView: View {
                 }
                 .padding([.top, .horizontal], 5)
             }
-            
             Spacer(minLength: 0)
+        }
+        .overlay(alignment: .topTrailing) {
+            Button(action: { dismiss() }) {
+                if #available(iOS 26.0, *) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .tint(Color(.lightGray))
+                        .glassEffect(.regular.interactive(), in: .circle)
+                        .opacity(0.25)
+                } else {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .tint(Color(.lightGray))
+                        .opacity(0.25)
+                }
+            }
         }
         .padding(15)
     }

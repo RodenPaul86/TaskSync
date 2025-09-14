@@ -199,8 +199,7 @@ struct HomeView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 30, height: 30)
-                                .clipShape(.circle)
-                                .glassEffect(.regular.interactive())
+                                .glassEffect(.regular.interactive(), in: .circle)
                         } else {
                             Image(systemName: "ellipsis.circle")
                                 .resizable()
@@ -216,8 +215,7 @@ struct HomeView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 30, height: 30)
-                                .clipShape(.circle)
-                                .glassEffect(.regular.interactive())
+                                .glassEffect(.regular.interactive(), in: .circle)
                         } else {
                             Image(systemName: "info.circle")
                                 .resizable()
@@ -241,6 +239,18 @@ struct HomeView: View {
                 .presentationDetents([.height(400)])
                 .interactiveDismissDisabled()
                 .presentationCornerRadius(30)
+                .presentationBackground {
+                    VStack(spacing: 0) {
+                        // MARK: Touch indicator
+                        Capsule()
+                            .fill(Color.secondary.opacity(0.5))
+                            .frame(width: 40, height: 5)
+                            .padding(.top, 8)
+                            .padding(.bottom, 4)
+                        Spacer()
+                    }
+                    .ignoresSafeArea()
+                }
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()

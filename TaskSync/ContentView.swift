@@ -49,7 +49,6 @@ struct ContentView: View {
                                 .frame(width: 40, height: 5)
                                 .padding(.top, 8)
                                 .padding(.bottom, 4)
-                            
                             Spacer()
                         }
                         .ignoresSafeArea()

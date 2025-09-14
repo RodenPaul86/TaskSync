@@ -39,16 +39,8 @@ struct NewTaskView: View {
             HStack {
                 Text(taskToEdit != nil ? "Edit Task" : "New Task")
                     .font(.title2.bold())
-                    .padding(.bottom, 5)
-                
+                    .padding([.horizontal, .bottom], 5)
                 Spacer()
-                
-                Button(action: { dismiss() }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title)
-                        .tint(Color(.lightGray))
-                        .opacity(0.25)
-                }
             }
             .hSpacing(.trailing)
             
@@ -217,6 +209,22 @@ struct NewTaskView: View {
             .disabled(taskTitle.isEmpty)
             .opacity(taskTitle.isEmpty ? 0.5 : 1)
             .padding(.bottom, 10)
+        }
+        .overlay(alignment: .topTrailing) {
+            Button(action: { dismiss() }) {
+                if #available(iOS 26.0, *) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .tint(Color(.lightGray))
+                        .glassEffect(.regular.interactive(), in: .circle)
+                        .opacity(0.25)
+                } else {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .tint(Color(.lightGray))
+                        .opacity(0.25)
+                }
+            }
         }
         .padding(15)
         .onAppear {
