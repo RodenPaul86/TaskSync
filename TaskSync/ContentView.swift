@@ -30,6 +30,7 @@ struct ContentView: View {
                     }
                 }
             }
+            .tabBarMinimizeBehavior(.onScrollDown)
             .onChange(of: router.selectedTab) { oldTab, newTab in
                 if newTab == .compose {
                     withAnimation { showComposeOverlay = true }
