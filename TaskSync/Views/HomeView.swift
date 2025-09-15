@@ -269,7 +269,7 @@ struct HomeView: View {
         .hSpacing(.leading)
         .overlay(alignment: .topTrailing) {
             HStack {
-                if !appSubModel.isSubscriptionActive {
+                if appSubModel.isSubscriptionActive {
                     Menu {
                         Button("Import from Calender", systemImage: "square.and.arrow.down.badge.clock") {
                             showCalendarImport.toggle()
