@@ -28,6 +28,13 @@ struct HomeView: View {
     @State private var showCalendarImport = false
     @State private var showingDate = false
     
+    // MARK: AI Summary Properties
+    @State private var daySummary: String? = nil
+    @State private var isSummarizing = false
+    @State private var showSummary = false
+    @State private var summarizer: OpenAISummarizer? = nil
+    @State private var rotation = 0.0
+    
     @Namespace private var animation
     @Query var tasks: [TaskData] /// <-- Ensure this fetches all tasks
     
@@ -71,21 +78,99 @@ struct HomeView: View {
         }
         .vSpacing(.top)
         .onAppear {
+            if summarizer == nil {
+                // Try environment variable first
+                let apiKey = ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? apiKeys.openAIKey
+                
+                if apiKey.isEmpty {
+                    print("⚠️ Missing OpenAI API key. Add it to your scheme’s environment variables or apiKeys struct.")
+                } else {
+                    summarizer = OpenAISummarizer(apiKey: apiKey)
+                }
+            }
+            
             if weekSlider.isEmpty {
                 let currentWeek = Date().fetchWeek()
-                
                 if let firstDate = currentWeek.first?.date {
                     weekSlider.append(firstDate.currentPreviousWeek())
                 }
-                
                 weekSlider.append(currentWeek)
-                
                 if let lastDate = currentWeek.last?.date {
                     weekSlider.append(lastDate.currentNextWeek())
                 }
             }
         }
         .animation(.easeInOut, value: appScheme)
+        .sheet(isPresented: $showSummary) {
+            NavigationStack {
+                ZStack(alignment: .bottomLeading) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        if !isSummarizing {
+                            ScrollView {
+                                Text(daySummary ?? "No summary available.")
+                                    .font(.body)
+                                    .padding()
+                            }
+                        }
+                        Spacer()
+                        
+                        HStack {
+                            if #available(iOS 26.0, *) {
+                                Text("Powered by ChatGPT")
+                                    .font(.caption)
+                                    .foregroundColor(.primary)
+                                    .padding()
+                                    .glassEffect(.regular, in: .capsule)
+                                    .padding([.leading, .bottom], 16)
+                            } else {
+                                Text("Powered by ChatGPT")
+                                    .font(.caption)
+                                    .foregroundColor(.primary)
+                                    .padding()
+                                    .background(.ultraThinMaterial, in: .capsule)
+                                    .padding([.leading, .bottom], 16)
+                            }
+                            Spacer()
+                        }
+                    }
+                    .navigationTitle("Your Day Summary")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button(action: {
+                                Task {
+                                    isSummarizing = true
+                                    await summarizeTasksForDay()
+                                    isSummarizing = false
+                                }
+                            }) {
+                                Image(systemName: "arrow.trianglehead.2.clockwise")
+                                    .rotationEffect(.degrees(rotation))
+                                    .animation(isSummarizing ? Animation.linear(duration: 1.0).repeatForever(autoreverses: false) : .default, value: rotation)
+                            }
+                            .onChange(of: isSummarizing) { _, newValue in
+                                if newValue {
+                                    withAnimation(Animation.linear(duration: 1).repeatForever(autoreverses: false)) {
+                                        rotation += 360
+                                    }
+                                } else {
+                                    rotation = 0
+                                }
+                            }
+                        }
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Done", systemImage: "checkmark") {
+                                showSummary = false
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                    }
+                }
+                .ignoresSafeArea(edges: .bottom)
+            }
+            .presentationDetents([.medium, .large]) /// <-- half and full
+            .presentationDragIndicator(.visible)   /// <-- little drag handle
+        }
     }
     
     // MARK: Header View
@@ -184,14 +269,18 @@ struct HomeView: View {
         .hSpacing(.leading)
         .overlay(alignment: .topTrailing) {
             HStack {
-                if appSubModel.isSubscriptionActive {
+                if !appSubModel.isSubscriptionActive {
                     Menu {
-                        Button("Indicator Guide", systemImage: "info.circle") {
-                            showInfo.toggle()
-                        }
-                        
                         Button("Import from Calender", systemImage: "square.and.arrow.down.badge.clock") {
                             showCalendarImport.toggle()
+                        }
+                        
+                        Button("Summarize Day", systemImage: "sparkles") {
+                            Task { await summarizeTasksForDay() }
+                        }
+                        
+                        Button("Indicator Guide", systemImage: "info.circle") {
+                            showInfo.toggle()
                         }
                     } label: {
                         if #available(iOS 26.0, *) {
@@ -378,6 +467,33 @@ struct HomeView: View {
                 calendar.isDate(day.date, equalTo: today, toGranularity: .weekOfYear)
             })
         })
+    }
+    
+    func summarizeTasksForDay() async {
+        guard let summarizer = summarizer else {
+            daySummary = "OpenAI API key missing."
+            showSummary = true
+            return
+        }
+        
+        isSummarizing = true
+        defer { isSummarizing = false }
+        
+        let taskList = tasksForSelectedDate.map { "• \($0.taskTitle)" }.joined(separator: "\n")
+        let fullText = """
+        Date: \(currentDate.formatted(date: .long, time: .omitted))
+        Tasks:
+        \(taskList.isEmpty ? "No tasks scheduled today 🎉" : taskList)
+        """
+        
+        do {
+            let summary = try await summarizer.summarizeDocument(fullText)
+            daySummary = summary
+        } catch {
+            daySummary = "Error: \(error.localizedDescription)"
+        }
+        
+        showSummary = true
     }
 }
 

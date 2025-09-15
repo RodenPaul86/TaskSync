@@ -13,6 +13,7 @@
 		3A1DEFAB2DB536C50009193A /* AppReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFAA2DB536B20009193A /* AppReviewRequest.swift */; };
 		3A1DEFF52DB565580009193A /* SchemePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFF42DB565530009193A /* SchemePickerView.swift */; };
 		3A1DEFF72DB5A21A0009193A /* IntroScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1DEFF62DB5A2150009193A /* IntroScreen.swift */; };
+		3A5194262E786B4900347190 /* OpenAISummarizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5194252E786B3B00347190 /* OpenAISummarizer.swift */; };
 		3A6F35502DA47DA000D09368 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F354F2DA47D9100D09368 /* SettingsView.swift */; };
 		3A6F359E2DA9589C00D09368 /* alternativeAppIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F359D2DA9589000D09368 /* alternativeAppIcons.swift */; };
 		3A6F35A02DA958F100D09368 /* feedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F359F2DA958ED00D09368 /* feedbackView.swift */; };
@@ -74,6 +75,7 @@
 		3A1DEFAA2DB536B20009193A /* AppReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewRequest.swift; sourceTree = "<group>"; };
 		3A1DEFF42DB565530009193A /* SchemePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemePickerView.swift; sourceTree = "<group>"; };
 		3A1DEFF62DB5A2150009193A /* IntroScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroScreen.swift; sourceTree = "<group>"; };
+		3A5194252E786B3B00347190 /* OpenAISummarizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAISummarizer.swift; sourceTree = "<group>"; };
 		3A6F354F2DA47D9100D09368 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3A6F359D2DA9589000D09368 /* alternativeAppIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alternativeAppIcons.swift; sourceTree = "<group>"; };
 		3A6F359F2DA958ED00D09368 /* feedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = feedbackView.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 		3AA93EF92D99ECFC00BDD73D /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				3A5194252E786B3B00347190 /* OpenAISummarizer.swift */,
 				3AE44C852E75BE980092BF72 /* GlassAppTab */,
 				3ABD1CE72DE1FC360011761D /* StoreProductView.swift */,
 				3AA142222DDF729800300B9E /* NotificationManager.swift */,
@@ -385,6 +388,7 @@
 				3AE0A6F22DEF35E80053A621 /* CurrencyFormatter.swift in Sources */,
 				3A6F35502DA47DA000D09368 /* SettingsView.swift in Sources */,
 				3AED6AD72D7CFD0C00140414 /* TaskSyncApp.swift in Sources */,
+				3A5194262E786B4900347190 /* OpenAISummarizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
