@@ -7,6 +7,7 @@
 
 import SwiftUI
 import RevenueCat
+import RevenueCatUI
 import WebKit
 import UserNotifications
 
@@ -99,10 +100,15 @@ struct SettingsView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle(Text("Settings"))
+            .fullScreenCover(isPresented: $isPaywallPresented, content: {
+                PaywallView(displayCloseButton: true)
+            })
+            /*
             .fullScreenCover(isPresented: $isPaywallPresented) {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
                     .preferredColorScheme(.dark)
             }
+             */
             .background(
                 StoreProductPresenter(appStoreID: 693041126, isPresented: $showStoreView)
             )

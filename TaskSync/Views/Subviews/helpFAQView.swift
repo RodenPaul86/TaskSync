@@ -76,8 +76,7 @@ struct helpFAQView: View {
                 .listStyle(InsetGroupedListStyle())
                 .safeAreaPadding(.bottom, 60)
             }
-            .navigationTitle("FAQS")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("FAQ")
         }
     }
 }

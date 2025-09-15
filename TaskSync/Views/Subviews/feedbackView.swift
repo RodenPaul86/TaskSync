@@ -59,7 +59,7 @@ struct feedbackView: View {
                     .padding(.vertical, 8)
                     .frame(minHeight: 120, alignment: .top) /// <-- Ensures expansion
                 
-                Section(header: Text("Additional Info"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
+                Section(header: Text("Additional Info (Optional)"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
                     HStack {
                         // Image Preview
                         if let image = selectedImage {
@@ -133,27 +133,34 @@ struct feedbackView: View {
                     }
                 }
             }
-            .navigationBarTitle("Support")
+            .navigationBarTitle("Send: \(selectedTopic)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        isShowingMailView.toggle()
-                        HapticManager.shared.notify(.impact(.light))
-                    }) {
-                        Text("Send")
-                    }
-                    .sheet(isPresented: $isShowingMailView) {
-                        MailView(
-                            isShowing: $isShowingMailView,
-                            recipient: "support@paulrodenjr.org",
-                            subject: "TaskSync: \(selectedTopic)",
-                            body: generateEmailBody(),
-                            imageData: imageData
-                        ) {
-                            presentationMode.wrappedValue.dismiss()
+                    if #available(iOS 26.0, *) {
+                        Button("Send", systemImage: "arrow.up") {
+                            isShowingMailView.toggle()
+                            HapticManager.shared.notify(.impact(.light))
                         }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(textBody.isEmpty)
+                    } else {
+                        Button("Send") {
+                            isShowingMailView.toggle()
+                        }
+                        .disabled(textBody.isEmpty)
                     }
+                }
+            }
+            .sheet(isPresented: $isShowingMailView) {
+                MailView(
+                    isShowing: $isShowingMailView,
+                    recipient: "support@paulrodenjr.org",
+                    subject: "TaskSync: \(selectedTopic)",
+                    body: generateEmailBody(),
+                    imageData: imageData
+                ) {
+                    presentationMode.wrappedValue.dismiss()
                 }
             }
         }

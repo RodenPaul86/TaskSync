@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RevenueCatUI
 
 struct AppTabRootView: View {
     @Environment(\.scenePhase) private var scenePhase
@@ -48,9 +49,14 @@ struct AppTabRootView: View {
                     .interactiveDismissDisabled()
                 }
                 .fullScreenCover(isPresented: $isPaywallPresented) {
+                    PaywallView(displayCloseButton: true)
+                }
+            /*
+                .fullScreenCover(isPresented: $isPaywallPresented) {
                     SubscriptionView(isPaywallPresented: $isPaywallPresented)
                         .preferredColorScheme(.dark)
                 }
+             */
         case .settings:
             SettingsView()
         case .compose:

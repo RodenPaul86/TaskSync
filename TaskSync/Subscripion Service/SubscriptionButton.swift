@@ -23,10 +23,8 @@ struct SubscriptionButton: View {
     var offering: Offering?
     
     @State private var currentOffering: Offering?
-    
     @StateObject private var currency = CurrencyFormatter()
     @State private var originalYearlyPrice: Double = 259.48
-    
     @State private var isTrialEligible: Bool = false
     
     var isSelected: Bool {
@@ -103,7 +101,6 @@ struct SubscriptionButton: View {
         }
     }
     
-    
     @ViewBuilder
     private func pricingView(for plan: SubscriptionPlan) -> some View {
         let price = priceString(for: plan)
@@ -116,13 +113,13 @@ struct SubscriptionButton: View {
                     .bold()
                     .strikethrough()
                 Text("\(price) / yr")
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .bold()
             }
             
         case .monthly:
             Text("\(price) / mo")
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .bold()
             
         case .weekly:
@@ -133,14 +130,20 @@ struct SubscriptionButton: View {
                         .bold()
                 }
                 Text("\(price) / wk")
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .bold()
             }
             
         case .lifetime:
-            Text("\(price) / once")
-                .foregroundStyle(.white)
-                .bold()
+            VStack(alignment: .leading, spacing: 4) {
+                Text("No Renewals")
+                    .foregroundStyle(Color.blue.gradient)
+                    .bold()
+                
+                Text("\(price) / once")
+                    .foregroundStyle(.primary)
+                    .bold()
+            }
         }
     }
     

@@ -49,6 +49,7 @@
 		3AED6AD12D7CFD0C00140414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3AED6AC72D7CFD0C00140414 /* Assets.xcassets */; };
 		3AED6AD42D7CFD0C00140414 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AED6AC82D7CFD0C00140414 /* ContentView.swift */; };
 		3AED6AD72D7CFD0C00140414 /* TaskSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AED6ACD2D7CFD0C00140414 /* TaskSyncApp.swift */; };
+		3AF4DB032E771F9900BD0512 /* CustomPaywallScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF4DB022E771F8F00BD0512 /* CustomPaywallScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -110,6 +111,7 @@
 		3AED6AC92D7CFD0C00140414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3AED6ACB2D7CFD0C00140414 /* TaskSync.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TaskSync.entitlements; sourceTree = "<group>"; };
 		3AED6ACD2D7CFD0C00140414 /* TaskSyncApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskSyncApp.swift; sourceTree = "<group>"; };
+		3AF4DB022E771F8F00BD0512 /* CustomPaywallScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPaywallScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +169,7 @@
 		3AA7D2B12DAAF332009E0F1D /* Subscripion Service */ = {
 			isa = PBXGroup;
 			children = (
+				3AF4DB022E771F8F00BD0512 /* CustomPaywallScreen.swift */,
 				3AA7D2BF2DAAF4F8009E0F1D /* SubscriptionView.swift */,
 				3AA7D2BD2DAAF4CE009E0F1D /* SubscriptionButton.swift */,
 				3AA7D2BB2DAAF470009E0F1D /* PricingView.swift */,
@@ -361,6 +364,7 @@
 				3AED6AD42D7CFD0C00140414 /* ContentView.swift in Sources */,
 				3A130A9C2D9D7A5D00978BF8 /* infoView.swift in Sources */,
 				3AA93F052D9B3DB500BDD73D /* NewTaskView.swift in Sources */,
+				3AF4DB032E771F9900BD0512 /* CustomPaywallScreen.swift in Sources */,
 				3A78FCC62DB69A0600792598 /* HapticManager.swift in Sources */,
 				3AE44C892E75C03D0092BF72 /* AppTabRootView.swift in Sources */,
 				3A6F359E2DA9589C00D09368 /* alternativeAppIcons.swift in Sources */,
