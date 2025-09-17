@@ -10,7 +10,7 @@ import SwiftUI
 enum AppScheme: String {
     case dark = "Dark"
     case light = "Light"
-    case device = "Device"
+    case device = "System"
 }
 
 fileprivate struct SchemePreview: Identifiable {
@@ -125,6 +125,7 @@ fileprivate extension ColorScheme {
     
 }
 
+// MARK: Appearance View
 struct SchemePickerView: View {
     @Binding fileprivate var previews: [SchemePreview]
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
@@ -151,14 +152,18 @@ struct SchemePickerView: View {
         .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background {
-            ZStack {
-                Rectangle()
-                    .fill(.background)
-                
-                Rectangle()
-                    .fill(Color.primary.opacity(0.05))
+            if #available(iOS 26.0, *) {
+                Color.clear
+            } else {
+                ZStack {
+                    Rectangle()
+                        .fill(.background)
+                    
+                    Rectangle()
+                        .fill(Color.primary.opacity(0.05))
+                }
+                .clipShape(.rect(cornerRadius: 20))
             }
-            .clipShape(.rect(cornerRadius: 20))
         }
         .padding([.horizontal, .bottom], 10)
         .presentationDetents([.height(320)])
@@ -171,7 +176,7 @@ struct SchemePickerView: View {
     
     @ViewBuilder
     fileprivate func SchemeCardView(_ preview: [SchemePreview]) -> some View {
-        let isSelected = localSchemeState.rawValue == (preview.count == 2 ? "Device" : preview.first?.text ?? "")
+        let isSelected = localSchemeState.rawValue == (preview.count == 2 ? "System" : preview.first?.text ?? "")
         
         VStack(spacing: 6) {
             if let image = preview.first?.image {
@@ -201,7 +206,7 @@ struct SchemePickerView: View {
                     )
             }
             
-            let text = preview.count == 2 ? "Device" : preview.first?.text ?? ""
+            let text = preview.count == 2 ? "System" : preview.first?.text ?? ""
             
             Text(text)
                 .font(.caption)
