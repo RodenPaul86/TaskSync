@@ -42,6 +42,7 @@
 		3AAF191D2DB0138300142D5D /* calendarImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAF191C2DB0137E00142D5D /* calendarImportView.swift */; };
 		3ABD1CE82DE1FC400011761D /* StoreProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABD1CE72DE1FC360011761D /* StoreProductView.swift */; };
 		3ABD1D382DE208160011761D /* releaseNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABD1D372DE208110011761D /* releaseNotesView.swift */; };
+		3AD5E79C2E7AF08F00884317 /* AssistantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD5E79B2E7AF08A00884317 /* AssistantView.swift */; };
 		3AE0A6F22DEF35E80053A621 /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE0A6F12DEF35E30053A621 /* CurrencyFormatter.swift */; };
 		3AE44C872E75BEDB0092BF72 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE44C862E75BED50092BF72 /* AppTab.swift */; };
 		3AE44C892E75C03D0092BF72 /* AppTabRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE44C882E75C02B0092BF72 /* AppTabRootView.swift */; };
@@ -103,6 +104,7 @@
 		3AAF191C2DB0137E00142D5D /* calendarImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = calendarImportView.swift; sourceTree = "<group>"; };
 		3ABD1CE72DE1FC360011761D /* StoreProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreProductView.swift; sourceTree = "<group>"; };
 		3ABD1D372DE208110011761D /* releaseNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = releaseNotesView.swift; sourceTree = "<group>"; };
+		3AD5E79B2E7AF08A00884317 /* AssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantView.swift; sourceTree = "<group>"; };
 		3AE0A6F12DEF35E30053A621 /* CurrencyFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyFormatter.swift; sourceTree = "<group>"; };
 		3AE44C862E75BED50092BF72 /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
 		3AE44C882E75C02B0092BF72 /* AppTabRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabRootView.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				3A6F359B2DA957D800D09368 /* Subviews */,
+				3AD5E79B2E7AF08A00884317 /* AssistantView.swift */,
 				3A1DEFF62DB5A2150009193A /* IntroScreen.swift */,
 				3A6F354F2DA47D9100D09368 /* SettingsView.swift */,
 				3A130A9B2D9D7A5300978BF8 /* infoView.swift */,
@@ -353,6 +356,7 @@
 				3AA7D2BE2DAAF4D2009E0F1D /* SubscriptionButton.swift in Sources */,
 				3AA93F012D9A648000BDD73D /* offsetKey.swift in Sources */,
 				3AA7D2BA2DAAF445009E0F1D /* appSubscriptionModel.swift in Sources */,
+				3AD5E79C2E7AF08F00884317 /* AssistantView.swift in Sources */,
 				3A6F35A22DA9593600D09368 /* UIDevice.swift in Sources */,
 				3AAF191D2DB0138300142D5D /* calendarImportView.swift in Sources */,
 				3AA93EEF2D92036200BDD73D /* TabModel.swift in Sources */,
