@@ -10,7 +10,7 @@ import SwiftUI
 enum AppTab: Int, CaseIterable {
     case home = 0
     case settings = 1
-    case compose = 3
+    case compose = 2
     
     var title: String {
         switch self {
