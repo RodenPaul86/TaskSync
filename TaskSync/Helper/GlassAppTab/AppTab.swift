@@ -9,13 +9,16 @@ import SwiftUI
 
 enum AppTab: Int, CaseIterable {
     case home = 0
-    case settings = 1
-    case compose = 2
+    case calendar = 1
+    case settings = 2
+    case compose = 3
     
     var title: String {
         switch self {
         case .home:
             return "Home"
+        case .calendar:
+            return "Calendar"
         case .settings:
             return "Settings"
         case .compose:
@@ -27,6 +30,8 @@ enum AppTab: Int, CaseIterable {
         switch self {
         case .home:
             return "list.bullet"
+        case .calendar:
+            return "calendar"
         case .settings:
             return "gear"
         case .compose:

@@ -23,7 +23,7 @@ struct ContentView: View {
                     } label: {
                         if tab == .compose {
                             Label(tab.title, systemImage: tab.icon)
-                                .matchedTransitionSource(id: "compose-tab", in: composeNamespace)
+                                .matchedTransitionSource(id: "compose", in: composeNamespace)
                         } else {
                             Label(tab.title, systemImage: tab.icon)
                         }

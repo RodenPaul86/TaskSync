@@ -57,6 +57,12 @@ struct AppTabRootView: View {
                         .preferredColorScheme(.dark)
                 }
              */
+        case .calendar:
+            GeometryReader {
+                let safeArea = $0.safeAreaInsets
+                CalendarView(safeArea: safeArea)
+                    .ignoresSafeArea(.container, edges: .top)
+            }
         case .settings:
             SettingsView()
         case .compose:
@@ -78,3 +84,4 @@ struct AppTabRootView: View {
         }
     }
 }
+
